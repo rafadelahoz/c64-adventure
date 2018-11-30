@@ -10,8 +10,8 @@ import flixel.tile.FlxTilemap;
 
 class World extends FlxState
 {
-    var screencam : FlxCamera;
-    var hudcam : FlxCamera;
+    public var screencam : FlxCamera;
+    public var hudcam : FlxCamera;
 
     public var platforms : FlxGroup;
     public var solids : FlxGroup;
@@ -61,8 +61,12 @@ class World extends FlxState
         setupCameras();
         setupHUD();
 
+        var grid : Grid = new Grid(this);
+        grid.cameras = [screencam];
+        add(grid);
+
         screencam.follow(player, flixel.FlxCamera.FlxCameraFollowStyle.PLATFORMER);
-	bg.cameras = [screencam];
+        bg.cameras = [screencam];
 
         super.create();
 
@@ -73,7 +77,7 @@ class World extends FlxState
         mouseTile.makeGraphic(14, 14, 0x00000000);
         // flixel.util.FlxSpriteUtil.drawRect(mouseTile, 1, 1, 12, 12, 0x00FFFFFF, {thickness: 1, color: 0xFFFFFFFF});
         flixel.util.FlxSpriteUtil.drawCircle(mouseTile, 7, 7, 2, 0xFFFFFFFF);
-        add(mouseTile);
+        // add(mouseTile);
         mouseTile.scrollFactor.set(0, 0);
         mouseTile.cameras = [hudcam];
 
@@ -91,7 +95,7 @@ class World extends FlxState
         screencam = new FlxCamera(96, 12, 216, 156);
         // screencam.bgColor = 0xFFFFFF00;
         screencam.setScale(2, 1);
-        //screencam.setScrollBounds(0, 2000, 0, 2000);
+        // screencam.setScrollBounds(0, 0, tilemap.width*2, tilemap.height*2);
 
         hudcam = new flixel.FlxCamera(0, 0, 320, 200, 1);
         hudcam.bgColor = 0x00000000;
@@ -127,11 +131,11 @@ class World extends FlxState
             endSlowdown();
         }
 
-        var cx : Float = FlxG.mouse.screenX + 3;
+        var cx : Float = FlxG.mouse.screenX + 2;
         var cy : Float = FlxG.mouse.screenY - 7;
 
-        var wx : Float = cx/screencam.scaleX + screencam.scroll.x;
-        var wy : Float = cy + screencam.scroll.y;
+        var wx : Float = Std.int(cx/screencam.scaleX + screencam.scroll.x);
+        var wy : Float = Std.int(cy + screencam.scroll.y);
 
         /*var x : Float = screencam.x + Std.int((mx - screencam.scroll.x) / 7)*7;
         var y : Float = screencam.y + Std.int((my - screencam.scroll.y) / 14)*14;*/
@@ -160,25 +164,25 @@ class World extends FlxState
 
         if (x >= tilemap.x && x < tilemap.x+tilemap.width && y >= tilemap.y && y < tilemap.y+tilemap.width)
         {
-            if (FlxG.keys.justPressed.ZERO)
+            if (FlxG.keys.pressed.ZERO)
                 tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 0);
-            else if (FlxG.keys.justPressed.ONE)
+            else if (FlxG.keys.pressed.ONE)
                 tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 1);
-            else if (FlxG.keys.justPressed.TWO)
+            else if (FlxG.keys.pressed.TWO)
                 tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 2);
-            else if (FlxG.keys.justPressed.THREE)
+            else if (FlxG.keys.pressed.THREE)
                 tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 3);
-            else if (FlxG.keys.justPressed.FOUR)
+            else if (FlxG.keys.pressed.FOUR)
                 tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 4);
-            else if (FlxG.keys.justPressed.FIVE)
+            else if (FlxG.keys.pressed.FIVE)
                 tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 5);
-            else if (FlxG.keys.justPressed.SIX)
+            else if (FlxG.keys.pressed.SIX)
                 tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 6);
-            else if (FlxG.keys.justPressed.SEVEN)
+            else if (FlxG.keys.pressed.SEVEN)
                 tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 7);
-            else if (FlxG.keys.justPressed.EIGHT)
+            else if (FlxG.keys.pressed.EIGHT)
                 tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 8);
-            else if (FlxG.keys.justPressed.NINE)
+            else if (FlxG.keys.pressed.NINE)
                 tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 9);
         }
 
