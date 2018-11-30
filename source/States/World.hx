@@ -30,7 +30,7 @@ class World extends FlxState
         FlxG.mouse.useSystemCursor = true;
         FlxG.scaleMode = new flixel.system.scaleModes.PixelPerfectScaleMode();
 
-        var bg = new flixel.addons.display.FlxBackdrop("assets/images/bg.png",1, 1, false, false);
+        var bg = new flixel.addons.display.FlxBackdrop("assets/images/bg.png");//,1, 1, false, false);
         // bg.cameras = [screencam];
         add(bg);
 
@@ -62,6 +62,7 @@ class World extends FlxState
         setupHUD();
 
         screencam.follow(player, flixel.FlxCamera.FlxCameraFollowStyle.PLATFORMER);
+	bg.cameras = [screencam];
 
         super.create();
 
