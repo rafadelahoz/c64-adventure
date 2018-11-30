@@ -61,6 +61,8 @@ class World extends FlxState
         setupCameras();
         setupHUD();
 
+        screencam.follow(player, flixel.FlxCamera.FlxCameraFollowStyle.PLATFORMER);
+
         super.create();
 
         // DEBUG
@@ -79,16 +81,19 @@ class World extends FlxState
 
     function setupCameras()
     {
-        screencam = FlxG.camera;
-        screencam.bgColor = 0x00000000;
-        screencam.setPosition(96, 12);
-        screencam.setSize(216, 156);
+        // FlxG.camera.bgColor = 0xFFFF00FF;
+        // FlxG.cameras.list[0].bgColor = 0xFFFF00FF;
+
+        screencam = new FlxCamera(96, 12, 216, 156);
+        // screencam.bgColor = 0xFFFFFF00;
         screencam.setScale(2, 1);
         //screencam.setScrollBounds(0, 2000, 0, 2000);
-        // screencam.follow(player, flixel.FlxCamera.FlxCameraFollowStyle.PLATFORMER);
 
         hudcam = new flixel.FlxCamera(0, 0, 320, 200, 1);
+        hudcam.bgColor = 0x00000000;
         hudcam.scroll.set(-1000, -1000);
+
+        FlxG.cameras.add(screencam);
         FlxG.cameras.add(hudcam);
     }
 
@@ -96,7 +101,7 @@ class World extends FlxState
     {
         var hud : FlxSprite = new FlxSprite(0, 0, "assets/images/temp-hud.png");
         hud.scrollFactor.set(0, 0);
-        hud.alpha = 0.2;
+        // hud.alpha = 0.2;
         hud.cameras = [hudcam];
         add(hud);
 
@@ -121,7 +126,7 @@ class World extends FlxState
         var cx : Float = FlxG.mouse.screenX;
         var cy : Float = FlxG.mouse.screenY;
 
-        var wx : Float = cx + screencam.scroll.x;
+        var wx : Float = cx/screencam.scaleX + screencam.scroll.x;
         var wy : Float = cy + screencam.scroll.y;
 
         /*var x : Float = screencam.x + Std.int((mx - screencam.scroll.x) / 7)*7;
@@ -134,8 +139,8 @@ class World extends FlxState
                      "w: " + wx + ", " + wy + "\n" +
                      "p: " + player.x + ", " + player.y;
 
-        mouseTile.x = screencam.x + cx;
-        mouseTile.y = screencam.y + cy;
+        mouseTile.x = cx;
+        mouseTile.y = cy;
 
         if (FlxG.mouse.justPressed)
         {
