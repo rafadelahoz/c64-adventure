@@ -27,11 +27,11 @@ class World extends FlxState
 
     override public function create() : Void
     {
+        FlxG.mouse.useSystemCursor = true;
         FlxG.scaleMode = new flixel.system.scaleModes.PixelPerfectScaleMode();
-        screencam = FlxG.camera;
 
         var bg = new flixel.addons.display.FlxBackdrop("assets/images/bg.png",1, 1, false, false);
-        bg.cameras = [screencam];
+        // bg.cameras = [screencam];
         add(bg);
 
         solids = new FlxGroup();
@@ -67,8 +67,11 @@ class World extends FlxState
 
         // DEBUG
         mouseTile = new FlxSprite(0, 0);
+        // mouseTile.offset.set(7, 0);
+        mouseTile.setSize(14, 14);
         mouseTile.makeGraphic(14, 14, 0x00000000);
-        flixel.util.FlxSpriteUtil.drawRect(mouseTile, 1, 1, 12, 12, 0x00FFFFFF, {thickness: 1, color: 0xFFFFFFFF});
+        // flixel.util.FlxSpriteUtil.drawRect(mouseTile, 1, 1, 12, 12, 0x00FFFFFF, {thickness: 1, color: 0xFFFFFFFF});
+        flixel.util.FlxSpriteUtil.drawCircle(mouseTile, 7, 7, 2, 0xFFFFFFFF);
         add(mouseTile);
         mouseTile.scrollFactor.set(0, 0);
         mouseTile.cameras = [hudcam];
@@ -123,8 +126,8 @@ class World extends FlxState
             endSlowdown();
         }
 
-        var cx : Float = FlxG.mouse.screenX;
-        var cy : Float = FlxG.mouse.screenY;
+        var cx : Float = FlxG.mouse.screenX + 3;
+        var cy : Float = FlxG.mouse.screenY - 7;
 
         var wx : Float = cx/screencam.scaleX + screencam.scroll.x;
         var wy : Float = cy + screencam.scroll.y;
@@ -134,46 +137,49 @@ class World extends FlxState
         var x = wx;
         var y = wy;
 
+        mouseTile.x = cx; Std.int(cx/14)*14;
+        mouseTile.y = cy; Std.int(cy/14)*14;
+
         label.text = "c: " + cx + ", " + cy + "\n" +
                      "s: " + screencam.scroll + "\n" +
                      "w: " + wx + ", " + wy + "\n" +
-                     "p: " + player.x + ", " + player.y;
-
-        mouseTile.x = cx;
-        mouseTile.y = cy;
+                     "m: " + mouseTile.x + ", " + mouseTile.y;
 
         if (FlxG.mouse.justPressed)
         {
             if (FlxG.keys.pressed.ALT)
-                oneways.add(new Solid(x, y, 7, 4, this));
+                oneways.add(new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 4, this));
             else
             {
-                var s = new Solid(x, y, 7, 14, this);
+                var s = new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this);
                 solids.add(s);
                 trace(s.x, s.y);
             }
         }
 
-        if (FlxG.keys.justPressed.ZERO)
-            tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 0);
-        else if (FlxG.keys.justPressed.ONE)
-            tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 1);
-        else if (FlxG.keys.justPressed.TWO)
-            tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 2);
-        else if (FlxG.keys.justPressed.THREE)
-            tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 3);
-        else if (FlxG.keys.justPressed.FOUR)
-            tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 4);
-        else if (FlxG.keys.justPressed.FIVE)
-            tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 5);
-        else if (FlxG.keys.justPressed.SIX)
-            tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 6);
-        else if (FlxG.keys.justPressed.SEVEN)
-            tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 7);
-        else if (FlxG.keys.justPressed.EIGHT)
-            tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 8);
-        else if (FlxG.keys.justPressed.NINE)
-            tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 9);
+        if (x >= tilemap.x && x < tilemap.x+tilemap.width && y >= tilemap.y && y < tilemap.y+tilemap.width)
+        {
+            if (FlxG.keys.justPressed.ZERO)
+                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 0);
+            else if (FlxG.keys.justPressed.ONE)
+                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 1);
+            else if (FlxG.keys.justPressed.TWO)
+                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 2);
+            else if (FlxG.keys.justPressed.THREE)
+                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 3);
+            else if (FlxG.keys.justPressed.FOUR)
+                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 4);
+            else if (FlxG.keys.justPressed.FIVE)
+                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 5);
+            else if (FlxG.keys.justPressed.SIX)
+                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 6);
+            else if (FlxG.keys.justPressed.SEVEN)
+                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 7);
+            else if (FlxG.keys.justPressed.EIGHT)
+                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 8);
+            else if (FlxG.keys.justPressed.NINE)
+                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 9);
+        }
 
         super.update(elapsed);
     }
