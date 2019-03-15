@@ -27,6 +27,8 @@ class Player extends Actor
 
     var groundProbe : FlxSprite;
 
+    var debug : Bool = false;
+
     public function new(X : Float, Y : Float, World : World) {
         super(X, Y, World);
 
@@ -71,7 +73,8 @@ class Player extends Actor
 
         if (onAir)
         {
-            //vspeed += Gravity;
+            if (!debug)
+                vspeed += Gravity;
             if (coyoteBuffer > 0)
             {
                 coyoteBuffer -= 1;
@@ -94,11 +97,14 @@ class Player extends Actor
             haccel = 0;
         }
 
-        if (Gamepad.up())
-            vspeed = -1;
-        else if (Gamepad.down())
-            vspeed = 1;
-        else vspeed = 0;
+        if (debug)
+        {
+            if (Gamepad.up())
+                vspeed = -1;
+            else if (Gamepad.down())
+                vspeed = 1;
+            else vspeed = 0;
+        }
 
         if ((!onAir || coyoteBuffer > 0) && Gamepad.justPressed(Gamepad.A))
         {
