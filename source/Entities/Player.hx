@@ -5,6 +5,9 @@ import flixel.FlxSprite;
 
 class Player extends Actor
 {
+    static var Left : Int = -1;
+    static var Right : Int = 1;
+
     var HorizontalSpeed : Float = 1;
     var HorizontalAirFactor : Float = 0.7;
     var VerticalSpeed : Float = 6.6;
@@ -27,12 +30,23 @@ class Player extends Actor
 
     var groundProbe : FlxSprite;
 
+    // var facing : Int;
+
     var debug : Bool = false;
 
     public function new(X : Float, Y : Float, World : World) {
         super(X, Y, World);
 
-        makeGraphic(7, 14, 0xFFFFFFFF);
+        // makeGraphic(7, 14, 0xFFFFFFFF);
+        loadGraphic('assets/images/player-sheet.png', true, 11, 18);
+        animation.add('idle', [0]);
+        animation.add('walk', [0, 1], 8);
+        animation.add('jump', [1]);
+
+        animation.play('idle');
+
+        setSize(7, 14);
+        offset.set(2, 2);
 
         hspeed = 0;
         vspeed = 0;
@@ -87,10 +101,12 @@ class Player extends Actor
         if (Gamepad.left())
         {
             haccel = -HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
+            facing = Left;
         }
         else if (Gamepad.right())
         {
             haccel = HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
+            facing = Right;
         }
         else
         {
@@ -143,6 +159,21 @@ class Player extends Actor
         {
             vspeed = MaxVspeed;
         }
+
+        // Graphics
+        if (onAir)
+        {
+            animation.play("jump");
+        }
+        else
+        {
+            if (haccel != 0)
+                animation.play("walk")
+            else
+                animation.play("idle");
+        }
+
+        flipX = (facing == Left);
 
         // Debug zone
         if (coyoteBuffer > 0)
