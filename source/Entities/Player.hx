@@ -8,12 +8,12 @@ class Player extends Actor
     static var Left : Int = -1;
     static var Right : Int = 1;
 
-    var HorizontalSpeed : Float = 1;
+    var HorizontalSpeed : Float = 0.65; // 0.5; // 1;
     var HorizontalAirFactor : Float = 0.7;
-    var VerticalSpeed : Float = 6.6;
+    var VerticalSpeed : Float = 4; // 3.3; // 6.6;
     var JumpReleaseSlowdownFactor : Float = 0.256;
-    var Gravity : Float = 0.35;
-    var MaxVspeed : Float = 25;
+    var Gravity : Float = 0.2; // 0.175; // 0.35;
+    var MaxVspeed : Float = 15; // 12.5; // 25;
 
     var HorizontalAccel : Float = 0.2;
     var Friction : Float = 0.6;
@@ -178,8 +178,8 @@ class Player extends Actor
         // Debug zone
         if (coyoteBuffer > 0)
             color = 0xFF000aFF;
-        else if (onAir)
-            color = 0xFF0aFF00;
+        // else if (onAir)
+        //     color = 0xFF0aFF00;
         else
             color = 0xFFFFFFFF;
 
