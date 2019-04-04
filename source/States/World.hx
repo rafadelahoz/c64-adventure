@@ -1,5 +1,8 @@
 package;
 
+import flixel.addons.display.FlxBackdrop;
+import MapReader.RoomData;
+import MapReader.MapData;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -17,7 +20,8 @@ class World extends FlxState
     public var solids : FlxGroup;
     public var oneways : FlxGroup;
 
-    var tilemap : FlxTilemap;
+    var tilemapBG : FlxTilemap;
+    var tilemapFG : FlxTilemap;
 
     public var player : Player;
 
@@ -30,6 +34,11 @@ class World extends FlxState
         FlxG.mouse.useSystemCursor = true;
         FlxG.scaleMode = new flixel.system.scaleModes.PixelPerfectScaleMode();
 
+        var mapReader : MapReader = new MapReader();
+        mapReader.read("whatever");
+        var mapData : MapData = mapReader.mapData;
+        var room : RoomData = mapData.rooms[0];
+
         var bg = new flixel.addons.display.FlxBackdrop("assets/images/bg.png");//,1, 1, false, false);
         // bg.cameras = [screencam];
         add(bg);
@@ -37,12 +46,15 @@ class World extends FlxState
         solids = new FlxGroup();
         add(solids);
 
-        tilemap = new FlxTilemap();
-        var arr = [];
-        for (i in 0...200*200)
-            arr.push(0);
-        tilemap.loadMapFromArray(arr, 200, 200, "assets/images/tileset.png", 7, 14);
-        add(tilemap);
+        tilemapBG = new FlxTilemap();
+        tilemapBG.loadMapFromArray(room.tiles.bg, room.columns, room.rows, "assets/images/tileset.png", 7, 14);
+        tilemapBG.color = mapReader.color(room.colors[1]);
+        add(tilemapBG);
+
+        tilemapFG = new FlxTilemap();
+        tilemapFG.loadMapFromArray(room.tiles.fg, room.columns, room.rows, "assets/images/tileset.png", 7, 14);
+        tilemapFG.color = mapReader.color(room.colors[2]);
+        add(tilemapFG);
 
         oneways = new FlxGroup();
         add(oneways);
@@ -162,7 +174,7 @@ class World extends FlxState
             }
         }
 
-        if (x >= tilemap.x && x < tilemap.x+tilemap.width && y >= tilemap.y && y < tilemap.y+tilemap.width)
+        /*if (x >= tilemap.x && x < tilemap.x+tilemap.width && y >= tilemap.y && y < tilemap.y+tilemap.width)
         {
             if (FlxG.keys.pressed.ZERO)
                 tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 0);
@@ -184,7 +196,7 @@ class World extends FlxState
                 tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 8);
             else if (FlxG.keys.pressed.NINE)
                 tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 9);
-        }
+        }*/
 
         super.update(elapsed);
     }

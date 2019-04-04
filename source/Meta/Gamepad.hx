@@ -4,13 +4,13 @@ import flixel.FlxG;
 
 class Gamepad
 {
-    public static var A : String = "A";
-    public static var B : String = "B";
-    public static var Up : String = "Up";
-    public static var Right : String = "Right";
-    public static var Left : String = "Left";
-    public static var Down : String = "Down";
-    public static var Start : String = "Start";
+    public static var A (default, never) : String = "A";
+    public static var B (default, never) : String = "B";
+    public static var Up (default, never) : String = "Up";
+    public static var Right (default, never) : String = "Right";
+    public static var Left (default, never) : String = "Left";
+    public static var Down (default, never) : String = "Down";
+    public static var Start (default, never) : String = "Start";
 
     public static function left() : Bool
     {
