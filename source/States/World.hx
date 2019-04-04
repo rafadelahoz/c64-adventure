@@ -1,8 +1,5 @@
 package;
 
-import flixel.addons.display.FlxBackdrop;
-import MapReader.RoomData;
-import MapReader.MapData;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -11,8 +8,19 @@ import flixel.FlxCamera;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
 
+import MapReader.RoomData;
+import MapReader.MapData;
+
 class World extends FlxState
 {
+    var mapReader : MapReader;
+    var mapData : MapData;
+    var roomData : RoomData;
+    var cursorX : Int;
+    var cursorY : Int;
+
+    var playerData : PlayerData;
+
     public var screencam : FlxCamera;
     public var hudcam : FlxCamera;
 
@@ -29,34 +37,50 @@ class World extends FlxState
 
     var label : flixel.text.FlxBitmapText;
 
+    public function new(PlayerData : PlayerData)
+    {
+        super();
+
+        playerData = PlayerData;
+        if (playerData == null)
+            playerData = {
+                x: 32,
+                y: 32,
+                hspeed: 0,
+                vspeed: 0,
+                screenOffsetX: 0,
+                screenOffsetY: 0
+            };
+    }
+
     override public function create() : Void
     {
         FlxG.mouse.useSystemCursor = true;
         FlxG.scaleMode = new flixel.system.scaleModes.PixelPerfectScaleMode();
 
-        var mapReader : MapReader = new MapReader();
+        mapReader = new MapReader();
         mapReader.read("whatever");
-        var mapData : MapData = mapReader.mapData;
-        var room : RoomData = mapData.rooms[0];
+        mapData = mapReader.mapData;
+        roomData = mapReader.getRoom("" + GameStatus.room);
 
         // var bg = new flixel.addons.display.FlxBackdrop("assets/images/bg.png");//,1, 1, false, false);
         // bg.cameras = [screencam];
         var bg = new FlxSprite(0, 0);
-        bg.makeGraphic(216, 156, mapReader.color(room.colors[0]));
-        bg.scrollFactor.set(0, 0);
+        bg.makeGraphic(210, 156*2, mapReader.color(roomData.colors[0]));
+        // bg.scrollFactor.set(0, 0);
         add(bg);
 
         solids = new FlxGroup();
         add(solids);
 
         tilemapBG = new FlxTilemap();
-        tilemapBG.loadMapFromArray(room.tiles.bg, room.columns, room.rows, "assets/images/tileset.png", 7, 14);
-        tilemapBG.color = mapReader.color(room.colors[1]);
+        tilemapBG.loadMapFromArray(roomData.tiles.bg, roomData.columns, roomData.rows, "assets/images/tileset.png", 7, 14);
+        tilemapBG.color = mapReader.color(roomData.colors[1]);
         add(tilemapBG);
 
         tilemapFG = new FlxTilemap();
-        tilemapFG.loadMapFromArray(room.tiles.fg, room.columns, room.rows, "assets/images/tileset.png", 7, 14);
-        tilemapFG.color = mapReader.color(room.colors[2]);
+        tilemapFG.loadMapFromArray(roomData.tiles.fg, roomData.columns, roomData.rows, "assets/images/tileset.png", 7, 14);
+        tilemapFG.color = mapReader.color(roomData.colors[2]);
         add(tilemapFG);
 
         oneways = new FlxGroup();
@@ -66,13 +90,25 @@ class World extends FlxState
         platforms.add(solids);
         platforms.add(oneways);
 
-        mapReader.buildSolids(room, this, solids, oneways);
+        mapReader.buildSolids(roomData, this, solids, oneways);
 
-        // solids.add(new Solid(0, 14*10, 1400, 14, this));
+        // Reposition player after transition
+        var b : Int = 3;
+        if (playerData.x < b)
+            playerData.x = roomData.columns*7-3;
+        else if (playerData.x > 15*7-b)
+            playerData.x = 0;
+        else if (playerData.y < b)
+            playerData.y = roomData.rows*14-3;
+        else if (playerData.y > 11*14-b)
+            playerData.y = 0;
 
-        // oneways.add(new Solid(112, 14*6, 14*5, 4, this));
+        playerData.x += playerData.screenOffsetX*15*7;
+        playerData.y += playerData.screenOffsetY*11*14;
 
-        player = new Player(0, 0, this);
+        // TODO: Increase vspeed if coming from below
+        
+        player = new Player(playerData, this);
         add(player);
 
         setupCameras();
@@ -109,10 +145,14 @@ class World extends FlxState
         // FlxG.camera.bgColor = 0xFFFF00FF;
         // FlxG.cameras.list[0].bgColor = 0xFFFF00FF;
 
-        screencam = new FlxCamera(96, 12, 216, 156);
-        // screencam.bgColor = 0xFFFFFF00;
+        screencam = new FlxCamera(96, 12, 210, 156, 1);
+        screencam.bgColor = 0xFFFFFF00;
         screencam.setScale(2, 1);
-        // screencam.setScrollBounds(0, 0, tilemap.width*2, tilemap.height*2);
+        trace(roomData.columns*7);
+        // screencam.setScrollBoundsRect(-96/2-6, -1, 210*2+(96/2)-96-3*7+6/2, 156);
+        // 366
+        screencam.setScrollBoundsRect(0-210/2/2, 0, Math.max(roomData.columns*7*2+210/2/2-54-54-54+6-2, 210), Math.max(roomData.rows*14-2, 156));
+        trace(screencam.minScrollX, screencam.maxScrollX, screencam.minScrollY, screencam.maxScrollY);
 
         hudcam = new flixel.FlxCamera(0, 0, 320, 200, 1);
         hudcam.bgColor = 0x00000000;
@@ -125,6 +165,7 @@ class World extends FlxState
     function setupHUD()
     {
         var hud : FlxSprite = new FlxSprite(0, 0, "assets/images/temp-hud.png");
+        // hud.alpha = 0.2;
         hud.scrollFactor.set(0, 0);
         // hud.alpha = 0.2;
         hud.cameras = [hudcam];
@@ -148,6 +189,8 @@ class World extends FlxState
             endSlowdown();
         }
 
+        updateCursor();
+
         var cx : Float = FlxG.mouse.screenX + 2;
         var cy : Float = FlxG.mouse.screenY - 7;
 
@@ -162,9 +205,10 @@ class World extends FlxState
         mouseTile.x = cx; Std.int(cx/14)*14;
         mouseTile.y = cy; Std.int(cy/14)*14;
 
-        label.text = "c: " + cx + ", " + cy + "\n" +
+        label.text = "p: " + player.x + ", " + player.y + "\n" +
+                     "c: " + cursorX + ", " + cursorY + "\n" +
+                     "s: " + screencam.x + ", " + screencam.y + "\n" +
                      "s: " + screencam.scroll + "\n" +
-                     "w: " + wx + ", " + wy + "\n" +
                      "m: " + mouseTile.x + ", " + mouseTile.y;
 
         if (FlxG.mouse.justPressed)
@@ -179,31 +223,47 @@ class World extends FlxState
             }
         }
 
-        /*if (x >= tilemap.x && x < tilemap.x+tilemap.width && y >= tilemap.y && y < tilemap.y+tilemap.width)
-        {
-            if (FlxG.keys.pressed.ZERO)
-                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 0);
-            else if (FlxG.keys.pressed.ONE)
-                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 1);
-            else if (FlxG.keys.pressed.TWO)
-                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 2);
-            else if (FlxG.keys.pressed.THREE)
-                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 3);
-            else if (FlxG.keys.pressed.FOUR)
-                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 4);
-            else if (FlxG.keys.pressed.FIVE)
-                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 5);
-            else if (FlxG.keys.pressed.SIX)
-                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 6);
-            else if (FlxG.keys.pressed.SEVEN)
-                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 7);
-            else if (FlxG.keys.pressed.EIGHT)
-                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 8);
-            else if (FlxG.keys.pressed.NINE)
-                tilemap.setTile(Std.int(x / 7), Std.int(y / 14), 9);
-        }*/
-
         super.update(elapsed);
+
+        var tx : Int = cursorX;
+        var ty : Int = cursorY;
+        
+        if (player.x < -3)
+            tx -= 1;
+        else if (player.x > roomData.columns*7-3)
+            tx += 1;
+        else if (player.y < -3)
+            ty -= 1;
+        else if (player.y > roomData.rows*14-3)
+            ty += 1;
+        
+        if (tx != cursorX || ty != cursorY)
+        {
+            var newRoomId : Null<Int> = mapData.grid[tx+ty*mapData.size.x];
+            trace("Moving to " + newRoomId);
+            if (newRoomId != null && newRoomId != GameStatus.room) 
+            {
+                var newRoom : RoomData = mapReader.getRoom(""+newRoomId);
+                GameStatus.room = newRoomId;
+
+                var nextPlayerData : PlayerData = {
+                    x: player.x,
+                    y: player.y,
+                    hspeed : player.hspeed,
+                    vspeed : player.vspeed,
+                    screenOffsetX: (tx-cursorX != 0 ? 0 : newRoom.gridX - roomData.gridX),
+                    screenOffsetY: (ty-cursorY != 0 ? 0 : newRoom.gridY - roomData.gridY)
+                };
+
+                FlxG.switchState(new World(nextPlayerData));
+            }
+        }
+    }
+
+    function updateCursor()
+    {
+        cursorX = roomData.gridX + Std.int((player.x / (7*15)) % (7*15));
+        cursorY = roomData.gridY + Std.int((player.y / (14*11)) % (14*11));
     }
 
     public function beginSlowdown() : Void
@@ -225,4 +285,13 @@ class World extends FlxState
             }
         }, true);
     }
+}
+
+typedef PlayerData = {
+    var x : Float;
+    var y : Float;
+    var hspeed : Float;
+    var vspeed : Float;
+    var screenOffsetX : Int;
+    var screenOffsetY : Int;
 }

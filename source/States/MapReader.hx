@@ -57,6 +57,17 @@ class MapReader
     {
         return Std.int(index / room.columns);
     }
+
+    public function getRoom(id : String) : RoomData
+    {
+        for (room in mapData.rooms)
+        {
+            if (room.id == id)
+                return room;
+        }
+
+        return null;
+    }
 }
 
 typedef MapData = {
@@ -64,7 +75,10 @@ typedef MapData = {
     var name : String;
     var rooms : Array<RoomData>;
     var grid : Array<Null<Int>>;
-    var size : Map<String, Int>;
+    var size : {
+        var x : Int;
+        var y : Int;
+    };
 }
 
 typedef RoomData = {

@@ -3,6 +3,8 @@ package;
 import flixel.FlxG;
 import flixel.FlxSprite;
 
+import World.PlayerData;
+
 class Player extends Actor
 {
     static var Left : Int = -1;
@@ -23,8 +25,8 @@ class Player extends Actor
 
     var onAir : Bool;
 
-    var hspeed : Float;
-    var vspeed : Float;
+    public var hspeed : Float;
+    public var vspeed : Float;
 
     var haccel : Float;
 
@@ -34,8 +36,8 @@ class Player extends Actor
 
     var debug : Bool = false;
 
-    public function new(X : Float, Y : Float, World : World) {
-        super(X, Y, World);
+    public function new(PlayerData : PlayerData, World : World) {
+        super(PlayerData.x, PlayerData.y, World);
 
         // makeGraphic(7, 14, 0xFFFFFFFF);
         loadGraphic('assets/images/player-sheet.png', true, 11, 18);
@@ -176,6 +178,8 @@ class Player extends Actor
         flipX = (facing == Left);
 
         // Debug zone
+        if (FlxG.keys.justPressed.G)
+            debug = !debug;
         if (coyoteBuffer > 0)
             color = 0xFF000aFF;
         // else if (onAir)
