@@ -40,7 +40,7 @@ class Player extends Actor
         // makeGraphic(7, 14, 0xFFFFFFFF);
         loadGraphic('assets/images/player-sheet.png', true, 11, 18);
         animation.add('idle', [0]);
-        animation.add('walk', [0, 1], 8);
+        animation.add('walk', [1, 0], 8);
         animation.add('jump', [1]);
 
         animation.play('idle');
