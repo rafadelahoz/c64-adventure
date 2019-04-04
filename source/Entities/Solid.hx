@@ -8,9 +8,9 @@ class Solid extends Entity
     {
         super(X, Y, World);
 
-        var c = 0xFFFF0a00;
-        if (Height < 16)
-            c = 0xFF00FF0a;
+        var c = 0x88FF0a00;
+        if (Height < 14)
+            c = 0x8800FF0a;
 
         makeGraphic(Std.int(Width), Std.int(Height), c);
     }
