@@ -1,5 +1,6 @@
 package;
 
+import flixel.group.FlxGroup;
 import lime.utils.Assets;
 import haxe.Json;
 
@@ -29,6 +30,32 @@ class MapReader
         }
 
         return color;
+    }
+
+    public function buildSolids(room : RoomData, world : World, solids : FlxGroup, oneways : FlxGroup /*, ladders*/) : Void
+    {
+        for (i in 0...room.solids.length) {
+            switch (room.solids[i]) {
+                case 1: // Solid
+                    solids.add(new Solid(getSolidX(room, i)*7, getSolidY(room, i)*14, 7, 14, world));
+                case 2: // Oneway
+                    oneways.add(new Solid(getSolidX(room, i)*7, getSolidY(room, i)*14, 7, 4, world));
+                case 3: // ladders!
+                    // TODO: ladders
+                default:
+                    // Nop
+            }
+        }
+    }
+
+    public function getSolidX(room : RoomData, index : Int) : Int
+    {
+        return (index % room.columns);
+    }
+
+    public function getSolidY(room : RoomData, index : Int) : Int
+    {
+        return Std.int(index / room.columns);
     }
 }
 

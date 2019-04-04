@@ -39,8 +39,11 @@ class World extends FlxState
         var mapData : MapData = mapReader.mapData;
         var room : RoomData = mapData.rooms[0];
 
-        var bg = new flixel.addons.display.FlxBackdrop("assets/images/bg.png");//,1, 1, false, false);
+        // var bg = new flixel.addons.display.FlxBackdrop("assets/images/bg.png");//,1, 1, false, false);
         // bg.cameras = [screencam];
+        var bg = new FlxSprite(0, 0);
+        bg.makeGraphic(216, 156, mapReader.color(room.colors[0]));
+        bg.scrollFactor.set(0, 0);
         add(bg);
 
         solids = new FlxGroup();
@@ -63,9 +66,11 @@ class World extends FlxState
         platforms.add(solids);
         platforms.add(oneways);
 
-        solids.add(new Solid(0, 14*10, 1400, 14, this));
+        mapReader.buildSolids(room, this, solids, oneways);
 
-        oneways.add(new Solid(112, 14*6, 14*5, 4, this));
+        // solids.add(new Solid(0, 14*10, 1400, 14, this));
+
+        // oneways.add(new Solid(112, 14*6, 14*5, 4, this));
 
         player = new Player(0, 0, this);
         add(player);
