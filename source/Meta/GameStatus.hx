@@ -2,5 +2,5 @@ package;
 
 class GameStatus
 {
-    public static var room : Int = 0;
+    public static var room : Int = 1;
 }

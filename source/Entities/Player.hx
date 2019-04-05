@@ -33,6 +33,8 @@ class Player extends Actor
     var groundProbe : FlxSprite;
 
     // var facing : Int;
+    var keepMovingLeft : Bool;
+    var keepMovingRight : Bool;
 
     var debug : Bool = false;
 
@@ -50,8 +52,11 @@ class Player extends Actor
         setSize(7, 14);
         offset.set(2, 2);
 
-        hspeed = 0;
-        vspeed = 0;
+        hspeed = PlayerData.hspeed;
+        vspeed = PlayerData.vspeed;
+
+        keepMovingLeft = (hspeed < 0);
+        keepMovingRight = (hspeed > 0);
 
         haccel = 0;
 
@@ -100,13 +105,15 @@ class Player extends Actor
             coyoteBuffer = 0;
         }
 
-        if (Gamepad.left())
+        if (Gamepad.left() || keepMovingLeft)
         {
+            keepMovingLeft = false;
             haccel = -HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
             facing = Left;
         }
-        else if (Gamepad.right())
+        else if (Gamepad.right() || keepMovingRight)
         {
+            keepMovingRight = false;
             haccel = HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
             facing = Right;
         }

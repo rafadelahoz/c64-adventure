@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -106,6 +107,17 @@ class World extends FlxState
         playerData.x += playerData.screenOffsetX*15*7;
         playerData.y += playerData.screenOffsetY*11*14;
 
+        if (playerData.hspeed < 0)
+            Gamepad.BufferedLeft = true;
+        if (playerData.hspeed > 0)
+            Gamepad.BufferedRight = true;
+
+        new FlxTimer().start(0.5, function(timer : FlxTimer) {
+            timer.destroy();
+            Gamepad.BufferedLeft = false;
+            Gamepad.BufferedRight = false;
+        });
+
         // TODO: Increase vspeed if coming from below
         
         player = new Player(playerData, this);
@@ -209,7 +221,13 @@ class World extends FlxState
                      "c: " + cursorX + ", " + cursorY + "\n" +
                      "s: " + screencam.x + ", " + screencam.y + "\n" +
                      "s: " + screencam.scroll + "\n" +
-                     "m: " + mouseTile.x + ", " + mouseTile.y;
+                     "m: " + mouseTile.x + ", " + mouseTile.y + "\n" +
+                     "g: " + gamepadString();
+
+        if (Gamepad.BufferedRight)
+            label.color = 0xFFFF000a;
+        else 
+            label.color = 0xFFFFFFFF;
 
         if (FlxG.mouse.justPressed)
         {
@@ -284,6 +302,17 @@ class World extends FlxState
                 cast(entity, Entity).endSlowdown();
             }
         }, true);
+    }
+
+    function gamepadString() : String
+    {
+        var str = "";
+        
+        str += (Gamepad.left() ? "<" : ".");
+        str += (Gamepad.right() ? ">" : ".");
+        str += (Gamepad.pressed(Gamepad.A) ? "A" : ".");
+
+        return str;
     }
 }
 

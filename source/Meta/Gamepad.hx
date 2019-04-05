@@ -1,5 +1,7 @@
 package;
 
+import flixel.input.keyboard.FlxKey;
+import flixel.input.FlxInput.FlxInputState;
 import flixel.FlxG;
 
 class Gamepad
@@ -11,6 +13,9 @@ class Gamepad
     public static var Left (default, never) : String = "Left";
     public static var Down (default, never) : String = "Down";
     public static var Start (default, never) : String = "Start";
+
+    public static var BufferedRight : Bool = false;
+    public static var BufferedLeft : Bool = false;
 
     public static function left() : Bool
     {
@@ -44,9 +49,11 @@ class Gamepad
             case Gamepad.Down:
                 return FlxG.keys.pressed.DOWN;
             case Gamepad.Left:
-                return FlxG.keys.pressed.LEFT;
+                // return FlxG.keys.pressed.LEFT;
+                return FlxG.keys.checkStatus(FlxKey.LEFT, FlxInputState.PRESSED);
             case Gamepad.Right:
-                return FlxG.keys.pressed.RIGHT;
+                // return FlxG.keys.pressed.RIGHT;
+                return FlxG.keys.checkStatus(FlxKey.RIGHT, FlxInputState.PRESSED);
             case Gamepad.Start:
                 return FlxG.keys.pressed.ENTER;
         }
