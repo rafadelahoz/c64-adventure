@@ -187,12 +187,12 @@ class Player extends Actor
         // Debug zone
         if (FlxG.keys.justPressed.G)
             debug = !debug;
-        if (coyoteBuffer > 0)
+        /*if (coyoteBuffer > 0)
             color = 0xFF000aFF;
         // else if (onAir)
         //     color = 0xFF0aFF00;
         else
-            color = 0xFFFFFFFF;
+            color = 0xFFFFFFFF;*/
 
         groundProbe.x = x;
         groundProbe.y = y + height;

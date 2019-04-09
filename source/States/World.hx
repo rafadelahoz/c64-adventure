@@ -120,6 +120,9 @@ class World extends FlxState
         player = new Player(playerData, this);
         add(player);
 
+        /*if (mapReader.color(roomData.colors[1]) == 0xFF000000)
+            player.color = mapReader.color(roomData.colors[1]);*/
+
         setupCameras();
         setupHUD();
 
