@@ -1,5 +1,6 @@
 package;
 
+import openfl.events.KeyboardEvent;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.FlxSprite;
@@ -107,16 +108,12 @@ class World extends FlxState
         playerData.x += playerData.screenOffsetX*15*7;
         playerData.y += playerData.screenOffsetY*11*14;
 
+        // Force an input event given previous state
         if (playerData.hspeed < 0)
-            Gamepad.BufferedLeft = true;
+            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 37));
         if (playerData.hspeed > 0)
-            Gamepad.BufferedRight = true;
+            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 39));
 
-        new FlxTimer().start(0.5, function(timer : FlxTimer) {
-            timer.destroy();
-            Gamepad.BufferedLeft = false;
-            Gamepad.BufferedRight = false;
-        });
 
         // TODO: Increase vspeed if coming from below
         
@@ -223,11 +220,6 @@ class World extends FlxState
                      "s: " + screencam.scroll + "\n" +
                      "m: " + mouseTile.x + ", " + mouseTile.y + "\n" +
                      "g: " + gamepadString();
-
-        if (Gamepad.BufferedRight)
-            label.color = 0xFFFF000a;
-        else 
-            label.color = 0xFFFFFFFF;
 
         if (FlxG.mouse.justPressed)
         {

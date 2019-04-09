@@ -14,9 +14,6 @@ class Gamepad
     public static var Down (default, never) : String = "Down";
     public static var Start (default, never) : String = "Start";
 
-    public static var BufferedRight : Bool = false;
-    public static var BufferedLeft : Bool = false;
-
     public static function left() : Bool
     {
         return pressed(Gamepad.Left);
@@ -39,9 +36,11 @@ class Gamepad
 
     public static function pressed(button : String) : Bool
     {
+        var pressed : Bool = false;
+
         switch (button) {
             case Gamepad.A:
-                return FlxG.keys.pressed.A;
+                pressed = FlxG.keys.checkStatus(FlxKey.A, FlxInputState.PRESSED);
             case Gamepad.B:
                 return FlxG.keys.pressed.S;
             case Gamepad.Up:
@@ -50,22 +49,23 @@ class Gamepad
                 return FlxG.keys.pressed.DOWN;
             case Gamepad.Left:
                 // return FlxG.keys.pressed.LEFT;
-                return FlxG.keys.checkStatus(FlxKey.LEFT, FlxInputState.PRESSED);
+                pressed = FlxG.keys.checkStatus(FlxKey.LEFT, FlxInputState.PRESSED);
             case Gamepad.Right:
                 // return FlxG.keys.pressed.RIGHT;
-                return FlxG.keys.checkStatus(FlxKey.RIGHT, FlxInputState.PRESSED);
+                pressed = FlxG.keys.checkStatus(FlxKey.RIGHT, FlxInputState.PRESSED);
             case Gamepad.Start:
                 return FlxG.keys.pressed.ENTER;
         }
 
-        return false;
+        return pressed;
     }
 
     public static function justPressed(button : String) : Bool
     {
+        var justPressed : Bool = false;
         switch (button) {
             case Gamepad.A:
-                return FlxG.keys.justPressed.A;
+                justPressed = FlxG.keys.justPressed.A;
             case Gamepad.B:
                 return FlxG.keys.justPressed.S;
             case Gamepad.Up:
@@ -73,21 +73,22 @@ class Gamepad
             case Gamepad.Down:
                 return FlxG.keys.justPressed.DOWN;
             case Gamepad.Left:
-                return FlxG.keys.justPressed.LEFT;
+                justPressed = FlxG.keys.justPressed.LEFT;
             case Gamepad.Right:
-                return FlxG.keys.justPressed.RIGHT;
+                justPressed = FlxG.keys.justPressed.RIGHT;
             case Gamepad.Start:
                 return FlxG.keys.justPressed.ENTER;
         }
 
-        return false;
+        return justPressed;
     }
 
     public static function justReleased(button : String) : Bool
     {
+        var justReleased : Bool = false;
         switch (button) {
             case Gamepad.A:
-                return FlxG.keys.justReleased.A;
+                justReleased = FlxG.keys.justReleased.A;
             case Gamepad.B:
                 return FlxG.keys.justReleased.S;
             case Gamepad.Up:
@@ -95,13 +96,13 @@ class Gamepad
             case Gamepad.Down:
                 return FlxG.keys.justReleased.DOWN;
             case Gamepad.Left:
-                return FlxG.keys.justReleased.LEFT;
+                justReleased = FlxG.keys.justReleased.LEFT;
             case Gamepad.Right:
-                return FlxG.keys.justReleased.RIGHT;
+                justReleased = FlxG.keys.justReleased.RIGHT;
             case Gamepad.Start:
                 return FlxG.keys.justReleased.ENTER;
         }
 
-        return false;
+        return justReleased;
     }
 }
