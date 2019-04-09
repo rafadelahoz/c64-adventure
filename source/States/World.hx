@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxObject;
 import openfl.events.KeyboardEvent;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
@@ -48,6 +49,7 @@ class World extends FlxState
             playerData = {
                 x: 32,
                 y: 32,
+                facing : FlxObject.RIGHT,
                 hspeed: 0,
                 vspeed: 0,
                 screenOffsetX: 0,
@@ -66,13 +68,13 @@ class World extends FlxState
         mapReader = new MapReader();
         mapReader.read("whatever");
         mapData = mapReader.mapData;
-        roomData = mapReader.getRoom("" + GameStatus.room);
+        roomData = mapReader.getRoom(GameStatus.room);
 
         // var bg = new flixel.addons.display.FlxBackdrop("assets/images/bg.png");//,1, 1, false, false);
         // bg.cameras = [screencam];
         var bg = new FlxSprite(0, 0);
-        bg.makeGraphic(210, 156*2, mapReader.color(roomData.colors[0]));
-        // bg.scrollFactor.set(0, 0);
+        bg.makeGraphic(210, 156, mapReader.color(roomData.colors[0]));
+        bg.scrollFactor.set(0, 0);
         add(bg);
 
         solids = new FlxGroup();
@@ -166,11 +168,10 @@ class World extends FlxState
         screencam = new FlxCamera(96, 12, 210, 156, 1);
         screencam.bgColor = 0xFFFFFF00;
         screencam.setScale(2, 1);
-        trace(roomData.columns*7);
         // screencam.setScrollBoundsRect(-96/2-6, -1, 210*2+(96/2)-96-3*7+6/2, 156);
         // 366
         screencam.setScrollBoundsRect(0-210/2/2, 0, Math.max(roomData.columns*7*2+210/2/2-54-54-54+6-2, 210), Math.max(roomData.rows*14-2, 156));
-        trace(screencam.minScrollX, screencam.maxScrollX, screencam.minScrollY, screencam.maxScrollY);
+        // trace(screencam.minScrollX, screencam.maxScrollX, screencam.minScrollY, screencam.maxScrollY);
 
         hudcam = new flixel.FlxCamera(0, 0, 320, 200, 1);
         hudcam.bgColor = 0x00000000;
@@ -224,11 +225,14 @@ class World extends FlxState
         mouseTile.y = cy; Std.int(cy/14)*14;
 
         label.text = "p: " + player.x + ", " + player.y + "\n" +
-                     "c: " + cursorX + ", " + cursorY + "\n" +
-                     "s: " + screencam.x + ", " + screencam.y + "\n" +
+                     // "c: " + cursorX + ", " + cursorY + "\n" +
+                     // "s: " + screencam.x + ", " + screencam.y + "\n" +
                      "s: " + screencam.scroll + "\n" +
-                     "m: " + mouseTile.x + ", " + mouseTile.y + "\n" +
-                     "g: " + gamepadString();
+                     // "m: " + mouseTile.x + ", " + mouseTile.y + "\n" +
+                     "g: " + gamepadString() + "\n" +
+                     "h: " + (""+player.hspeed).substr(0, 4) + "\n" +
+                     "   " + (""+player.haccel).substr(0, 4) + "\n" +
+                     "   " + (""+player.xRemainder).substr(0, 4);
 
         if (FlxG.mouse.justPressed)
         {
@@ -238,7 +242,6 @@ class World extends FlxState
             {
                 var s = new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this);
                 solids.add(s);
-                trace(s.x, s.y);
             }
         }
 
@@ -259,15 +262,17 @@ class World extends FlxState
         if (tx != cursorX || ty != cursorY)
         {
             var newRoomId : Null<Int> = mapData.grid[tx+ty*mapData.size.x];
-            trace("Moving to " + newRoomId);
             if (newRoomId != null && newRoomId != GameStatus.room) 
             {
-                var newRoom : RoomData = mapReader.getRoom(""+newRoomId);
+                trace("Moving to " + newRoomId);
+            
+                var newRoom : RoomData = mapReader.getRoom(newRoomId);
                 GameStatus.room = newRoomId;
 
                 var nextPlayerData : PlayerData = {
                     x: player.x,
                     y: player.y,
+                    facing : player.facing,
                     hspeed : player.hspeed,
                     vspeed : player.vspeed,
                     screenOffsetX: (tx-cursorX != 0 ? 0 : newRoom.gridX - roomData.gridX),
@@ -278,6 +283,11 @@ class World extends FlxState
                 };
 
                 FlxG.switchState(new World(nextPlayerData));
+            }
+            else
+            {
+                player.x -= (tx-cursorX) * 7;
+                player.y -= (ty-cursorY) * 14;
             }
         }
     }
@@ -323,6 +333,7 @@ class World extends FlxState
 typedef PlayerData = {
     var x : Float;
     var y : Float;
+    var facing : Int;
     var hspeed : Float;
     var vspeed : Float;
     var screenOffsetX : Int;

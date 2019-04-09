@@ -2,7 +2,7 @@ package;
 
 class Actor extends Entity
 {
-    var xRemainder : Float;
+    public var xRemainder : Float;
     var yRemainder : Float;
 
     public function new(X : Float, Y : Float, World : World)

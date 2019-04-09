@@ -28,13 +28,9 @@ class Player extends Actor
     public var hspeed : Float;
     public var vspeed : Float;
 
-    var haccel : Float;
+    public var haccel : Float;
 
     var groundProbe : FlxSprite;
-
-    // var facing : Int;
-    var keepMovingLeft : Bool;
-    var keepMovingRight : Bool;
 
     public var debug (default, null) : Bool = false;
 
@@ -57,6 +53,8 @@ class Player extends Actor
         debug = PlayerData.debug;
 
         haccel = 0;
+
+        facing = PlayerData.facing;
 
         groundProbe = new FlxSprite(0, 0);
         groundProbe.makeGraphic(Std.int(width), 1, 0xFFFFFFFF);
@@ -118,15 +116,6 @@ class Player extends Actor
             haccel = 0;
         }
 
-        if (debug)
-        {
-            if (Gamepad.up())
-                vspeed = -1;
-            else if (Gamepad.down())
-                vspeed = 1;
-            else vspeed = 0;
-        }
-
         if ((!onAir || coyoteBuffer > 0) && Gamepad.justPressed(Gamepad.A))
         {
             vspeed = -VerticalSpeed;
@@ -144,6 +133,30 @@ class Player extends Actor
             hspeed = MathUtil.sign(hspeed) * HorizontalSpeed;
         }
 
+        if (vspeed > MaxVspeed)
+        {
+            vspeed = MaxVspeed;
+        }
+
+        if (debug)
+        {
+            if (Gamepad.up())
+                vspeed = -HorizontalSpeed;
+            else if (Gamepad.down())
+                vspeed = HorizontalSpeed;
+            else vspeed = 0;
+
+            if (Gamepad.left())
+                hspeed = -HorizontalSpeed;
+            else if (Gamepad.right())
+                hspeed = HorizontalSpeed;
+            else
+                hspeed = 0;
+            
+            hspeed *= 2;
+            vspeed *= 2;
+        }
+
         var _hspeed : Float = hspeed;
         var _vspeed : Float = vspeed;
         if (slowdown) {
@@ -158,11 +171,9 @@ class Player extends Actor
         if (haccel == 0)
         {
             hspeed *= Friction;
-        }
 
-        if (vspeed > MaxVspeed)
-        {
-            vspeed = MaxVspeed;
+            if (Math.abs(hspeed) < 0.1)
+                hspeed = 0;
         }
 
         // Graphics
@@ -172,7 +183,7 @@ class Player extends Actor
         }
         else
         {
-            if (haccel != 0)
+            if (Math.abs(hspeed) > 0.6)
                 animation.play("walk")
             else
                 animation.play("idle");
@@ -190,6 +201,8 @@ class Player extends Actor
         else
             color = 0xFFFFFFFF;*/
 
+        solid = (!debug);
+
         groundProbe.x = x;
         groundProbe.y = y + height;
 
@@ -200,13 +213,14 @@ class Player extends Actor
     override public function draw()
     {
         super.draw();
-        groundProbe.draw();
+        // groundProbe.draw();
     }
 
     function onHorizontalCollision() : Void
     {
         hspeed = 0;
         haccel = 0;
+        xRemainder = 0;
     }
 
     function onVerticalCollision() : Void

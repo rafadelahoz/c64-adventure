@@ -58,7 +58,7 @@ class MapReader
         return Std.int(index / room.columns);
     }
 
-    public function getRoom(id : String) : RoomData
+    public function getRoom(id : Int) : RoomData
     {
         for (room in mapData.rooms)
         {
@@ -82,7 +82,7 @@ typedef MapData = {
 }
 
 typedef RoomData = {
-    var id : String;
+    var id : Int;
     var name : String;
     var colors : Array<String>;
     var columns : Int;
