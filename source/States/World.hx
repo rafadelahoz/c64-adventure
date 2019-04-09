@@ -51,7 +51,10 @@ class World extends FlxState
                 hspeed: 0,
                 vspeed: 0,
                 screenOffsetX: 0,
-                screenOffsetY: 0
+                screenOffsetY: 0,
+                leftPressed: false,
+                rightPressed: false,
+                debug: false
             };
     }
 
@@ -109,11 +112,11 @@ class World extends FlxState
         playerData.y += playerData.screenOffsetY*11*14;
 
         // Force an input event given previous state
-        if (playerData.hspeed < 0)
+        // TODO: Generalize this (gamepad, etc)
+        if (playerData.leftPressed)
             FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 37));
-        if (playerData.hspeed > 0)
+        if (playerData.rightPressed)
             FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 39));
-
 
         // TODO: Increase vspeed if coming from below
         
@@ -150,6 +153,9 @@ class World extends FlxState
         label.cameras = [hudcam];
         label.scrollFactor.set(0, 0);
         add(label);
+
+        var tlabel = text.PixelText.New(0, 0, "HELLO THIS IS WIDE");
+        add(tlabel);
     }
 
     function setupCameras()
@@ -265,7 +271,10 @@ class World extends FlxState
                     hspeed : player.hspeed,
                     vspeed : player.vspeed,
                     screenOffsetX: (tx-cursorX != 0 ? 0 : newRoom.gridX - roomData.gridX),
-                    screenOffsetY: (ty-cursorY != 0 ? 0 : newRoom.gridY - roomData.gridY)
+                    screenOffsetY: (ty-cursorY != 0 ? 0 : newRoom.gridY - roomData.gridY),
+                    leftPressed: Gamepad.left(),
+                    rightPressed: Gamepad.right(),
+                    debug: player.debug
                 };
 
                 FlxG.switchState(new World(nextPlayerData));
@@ -318,4 +327,7 @@ typedef PlayerData = {
     var vspeed : Float;
     var screenOffsetX : Int;
     var screenOffsetY : Int;
+    var leftPressed : Bool;
+    var rightPressed : Bool;
+    var debug : Bool;
 }

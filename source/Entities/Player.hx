@@ -36,12 +36,11 @@ class Player extends Actor
     var keepMovingLeft : Bool;
     var keepMovingRight : Bool;
 
-    var debug : Bool = false;
+    public var debug (default, null) : Bool = false;
 
     public function new(PlayerData : PlayerData, World : World) {
         super(PlayerData.x, PlayerData.y, World);
 
-        // makeGraphic(7, 14, 0xFFFFFFFF);
         loadGraphic('assets/images/player-sheet.png', true, 11, 18);
         animation.add('idle', [0]);
         animation.add('walk', [1, 0], 8);
@@ -55,8 +54,7 @@ class Player extends Actor
         hspeed = PlayerData.hspeed;
         vspeed = PlayerData.vspeed;
 
-        keepMovingLeft = (hspeed < 0);
-        keepMovingRight = (hspeed > 0);
+        debug = PlayerData.debug;
 
         haccel = 0;
 
@@ -105,15 +103,13 @@ class Player extends Actor
             coyoteBuffer = 0;
         }
 
-        if (Gamepad.left() || keepMovingLeft)
+        if (Gamepad.left())
         {
-            keepMovingLeft = false;
             haccel = -HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
             facing = Left;
         }
-        else if (Gamepad.right() || keepMovingRight)
+        else if (Gamepad.right())
         {
-            keepMovingRight = false;
             haccel = HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
             facing = Right;
         }
