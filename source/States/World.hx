@@ -40,7 +40,7 @@ class World extends FlxState
 
     var label : flixel.text.FlxBitmapText;
 
-    public function new(PlayerData : PlayerData)
+    public function new(?PlayerData : PlayerData = null)
     {
         super();
 
@@ -62,14 +62,12 @@ class World extends FlxState
 
     override public function create() : Void
     {
-        FlxG.mouse.useSystemCursor = true;
-        FlxG.scaleMode = new flixel.system.scaleModes.PixelPerfectScaleMode();
-
         mapReader = new MapReader();
         mapReader.read("whatever");
         mapData = mapReader.mapData;
         roomData = mapReader.getRoom(GameStatus.room);
 
+        // Checked bg for testing
         // var bg = new flixel.addons.display.FlxBackdrop("assets/images/bg.png");//,1, 1, false, false);
         // bg.cameras = [screencam];
         var bg = new FlxSprite(0, 0);
@@ -160,11 +158,13 @@ class World extends FlxState
         screencam.bgColor = 0xFFFFFF00;
         screencam.setScale(2, 1);
         screencam.setScrollBoundsRect(0-210/2/2, 0, Math.max(roomData.columns*7*2+210/2/2-54-54-54+6-2, 210), Math.max(roomData.rows*14-2, 156));
+        screencam.pixelPerfectRender = true;
         // trace(screencam.minScrollX, screencam.maxScrollX, screencam.minScrollY, screencam.maxScrollY);
 
         hudcam = new flixel.FlxCamera(0, 0, 320, 200, 1);
         hudcam.bgColor = 0x00000000;
         hudcam.scroll.set(-1000, -1000);
+        hudcam.pixelPerfectRender = true;
 
         FlxG.cameras.add(screencam);
         FlxG.cameras.add(hudcam);

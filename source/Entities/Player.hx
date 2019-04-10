@@ -47,6 +47,8 @@ class Player extends Actor
         setSize(5, 12);
         offset.set(3, 4);
 
+        color = GameStatus.playerColor;
+
         hspeed = PlayerData.hspeed;
         vspeed = PlayerData.vspeed;
 
