@@ -1,5 +1,6 @@
 package;
 
+import hscript.Expr.CType;
 import flixel.group.FlxGroup;
 import lime.utils.Assets;
 import haxe.Json;
@@ -31,7 +32,7 @@ class MapReader
         return color;
     }
 
-    public function buildSolids(room : RoomData, world : World, solids : FlxGroup, oneways : FlxGroup /*, ladders*/) : Void
+    public function buildSolids(room : RoomData, world : World, solids : FlxGroup, oneways : FlxGroup, ladders : FlxGroup) : Void
     {
         for (i in 0...room.solids.length) {
             switch (room.solids[i]) {
@@ -39,10 +40,39 @@ class MapReader
                     solids.add(new Solid(getSolidX(room, i)*7, getSolidY(room, i)*14, 7, 14, world));
                 case 2: // Oneway
                     oneways.add(new Solid(getSolidX(room, i)*7, getSolidY(room, i)*14, 7, 4, world));
-                case 3: // ladders!
-                    // TODO: ladders
                 default:
                     // Nop
+            }
+        }
+
+        for (col in 0...room.columns)
+        {
+            var row = 0;
+            while (row < room.rows)
+            {
+                var i : Int = col + row*room.columns;
+                if (room.solids[i] == 3)
+                {
+                    // Setup a new ladder
+                    var lx = getSolidX(room, i)*7+1;
+                    var ly = getSolidY(room, i)*14;
+                    var lw = 5;
+                    var lh = 0;
+                    // Now for the height
+                    while (row < room.rows && room.solids[col+row*room.columns] == 3)
+                    {
+                        row++;
+                        lh += 14;
+                    }
+
+                    if (lh > 0)
+                    {
+                        ladders.add(new Solid(lx, ly, lw, lh, world));
+                        oneways.add(new Solid(getSolidX(room, col+row*room.columns)*7, ly, 7, 4, world));
+                    }
+                }
+
+                row++;
             }
         }
     }

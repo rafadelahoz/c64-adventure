@@ -30,6 +30,7 @@ class World extends FlxState
     public var platforms : FlxGroup;
     public var solids : FlxGroup;
     public var oneways : FlxGroup;
+    public var ladders : FlxGroup;
 
     var tilemapBG : FlxTilemap;
     var tilemapFG : FlxTilemap;
@@ -91,11 +92,14 @@ class World extends FlxState
         oneways = new FlxGroup();
         add(oneways);
 
+        ladders = new FlxGroup();
+        add(ladders);
+
         platforms = new FlxGroup();
         platforms.add(solids);
         platforms.add(oneways);
 
-        mapReader.buildSolids(roomData, this, solids, oneways);
+        mapReader.buildSolids(roomData, this, solids, oneways, ladders);
 
         // Reposition player after transition
         var b : Int = 3;
@@ -188,53 +192,27 @@ class World extends FlxState
 
     override public function update(elapsed : Float) : Void
     {
-        if (FlxG.keys.pressed.SPACE)
-        {
-            beginSlowdown();
-        }
-        else
-        {
-            endSlowdown();
-        }
+        player.preupdate();
 
-        updateCursor();
-
-        var cx : Float = FlxG.mouse.screenX + 2;
-        var cy : Float = FlxG.mouse.screenY - 7;
-
-        var wx : Float = Std.int(cx/screencam.scaleX + screencam.scroll.x);
-        var wy : Float = Std.int(cy + screencam.scroll.y);
-
-        var x = wx;
-        var y = wy;
-
-        mouseTile.x = cx; Std.int(cx/14)*14;
-        mouseTile.y = cy; Std.int(cy/14)*14;
-
-        label.text = "p: " + player.x + ", " + player.y + "\n" +
-                     // "c: " + cursorX + ", " + cursorY + "\n" +
-                     // "s: " + screencam.x + ", " + screencam.y + "\n" +
-                     "s: " + screencam.scroll + "\n" +
-                     // "m: " + mouseTile.x + ", " + mouseTile.y + "\n" +
-                     "g: " + gamepadString() + "\n" +
-                     /*"h: " + (""+player.hspeed).substr(0, 4) + "\n" +
-                     "   " + (""+player.haccel).substr(0, 4) + "\n" +
-                     "   " + (""+player.xRemainder).substr(0, 4) + "\n" + */
-                     "";
-
-        if (FlxG.mouse.justPressed)
-        {
-            if (FlxG.keys.pressed.ALT)
-                oneways.add(new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 4, this));
-            else
-            {
-                var s = new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this);
-                solids.add(s);
-            }
-        }
-
+        // Handle overlaps
+        FlxG.overlap(player, ladders, handlePlayerOverLadder);
+        
         super.update(elapsed);
 
+        // Check if the player is OOB and we need to switch rooms
+        handleRoomSwitching();
+
+        // Handle debug routines
+        handleDebugRoutines();
+    }
+
+    function handlePlayerOverLadder(playerObject : Player, ladder : Solid)
+    {
+        player.onOverLadder(ladder);
+    }
+
+    function handleRoomSwitching()
+    {
         var tx : Int = cursorX;
         var ty : Int = cursorY;
         
@@ -280,30 +258,51 @@ class World extends FlxState
         }
     }
 
+    /* FUNNY DEBUG AREA */
+    function handleDebugRoutines()
+    {
+        updateCursor();
+
+        var cx : Float = FlxG.mouse.screenX + 2;
+        var cy : Float = FlxG.mouse.screenY - 7;
+
+        var wx : Float = Std.int(cx/screencam.scaleX + screencam.scroll.x);
+        var wy : Float = Std.int(cy + screencam.scroll.y);
+
+        var x = wx;
+        var y = wy;
+
+        mouseTile.x = cx; Std.int(cx/14)*14;
+        mouseTile.y = cy; Std.int(cy/14)*14;
+
+        if (FlxG.mouse.justPressed)
+        {
+            if (FlxG.keys.pressed.ALT)
+                oneways.add(new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 4, this));
+            else
+            {
+                var s = new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this);
+                solids.add(s);
+            }
+        }
+
+        label.text = "p: " + player.x + ", " + player.y + "\n" +
+                     "(" + player.state + ")" + "\n" +
+                    // "c: " + cursorX + ", " + cursorY + "\n" +
+                    // "s: " + screencam.x + ", " + screencam.y + "\n" +
+                    "s: " + screencam.scroll + "\n" +
+                    // "m: " + mouseTile.x + ", " + mouseTile.y + "\n" +
+                    "g: " + gamepadString() + "\n" +
+                    /*"h: " + (""+player.hspeed).substr(0, 4) + "\n" +
+                    "   " + (""+player.haccel).substr(0, 4) + "\n" +
+                    "   " + (""+player.xRemainder).substr(0, 4) + "\n" + */
+                    "";
+    }
+
     function updateCursor()
     {
         cursorX = roomData.gridX + Std.int((player.x / (7*15)) % (7*15));
         cursorY = roomData.gridY + Std.int((player.y / (14*11)) % (14*11));
-    }
-
-    public function beginSlowdown() : Void
-    {
-        forEachAlive(function(entity : FlxBasic) {
-            if (Std.is(entity, Entity))
-            {
-                cast(entity, Entity).beginSlowdown();
-            }
-        }, true);
-    }
-
-    public function endSlowdown() : Void
-    {
-        forEachAlive(function(entity : FlxBasic) {
-            if (Std.is(entity, Entity))
-            {
-                cast(entity, Entity).endSlowdown();
-            }
-        }, true);
     }
 
     function gamepadString() : String

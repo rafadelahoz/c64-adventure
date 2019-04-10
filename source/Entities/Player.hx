@@ -1,9 +1,13 @@
 package;
 
+import flixel.math.FlxMath;
+import flixel.math.FlxPoint;
 import flixel.FlxG;
 import flixel.FlxSprite;
 
 import World.PlayerData;
+
+enum State { Idle; Move; Air; Climb; }
 
 class Player extends Actor
 {
@@ -16,12 +20,15 @@ class Player extends Actor
     var JumpReleaseSlowdownFactor : Float = 0.256;
     var Gravity : Float = 0.2; // 0.175; // 0.35;
     var MaxVspeed : Float = 15; // 12.5; // 25;
+    var ClimbSpeed : Float = 0.6;
 
     var HorizontalAccel : Float = 0.2;
     var Friction : Float = 0.6;
 
     var CoyoteTime : Int = 6;
     var coyoteBuffer : Int = 0;
+
+    public var state : State;
 
     var onAir : Bool;
 
@@ -31,6 +38,8 @@ class Player extends Actor
     public var haccel : Float;
 
     var groundProbe : FlxSprite;
+
+    var ladders : Array<Solid>;
 
     public var debug (default, null) : Bool = false;
 
@@ -58,6 +67,9 @@ class Player extends Actor
 
         facing = PlayerData.facing;
 
+        // TODO: state from PlayerData
+        state = State.Idle;
+
         groundProbe = new FlxSprite(0, 0);
         groundProbe.makeGraphic(Std.int(width), 1, 0xFFFFFFFF);
         groundProbe.visible = false;
@@ -80,54 +92,101 @@ class Player extends Actor
         return !onGround;
     }
 
+    public function preupdate() : Void
+    {
+        ladders = [];
+    }
+
     override public function update(elapsed : Float) : Void
     {
         var wasOnAir : Bool = onAir;
         onAir = checkOnAir();
+        var ladder : Solid = checkLadder();
+
+        if (ladder == null && state == Climb)
+            state = Idle;
 
         if (!wasOnAir && onAir && coyoteBuffer == 0)
         {
             coyoteBuffer = CoyoteTime;
         }
 
-        if (onAir)
+        switch (state)
         {
-            if (!debug)
-                vspeed += Gravity;
-            if (coyoteBuffer > 0)
-            {
-                coyoteBuffer -= 1;
-            }
-        } else {
-            vspeed = 0;
-            coyoteBuffer = 0;
-        }
+            case State.Idle, State.Move, State.Air:
+                if (onAir)
+                {
+                    if (!debug)
+                        vspeed += Gravity;
+                    if (coyoteBuffer > 0)
+                    {
+                        coyoteBuffer -= 1;
+                    }
+                } else {
+                    vspeed = 0;
+                    coyoteBuffer = 0;
+                }
 
-        if (Gamepad.left())
-        {
-            haccel = -HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
-            facing = Left;
-        }
-        else if (Gamepad.right())
-        {
-            haccel = HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
-            facing = Right;
-        }
-        else
-        {
-            haccel = 0;
-        }
+                if (Gamepad.left())
+                {
+                    haccel = -HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
+                    facing = Left;
+                }
+                else if (Gamepad.right())
+                {
+                    haccel = HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
+                    facing = Right;
+                }
+                else
+                {
+                    haccel = 0;
+                }
 
-        if ((!onAir || coyoteBuffer > 0) && Gamepad.justPressed(Gamepad.A))
-        {
-            vspeed = -VerticalSpeed;
-            onAir = true;
-            coyoteBuffer = 0;
+                if ((!onAir || coyoteBuffer > 0) && Gamepad.justPressed(Gamepad.A))
+                {
+                    vspeed = -VerticalSpeed;
+                    onAir = true;
+                    coyoteBuffer = 0;
+                }
+                else if (onAir && vspeed < 0 && Gamepad.justReleased(Gamepad.A))
+                {
+                    vspeed *= JumpReleaseSlowdownFactor;
+                }
+
+                if (ladder != null)
+                {
+                    if (!onAir && Gamepad.up())
+                    {
+                        state = Climb;
+                    }
+                }
+            case State.Climb:
+                haccel = 0;
+                hspeed = 0;
+
+                if (Gamepad.up())
+                {
+                    vspeed = -ClimbSpeed;
+                }
+                else if (Gamepad.down())
+                {
+                    vspeed = ClimbSpeed;
+                }
+                else
+                    vspeed = 0;
+
+                if (Gamepad.left())
+                    facing = Left;
+                else if (Gamepad.right())
+                    facing = Right;
+
+                // Reposition slowly
+                if (vspeed != 0)
+                    x = Std.int(FlxMath.lerp(x, ladder.x+ladder.width/2 - width/2 , 0.25));
+            default:
+                trace("Don't know what to do with state = " + state);
         }
-        else if (onAir && vspeed < 0 && Gamepad.justReleased(Gamepad.A))
-        {
-            vspeed *= JumpReleaseSlowdownFactor;
-        }
+        
 
         hspeed += haccel;
         if (Math.abs(hspeed) > HorizontalSpeed)
@@ -161,10 +220,6 @@ class Player extends Actor
 
         var _hspeed : Float = hspeed;
         var _vspeed : Float = vspeed;
-        if (slowdown) {
-            _hspeed *= Constants.SlowdownFactor;
-            _vspeed *= Constants.SlowdownFactor;
-        }
 
         moveX(_hspeed, onHorizontalCollision);
         moveY(_vspeed, onVerticalCollision);
@@ -179,29 +234,34 @@ class Player extends Actor
         }
 
         // Graphics
-        if (onAir)
+        switch (state)
         {
-            animation.play("jump");
-        }
-        else
-        {
-            if (Math.abs(hspeed) > 0.6)
-                animation.play("walk")
-            else
-                animation.play("idle");
-        }
+            case Idle, Move, Air:
+                if (onAir)
+                {
+                    animation.play("jump");
+                }
+                else
+                {
+                    if (Math.abs(hspeed) > 0.6)
+                        animation.play("walk")
+                    else
+                        animation.play("idle");
+                }
 
-        flipX = (facing == Left);
-
+                flipX = (facing == Left);
+            case Climb:
+                if (vspeed != 0)
+                    animation.play("walk");
+                else
+                    animation.play("idle");
+                
+                flipX = (facing == Left);
+        }
+        
         // Debug zone
         if (FlxG.keys.justPressed.G)
             debug = !debug;
-        /*if (coyoteBuffer > 0)
-            color = 0xFF000aFF;
-        // else if (onAir)
-        //     color = 0xFF0aFF00;
-        else
-            color = 0xFFFFFFFF;*/
 
         solid = (!debug);
 
@@ -216,6 +276,33 @@ class Player extends Actor
     {
         super.draw();
         // groundProbe.draw();
+    }
+
+    public function onOverLadder(ladder : Solid) : Void
+    {
+        if (ladder != null)
+            ladders.push(ladder);
+    }
+
+    function checkLadder() : Solid
+    {
+        var ladder : Solid = null;
+        
+        if (ladders.length > 0)
+        {
+            var midpoint : FlxPoint = getMidpoint();
+            var distance : Float = Math.POSITIVE_INFINITY;
+            for (l in ladders)
+            {
+                if (l.getMidpoint().distanceTo(midpoint) < distance)
+                {
+                    ladder = l;
+                    distance = l.getMidpoint().distanceTo(midpoint);
+                } 
+            }
+        }
+        
+        return ladder;
     }
 
     function onHorizontalCollision() : Void
