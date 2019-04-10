@@ -1,5 +1,7 @@
 package;
 
+import flixel.math.FlxPoint;
+import flixel.graphics.frames.FlxTileFrames;
 import flixel.FlxObject;
 import openfl.events.KeyboardEvent;
 import flixel.util.FlxTimer;
@@ -71,7 +73,7 @@ class World extends FlxState
         // var bg = new flixel.addons.display.FlxBackdrop("assets/images/bg.png");//,1, 1, false, false);
         // bg.cameras = [screencam];
         var bg = new FlxSprite(0, 0);
-        bg.makeGraphic(210, 156, mapReader.color(roomData.colors[0]));
+        bg.makeGraphic(210, 156, 0xFFFF00FF);//mapReader.color(roomData.colors[0]));
         bg.scrollFactor.set(0, 0);
         add(bg);
 
@@ -80,13 +82,18 @@ class World extends FlxState
 
         tilemapBG = new FlxTilemap();
         tilemapBG.loadMapFromArray(roomData.tiles.bg, roomData.columns, roomData.rows, "assets/images/tileset.png", 7, 14);
-        tilemapBG.color = mapReader.color(roomData.colors[1]);
+        // tilemapBG.color = mapReader.color(roomData.colors[1]);
         add(tilemapBG);
 
+        var tileFrames : FlxTileFrames = FlxTileFrames.fromBitmapAddSpacesAndBorders("assets/images/tileset.png", FlxPoint.get(7, 14), FlxPoint.get(2, 2), FlxPoint.get(0, 0));
+
         tilemapFG = new FlxTilemap();
-        tilemapFG.loadMapFromArray(roomData.tiles.fg, roomData.columns, roomData.rows, "assets/images/tileset.png", 7, 14);
-        tilemapFG.color = mapReader.color(roomData.colors[2]);
+        tilemapFG.loadMapFromArray(roomData.tiles.fg, roomData.columns, roomData.rows,  tileFrames, 7, 14);
+        // tilemapFG.color = mapReader.color(roomData.colors[2]);
         add(tilemapFG);
+
+        
+        FlxG.bitmapLog.add(tilemapFG.graphic.bitmap);
 
         oneways = new FlxGroup();
         add(oneways);
@@ -177,7 +184,7 @@ class World extends FlxState
         hud.scrollFactor.set(0, 0);
         // hud.alpha = 0.2;
         hud.cameras = [hudcam];
-        add(hud);
+        // add(hud);
 
         text.PixelText.Init();
         var text : flixel.text.FlxBitmapText = text.PixelText.New(12, 36, "Bananas\nWhatever\nDandelion\nBig lion\nRock monster\nSkeleton\nSkele throw");
