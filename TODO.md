@@ -11,6 +11,7 @@
     - Switches map (boolean variables)
     - Variables map (multitype variables, string, numeric)
 - Why is the fg tilemap offset by 1px (only visually!)
+    this is fucked, caused by flixel, openfl, rendering...
 - Proper management of maps and their screens
     - Start point, exits...
 - List of available maps for quick access (will be replaced by world map)
