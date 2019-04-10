@@ -142,12 +142,9 @@ class World extends FlxState
 
         // DEBUG
         mouseTile = new FlxSprite(0, 0);
-        // mouseTile.offset.set(7, 0);
         mouseTile.setSize(14, 14);
         mouseTile.makeGraphic(14, 14, 0x00000000);
-        // flixel.util.FlxSpriteUtil.drawRect(mouseTile, 1, 1, 12, 12, 0x00FFFFFF, {thickness: 1, color: 0xFFFFFFFF});
         flixel.util.FlxSpriteUtil.drawCircle(mouseTile, 7, 7, 2, 0xFFFFFFFF);
-        // add(mouseTile);
         mouseTile.scrollFactor.set(0, 0);
         mouseTile.cameras = [hudcam];
 
@@ -155,21 +152,13 @@ class World extends FlxState
         label.cameras = [hudcam];
         label.scrollFactor.set(0, 0);
         add(label);
-
-        var tlabel = text.PixelText.New(0, 0, "HELLO THIS IS WIDE");
-        add(tlabel);
     }
 
     function setupCameras()
     {
-        // FlxG.camera.bgColor = 0xFFFF00FF;
-        // FlxG.cameras.list[0].bgColor = 0xFFFF00FF;
-
         screencam = new FlxCamera(96, 12, 210, 156, 1);
         screencam.bgColor = 0xFFFFFF00;
         screencam.setScale(2, 1);
-        // screencam.setScrollBoundsRect(-96/2-6, -1, 210*2+(96/2)-96-3*7+6/2, 156);
-        // 366
         screencam.setScrollBoundsRect(0-210/2/2, 0, Math.max(roomData.columns*7*2+210/2/2-54-54-54+6-2, 210), Math.max(roomData.rows*14-2, 156));
         // trace(screencam.minScrollX, screencam.maxScrollX, screencam.minScrollY, screencam.maxScrollY);
 
@@ -216,8 +205,6 @@ class World extends FlxState
         var wx : Float = Std.int(cx/screencam.scaleX + screencam.scroll.x);
         var wy : Float = Std.int(cy + screencam.scroll.y);
 
-        /*var x : Float = screencam.x + Std.int((mx - screencam.scroll.x) / 7)*7;
-        var y : Float = screencam.y + Std.int((my - screencam.scroll.y) / 14)*14;*/
         var x = wx;
         var y = wy;
 
@@ -230,9 +217,10 @@ class World extends FlxState
                      "s: " + screencam.scroll + "\n" +
                      // "m: " + mouseTile.x + ", " + mouseTile.y + "\n" +
                      "g: " + gamepadString() + "\n" +
-                     "h: " + (""+player.hspeed).substr(0, 4) + "\n" +
+                     /*"h: " + (""+player.hspeed).substr(0, 4) + "\n" +
                      "   " + (""+player.haccel).substr(0, 4) + "\n" +
-                     "   " + (""+player.xRemainder).substr(0, 4);
+                     "   " + (""+player.xRemainder).substr(0, 4) + "\n" + */
+                     "";
 
         if (FlxG.mouse.justPressed)
         {

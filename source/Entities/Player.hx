@@ -44,8 +44,8 @@ class Player extends Actor
 
         animation.play('idle');
 
-        setSize(7, 14);
-        offset.set(2, 2);
+        setSize(5, 12);
+        offset.set(3, 4);
 
         hspeed = PlayerData.hspeed;
         vspeed = PlayerData.vspeed;

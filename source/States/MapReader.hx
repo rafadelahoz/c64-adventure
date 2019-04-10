@@ -26,7 +26,6 @@ class MapReader
         if (value.charAt(0) == "#")
         {
             color = Std.parseInt("0xFF" + value.substr(1));
-            trace("New color is " + color + " from " + "0xFF" + value.substr(1) +  " from " + value);
         }
 
         return color;
