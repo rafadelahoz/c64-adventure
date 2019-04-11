@@ -9,7 +9,7 @@ class GameStatus
     public static function Init()
     {
         playerColor = 0xFFbfce72;
-        map = "map.json";
-        room = 0;
+        map = "map";
+        room = 5;
     }
 }

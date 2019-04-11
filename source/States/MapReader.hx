@@ -16,7 +16,7 @@ class MapReader
 
     public function read(filename : String) 
     {
-        var jsonContents : String = Assets.getText("assets/maps/map.json");
+        var jsonContents : String = Assets.getText("assets/maps/" + filename);
         mapData = Json.parse(jsonContents);
     }
 

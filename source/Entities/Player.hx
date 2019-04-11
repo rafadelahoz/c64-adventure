@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxBasic;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.FlxG;
@@ -159,7 +160,25 @@ class Player extends Actor
                     {
                         state = Climb;
                     }
+                } 
+                else if (ladder == null && !onAir && Gamepad.down()) 
+                {
+                    // Check for ladder below us
+                    if (overlapsAt(x, y+height, world.ladders) && !overlaps(world.ladders))
+                    {
+                        // TODO: This is probably empty at this point, making this redundant
+                        ladders = [];
+                        // Recompute ladders considering ALL ladders
+                        world.ladders.forEachAlive(function(aLadder : FlxBasic) {
+                            ladders.push(cast(aLadder, Solid));
+                        });
+                        
+                        ladder = checkLadder();
+                        state = Climb;
+                        y++;
+                    }
                 }
+
             case State.Climb:
                 haccel = 0;
                 hspeed = 0;
@@ -180,9 +199,18 @@ class Player extends Actor
                 else if (Gamepad.right())
                     facing = Right;
 
+                if (Gamepad.left() || Gamepad.right())
+                {
+                    if (!onAir)
+                    {
+                        vspeed = 0;
+                        state = State.Idle;
+                    }
+                }
+
                 // Reposition slowly
                 if (vspeed != 0)
-                    x = Std.int(FlxMath.lerp(x, ladder.x+ladder.width/2 - width/2 , 0.25));
+                    x = FlxMath.lerp(x, ladder.x+ladder.width/2 - width/2 , 0.25);
             default:
                 trace("Don't know what to do with state = " + state);
         }

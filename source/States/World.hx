@@ -1,12 +1,11 @@
 package;
 
+import flixel.text.FlxBitmapText;
 import flixel.FlxObject;
 import openfl.events.KeyboardEvent;
-import flixel.util.FlxTimer;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
-import flixel.FlxBasic;
 import flixel.FlxCamera;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
@@ -26,6 +25,8 @@ class World extends FlxState
 
     public var screencam : FlxCamera;
     public var hudcam : FlxCamera;
+
+    public var hudGroup : FlxGroup;
 
     public var platforms : FlxGroup;
     public var solids : FlxGroup;
@@ -64,7 +65,7 @@ class World extends FlxState
     override public function create() : Void
     {
         mapReader = new MapReader();
-        mapReader.read("whatever");
+        mapReader.read(GameStatus.map + ".json");
         mapData = mapReader.mapData;
         roomData = mapReader.getRoom(GameStatus.room);
 
@@ -147,13 +148,10 @@ class World extends FlxState
         mouseTile.setSize(14, 14);
         mouseTile.makeGraphic(14, 14, 0x00000000);
         flixel.util.FlxSpriteUtil.drawCircle(mouseTile, 7, 7, 2, 0xFFFFFFFF);
-        mouseTile.scrollFactor.set(0, 0);
-        mouseTile.cameras = [hudcam];
+        addHudElement(mouseTile);
 
         label = text.PixelText.New(0, 0, "HELLO");
-        label.cameras = [hudcam];
-        label.scrollFactor.set(0, 0);
-        add(label);
+        addHudElement(label);
     }
 
     function setupCameras()
@@ -176,18 +174,29 @@ class World extends FlxState
 
     function setupHUD()
     {
+        hudGroup = new FlxGroup();
+        add(hudGroup);
+        hudGroup.cameras = [hudcam];
+
         var hud : FlxSprite = new FlxSprite(0, 0, "assets/images/temp-hud.png");
         // hud.alpha = 0.2;
-        hud.scrollFactor.set(0, 0);
-        // hud.alpha = 0.2;
-        hud.cameras = [hudcam];
-        add(hud);
+        addHudElement(hud);
 
-        text.PixelText.Init();
-        var text : flixel.text.FlxBitmapText = text.PixelText.New(12, 36, "Bananas\nWhatever\nDandelion\nBig lion\nRock monster\nSkeleton\nSkele throw");
-        text.scrollFactor.set(0, 0);
-        text.cameras = [hudcam];
-        add(text);
+        
+        var label : flixel.text.FlxBitmapText = text.PixelText.New(12, 36, "Bananas\nWhatever\nDandelion\nBig lion\nRock monster\nSkeleton\nSkele throw");
+        addHudElement(label);
+
+        var roomNameLabel : FlxBitmapText = text.PixelText.New(0, 0, roomData.name);
+        roomNameLabel.x = 194 - roomNameLabel.width/2;
+        roomNameLabel.y = 174;
+        addHudElement(roomNameLabel);
+    }
+
+    function addHudElement(element : FlxObject)
+    {
+        element.scrollFactor.set(0, 0);
+        element.cameras = [hudcam];
+        hudGroup.add(element);
     }
 
     override public function update(elapsed : Float) : Void

@@ -29,7 +29,7 @@ class Actor extends Entity
             var delta : Int = MathUtil.sign(move);
             while (move != 0)
             {
-                if (!overlapsAt(x + delta, y, world.solids))
+                if (!solid || !overlapsAt(x + delta, y, world.solids))
                 {
                     x += delta;
                     move -= delta;
@@ -58,9 +58,9 @@ class Actor extends Entity
 
             while (move != 0)
             {
-                if (overlapsAt(x, y + delta, world.solids) ||
+                if (solid && (overlapsAt(x, y + delta, world.solids) ||
                     (delta > 0 && !overlapsAt(x, y, world.oneways) &&
-                    overlapsAt(x, y + delta, world.oneways)))
+                    overlapsAt(x, y + delta, world.oneways))))
                 {
                     if (callback != null) {
                         callback();
