@@ -6,6 +6,8 @@
 - Kill player
 - Player hp?
 
+- Navigating between rooms fails sometimes
+
 - Gamestatus with
     - Switches map (boolean variables)
     - Variables map (multitype variables, string, numeric)
@@ -22,14 +24,14 @@
 
 ## Current
 
-- Ladders
-    - Don't work in bottom screens?
-        - Maybe a map thing
-    - Player can get stuck when they are surrounded by solids and he starts going down
-
 ## Done
 
 - Player color
+- Ladders
+    - [DONE] Don't work in bottom screens?
+        - It was a map thing, just had to update world bounds
+    - [DONE] Player can get stuck when they are surrounded by solids and he starts going down
+        - When started to go down, player is not over layer and the current status is lost
 
 ## Descoped
 

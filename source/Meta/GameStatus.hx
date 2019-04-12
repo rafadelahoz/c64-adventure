@@ -10,6 +10,6 @@ class GameStatus
     {
         playerColor = 0xFFbfce72;
         map = "map";
-        room = 5;
+        room = 6;
     }
 }

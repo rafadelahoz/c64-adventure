@@ -5,6 +5,7 @@ import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
 import flixel.FlxG;
 import flixel.FlxSprite;
+import flixel.FlxObject;
 
 import World.PlayerData;
 
@@ -40,7 +41,7 @@ class Player extends Actor
 
     var groundProbe : FlxSprite;
 
-    var ladders : Array<Solid>;
+    var ladder : Solid;
 
     public var debug (default, null) : Bool = false;
 
@@ -68,18 +69,27 @@ class Player extends Actor
 
         facing = PlayerData.facing;
 
-        // TODO: state from PlayerData
-        state = State.Idle;
+        state = PlayerData.state;
+        if (state == State.Climb)
+        {
+            // Initialize!
+            var ladders : Array<Solid> = [];
+            FlxG.overlap(this, world.ladders, function(self : Player, aLadder : Solid) {
+                aLadder.color = 0xFF00FF0a;
+                ladders.push(aLadder);
+            });
+
+            ladder = findClosestLadder(ladders);
+        }
+        else
+        {
+            ladder = null;
+        }
 
         groundProbe = new FlxSprite(0, 0);
         groundProbe.makeGraphic(Std.int(width), 1, 0xFFFFFFFF);
         groundProbe.visible = false;
-        groundProbe.solid = false;
-
-        FlxG.watch.add(this, "hspeed");
-        FlxG.watch.add(this, "vspeed");
-        FlxG.watch.add(this, "xRemainder");
-        FlxG.watch.add(this, "yRemainder");
+        world.add(groundProbe);
     }
 
     private function checkOnAir() : Bool
@@ -95,26 +105,24 @@ class Player extends Actor
 
     public function preupdate() : Void
     {
-        ladders = [];
+        world.ladders.forEach(function(ladder : FlxBasic) {
+            cast(ladder, Solid).color = 0x88ffA00a;
+        });
     }
 
     override public function update(elapsed : Float) : Void
     {
         var wasOnAir : Bool = onAir;
         onAir = checkOnAir();
-        var ladder : Solid = checkLadder();
-
-        if (ladder == null && state == Climb)
-            state = Idle;
-
-        if (!wasOnAir && onAir && coyoteBuffer == 0)
-        {
-            coyoteBuffer = CoyoteTime;
-        }
 
         switch (state)
         {
             case State.Idle, State.Move, State.Air:
+                if (!wasOnAir && onAir && coyoteBuffer == 0)
+                {
+                    coyoteBuffer = CoyoteTime;
+                }
+
                 if (onAir)
                 {
                     if (!debug)
@@ -128,89 +136,118 @@ class Player extends Actor
                     coyoteBuffer = 0;
                 }
 
-                if (Gamepad.left())
+                // Ladder management
+                if (!onAir && (Gamepad.up() || Gamepad.down()))
                 {
-                    haccel = -HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
-                    facing = Left;
-                }
-                else if (Gamepad.right())
-                {
-                    haccel = HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
-                    facing = Right;
-                }
-                else
-                {
-                    haccel = 0;
-                }
+                    ladder = null;
 
-                if ((!onAir || coyoteBuffer > 0) && Gamepad.justPressed(Gamepad.A))
-                {
-                    vspeed = -VerticalSpeed;
-                    onAir = true;
-                    coyoteBuffer = 0;
-                }
-                else if (onAir && vspeed < 0 && Gamepad.justReleased(Gamepad.A))
-                {
-                    vspeed *= JumpReleaseSlowdownFactor;
-                }
+                    var ladders : Array<Solid> = [];
+                    FlxG.overlap(this, world.ladders, function(self : Player, aLadder : Solid) {
+                        aLadder.color = 0xFF00FF0a;
+                        ladders.push(aLadder);
+                    });
+                    
+                    var lowLadders : Array<Solid> = [];
+                    FlxG.overlap(groundProbe, world.ladders, function(probe : FlxObject, aLadder : Solid) {
+                        aLadder.color = 0xFF000aFF;
+                        lowLadders.push(aLadder);
+                    });
 
-                if (ladder != null)
-                {
-                    if (!onAir && Gamepad.up())
+                    if (Gamepad.up())
                     {
+                        ladder = findClosestLadder(ladders);
+                    }
+                    else if (Gamepad.down())
+                    {
+                        ladder = findClosestLadder(lowLadders);
+                    }
+                    
+                    if (ladder != null)
+                    {
+                        xRemainder = 0;
+                        hspeed = 0;
+                        haccel = 0;
+                        vspeed = 0;
+
+                        if (Gamepad.down())
+                        {
+                            y++;
+                            x = FlxMath.lerp(x, ladder.x+ladder.width/2 - width/2 , 0.35);
+                        }
+
                         state = Climb;
                     }
-                } 
-                else if (ladder == null && !onAir && Gamepad.down()) 
+                }
+                
+                if (state != Climb)
                 {
-                    // Check for ladder below us
-                    if (overlapsAt(x, y+height, world.ladders) && !overlaps(world.ladders))
+                    if (Gamepad.left())
                     {
-                        // TODO: This is probably empty at this point, making this redundant
-                        ladders = [];
-                        // Recompute ladders considering ALL ladders
-                        world.ladders.forEachAlive(function(aLadder : FlxBasic) {
-                            ladders.push(cast(aLadder, Solid));
-                        });
-                        
-                        ladder = checkLadder();
-                        state = Climb;
-                        y++;
+                        haccel = -HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
+                        facing = Left;
+                    }
+                    else if (Gamepad.right())
+                    {
+                        haccel = HorizontalAccel * (onAir ? HorizontalAirFactor : 1);
+                        facing = Right;
+                    }
+                    else
+                    {
+                        haccel = 0;
+                    }
+
+                    if ((!onAir || coyoteBuffer > 0) && Gamepad.justPressed(Gamepad.A))
+                    {
+                        vspeed = -VerticalSpeed;
+                        onAir = true;
+                        coyoteBuffer = 0;
+                    }
+                    else if (onAir && vspeed < 0 && Gamepad.justReleased(Gamepad.A))
+                    {
+                        vspeed *= JumpReleaseSlowdownFactor;
                     }
                 }
 
             case State.Climb:
                 haccel = 0;
                 hspeed = 0;
-
-                if (Gamepad.up())
+                
+                if (ladder == null || !overlaps(ladder))
                 {
-                    vspeed = -ClimbSpeed;
-                }
-                else if (Gamepad.down())
-                {
-                    vspeed = ClimbSpeed;
+                    ladder = null;
+                    vspeed = 0;
+                    state = State.Idle;
                 }
                 else
-                    vspeed = 0;
-
-                if (Gamepad.left())
-                    facing = Left;
-                else if (Gamepad.right())
-                    facing = Right;
-
-                if (Gamepad.left() || Gamepad.right())
                 {
-                    if (!onAir)
+                    ladder.color = 0xFFFFFFFF;
+
+                    if (Gamepad.up())
+                    {
+                        vspeed = -ClimbSpeed;
+                    }
+                    else if (Gamepad.down() && onAir)
+                    {
+                        vspeed = ClimbSpeed;
+                    }
+                    else
+                        vspeed = 0;
+
+                    if (Gamepad.left())
+                        facing = Left;
+                    else if (Gamepad.right())
+                        facing = Right;
+
+                    if (!onAir && vspeed == 0 && (Gamepad.left() || Gamepad.right()))
                     {
                         vspeed = 0;
                         state = State.Idle;
                     }
-                }
 
-                // Reposition slowly
-                if (vspeed != 0)
-                    x = FlxMath.lerp(x, ladder.x+ladder.width/2 - width/2 , 0.25);
+                    // Reposition slowly
+                    if (vspeed != 0)
+                        x = FlxMath.lerp(x, ladder.x+ladder.width/2 - width/2 , 0.35);
+                }
             default:
                 trace("Don't know what to do with state = " + state);
         }
@@ -297,7 +334,11 @@ class Player extends Actor
         groundProbe.y = y + height;
 
         super.update(elapsed);
-        groundProbe.update(elapsed);
+
+        groundProbe.x = x;
+        groundProbe.y = y + height;
+
+        // groundProbe.update(elapsed);
     }
 
     override public function draw()
@@ -306,29 +347,32 @@ class Player extends Actor
         // groundProbe.draw();
     }
 
-    public function onOverLadder(ladder : Solid) : Void
-    {
-        if (ladder != null)
-            ladders.push(ladder);
-    }
-
-    function checkLadder() : Solid
+    function findClosestLadder(ladders : Array<Solid>) : Solid
     {
         var ladder : Solid = null;
         
+        // This is returning the closest stair middle to middle, which may not be the correct one
         if (ladders.length > 0)
         {
+            // Check X coordinates only
             var midpoint : FlxPoint = getMidpoint();
+
             var distance : Float = Math.POSITIVE_INFINITY;
             for (l in ladders)
             {
-                if (l.getMidpoint().distanceTo(midpoint) < distance)
+                l.color = 0xFF000aFF;
+                var point : FlxPoint = l.getMidpoint();
+                
+                if (Math.abs(midpoint.x - point.x) < distance)
                 {
                     ladder = l;
-                    distance = l.getMidpoint().distanceTo(midpoint);
+                    distance = Math.abs(midpoint.x - point.x);
                 } 
             }
         }
+
+        if (ladder != null)
+            ladder.color = 0xFFFFFFFF;
         
         return ladder;
     }

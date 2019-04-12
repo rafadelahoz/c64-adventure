@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxBasic;
 import flixel.text.FlxBitmapText;
 import flixel.FlxObject;
 import openfl.events.KeyboardEvent;
@@ -32,6 +33,7 @@ class World extends FlxState
     public var solids : FlxGroup;
     public var oneways : FlxGroup;
     public var ladders : FlxGroup;
+    var triggers : FlxGroup;
 
     var tilemapBG : FlxTilemap;
     var tilemapFG : FlxTilemap;
@@ -51,6 +53,7 @@ class World extends FlxState
             playerData = {
                 x: 32,
                 y: 32,
+                state : Player.State.Idle,
                 facing : FlxObject.RIGHT,
                 hspeed: 0,
                 vspeed: 0,
@@ -95,6 +98,9 @@ class World extends FlxState
 
         ladders = new FlxGroup();
         add(ladders);
+
+        triggers = new FlxGroup();
+        add(triggers);
 
         platforms = new FlxGroup();
         platforms.add(solids);
@@ -159,7 +165,7 @@ class World extends FlxState
         screencam = new FlxCamera(96, 12, 210, 156, 1);
         screencam.bgColor = 0xFFFFFF00;
         screencam.setScale(2, 1);
-        screencam.setScrollBoundsRect(0-210/2/2, 0, Math.max(roomData.columns*7*2+210/2/2-54-54-54+6-2, 210), Math.max(roomData.rows*14-2, 156));
+        screencam.setScrollBoundsRect(0-210/2/2, 0, Math.max(roomData.columns*7*2+210/2/2-54-54-54+6-2, 210), Math.max(roomData.rows*14-2, 156), true);
         screencam.pixelPerfectRender = true;
         // trace(screencam.minScrollX, screencam.maxScrollX, screencam.minScrollY, screencam.maxScrollY);
 
@@ -204,7 +210,13 @@ class World extends FlxState
         player.preupdate();
 
         // Handle overlaps
-        FlxG.overlap(player, ladders, handlePlayerOverLadder);
+
+        triggers.forEachExists(function(t:FlxBasic) {
+            cast(t, Solid).color = 0xFFFFFFFF;
+        });
+        FlxG.overlap(player, triggers, function(p : Player, trigger : Solid) {
+            trigger.color = 0xFF00FF00;
+        });
         
         super.update(elapsed);
 
@@ -213,11 +225,6 @@ class World extends FlxState
 
         // Handle debug routines
         handleDebugRoutines();
-    }
-
-    function handlePlayerOverLadder(playerObject : Player, ladder : Solid)
-    {
-        player.onOverLadder(ladder);
     }
 
     function handleRoomSwitching()
@@ -248,6 +255,7 @@ class World extends FlxState
                     x: player.x,
                     y: player.y,
                     facing : player.facing,
+                    state : player.state,
                     hspeed : player.hspeed,
                     vspeed : player.vspeed,
                     screenOffsetX: (tx-cursorX != 0 ? 0 : newRoom.gridX - roomData.gridX),
@@ -288,6 +296,8 @@ class World extends FlxState
         {
             if (FlxG.keys.pressed.ALT)
                 oneways.add(new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 4, this));
+            else if (FlxG.keys.pressed.SHIFT)
+                triggers.add(new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this));
             else
             {
                 var s = new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this);
@@ -330,6 +340,7 @@ typedef PlayerData = {
     var x : Float;
     var y : Float;
     var facing : Int;
+    var state : Player.State;
     var hspeed : Float;
     var vspeed : Float;
     var screenOffsetX : Int;

@@ -54,9 +54,9 @@ class MapReader
                 if (room.solids[i] == 3)
                 {
                     // Setup a new ladder
-                    var lx = getSolidX(room, i)*7+1;
+                    var lx = getSolidX(room, i)*7+2;
                     var ly = getSolidY(room, i)*14;
-                    var lw = 5;
+                    var lw = 3;
                     var lh = 0;
                     // Now for the height
                     while (row < room.rows && room.solids[col+row*room.columns] == 3)
@@ -67,8 +67,20 @@ class MapReader
 
                     if (lh > 0)
                     {
+                        // Add extra ladder for ladders leaving the screen from top and bottom
+                        if (ly == 0)
+                        {
+                            ly -= 14;
+                            lh += 14;
+                        }
+                        
+                        if (ly + lh >= room.rows*14)
+                            lh += 14;
+                        
                         ladders.add(new Solid(lx, ly, lw, lh, world));
-                        oneways.add(new Solid(getSolidX(room, col+row*room.columns)*7, ly, 7, 4, world));
+                        // Generate a oneway platform on top of the ladder
+                        if (ly > 0) // unless it's at the top of the screen
+                            oneways.add(new Solid(getSolidX(room, col+row*room.columns)*7, ly, 7, 4, world));
                     }
                 }
 
