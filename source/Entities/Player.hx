@@ -22,7 +22,7 @@ class Player extends Actor
     var JumpReleaseSlowdownFactor : Float = 0.256;
     var Gravity : Float = 0.2; // 0.175; // 0.35;
     var MaxVspeed : Float = 15; // 12.5; // 25;
-    var ClimbSpeed : Float = 0.6;
+    var ClimbSpeed : Float = 1;
 
     var HorizontalAccel : Float = 0.2;
     var Friction : Float = 0.6;
@@ -226,9 +226,11 @@ class Player extends Actor
                     {
                         vspeed = -ClimbSpeed;
                     }
-                    else if (Gamepad.down() && onAir)
+                    else if (Gamepad.down())
                     {
-                        vspeed = ClimbSpeed;
+                        // Allow climbing down when there's no ground below or there's still ladder
+                        if (onAir || groundProbe.overlaps(ladder))
+                            vspeed = ClimbSpeed;
                     }
                     else
                         vspeed = 0;

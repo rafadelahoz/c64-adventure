@@ -22,7 +22,7 @@ class World extends FlxState
     var cursorX : Int;
     var cursorY : Int;
 
-    var playerData : PlayerData;
+    var transitionData : TransitionData;
 
     public var screencam : FlxCamera;
     public var hudcam : FlxCamera;
@@ -44,25 +44,31 @@ class World extends FlxState
 
     var label : flixel.text.FlxBitmapText;
 
-    public function new(?PlayerData : PlayerData = null)
+    public function new(?TransitionData : TransitionData = null)
     {
         super();
 
-        playerData = PlayerData;
-        if (playerData == null)
-            playerData = {
-                x: 32,
-                y: 32,
-                state : Player.State.Idle,
-                facing : FlxObject.RIGHT,
-                hspeed: 0,
-                vspeed: 0,
+        transitionData = TransitionData;
+        if (transitionData == null)
+        {
+            transitionData = {
+                dx: 0,
+                dy: 0,
                 screenOffsetX: 0,
                 screenOffsetY: 0,
-                leftPressed: false,
-                rightPressed: false,
-                debug: false
+                playerData: {
+                    x: 32,
+                    y: 32,
+                    state : Player.State.Idle,
+                    facing : FlxObject.RIGHT,
+                    hspeed: 0,
+                    vspeed: 0,
+                    leftPressed: false,
+                    rightPressed: false,
+                    debug: false
+                }
             };
+        }
     }
 
     override public function create() : Void
@@ -109,18 +115,20 @@ class World extends FlxState
         mapReader.buildSolids(roomData, this, solids, oneways, ladders);
 
         // Reposition player after transition
-        var b : Int = 3;
-        if (playerData.x < b)
+        var playerData : PlayerData = transitionData.playerData;
+        // 1. Adjust screen offsets
+        playerData.x += transitionData.screenOffsetX*15*7;
+        playerData.y += transitionData.screenOffsetY*11*14;
+        // 2. Reposition considering the borders of the new screen
+        if (transitionData.dx < 0)
             playerData.x = roomData.columns*7-3;
-        else if (playerData.x > 15*7-b)
+        else if (transitionData.dx > 0)
             playerData.x = 0;
-        else if (playerData.y < b)
+        
+        if (transitionData.dy < 0)
             playerData.y = roomData.rows*14-3;
-        else if (playerData.y > 11*14-b)
+        else if (transitionData.dy > 0)
             playerData.y = 0;
-
-        playerData.x += playerData.screenOffsetX*15*7;
-        playerData.y += playerData.screenOffsetY*11*14;
 
         // Force an input event given previous state
         // TODO: Generalize this (gamepad, etc)
@@ -128,6 +136,7 @@ class World extends FlxState
             FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 37));
         if (playerData.rightPressed)
             FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 39));
+        // TODO: Add up, down for ladders
 
         // TODO: Increase vspeed if coming from below
         
@@ -150,12 +159,6 @@ class World extends FlxState
         super.create();
 
         // DEBUG
-        mouseTile = new FlxSprite(0, 0);
-        mouseTile.setSize(14, 14);
-        mouseTile.makeGraphic(14, 14, 0x00000000);
-        flixel.util.FlxSpriteUtil.drawCircle(mouseTile, 7, 7, 2, 0xFFFFFFFF);
-        addHudElement(mouseTile);
-
         label = text.PixelText.New(0, 0, "HELLO");
         addHudElement(label);
     }
@@ -243,31 +246,44 @@ class World extends FlxState
         
         if (tx != cursorX || ty != cursorY)
         {
-            var newRoomId : Null<Int> = mapData.grid[tx+ty*mapData.size.x];
-            if (newRoomId != null && newRoomId != GameStatus.room) 
+            var canMove : Bool = false;
+            // Allow moving in 1 direction only
+            // and check that the new screen is in the map bounds
+            if ((tx == cursorX || ty == cursorY) && 
+                tx >= 0 && tx < mapData.size.x && ty >= 0 && ty < mapData.size.y)
             {
-                trace("Moving to " + newRoomId);
-            
-                var newRoom : RoomData = mapReader.getRoom(newRoomId);
-                GameStatus.room = newRoomId;
+                var newRoomId : Null<Int> = mapData.grid[tx+ty*mapData.size.x];
+                if (newRoomId != null && newRoomId != GameStatus.room) 
+                {
+                    canMove = true;
+                    trace("Moving to " + newRoomId);
+                
+                    var newRoom : RoomData = mapReader.getRoom(newRoomId);
+                    GameStatus.room = newRoomId;
 
-                var nextPlayerData : PlayerData = {
-                    x: player.x,
-                    y: player.y,
-                    facing : player.facing,
-                    state : player.state,
-                    hspeed : player.hspeed,
-                    vspeed : player.vspeed,
-                    screenOffsetX: (tx-cursorX != 0 ? 0 : newRoom.gridX - roomData.gridX),
-                    screenOffsetY: (ty-cursorY != 0 ? 0 : newRoom.gridY - roomData.gridY),
-                    leftPressed: Gamepad.left(),
-                    rightPressed: Gamepad.right(),
-                    debug: player.debug
-                };
+                    var transitionData : TransitionData = {
+                        dx: tx-cursorX,
+                        dy: ty-cursorY,
+                        screenOffsetX: (tx-cursorX != 0 ? 0 : roomData.gridX - newRoom.gridX),
+                        screenOffsetY: (ty-cursorY != 0 ? 0 : roomData.gridY - newRoom.gridY),
+                        playerData: {
+                            x: player.x,
+                            y: player.y,
+                            facing : player.facing,
+                            state : player.state,
+                            hspeed : player.hspeed,
+                            vspeed : player.vspeed,
+                            leftPressed: Gamepad.left(),
+                            rightPressed: Gamepad.right(),
+                            debug: player.debug
+                        }
+                    };
 
-                FlxG.switchState(new World(nextPlayerData));
+                    FlxG.switchState(new World(transitionData));
+                }
             }
-            else
+            
+            if (!canMove)
             {
                 player.x -= (tx-cursorX) * 7;
                 player.y -= (ty-cursorY) * 14;
@@ -289,9 +305,6 @@ class World extends FlxState
         var x = wx;
         var y = wy;
 
-        mouseTile.x = cx; Std.int(cx/14)*14;
-        mouseTile.y = cy; Std.int(cy/14)*14;
-
         if (FlxG.mouse.justPressed)
         {
             if (FlxG.keys.pressed.ALT)
@@ -310,7 +323,6 @@ class World extends FlxState
                     // "c: " + cursorX + ", " + cursorY + "\n" +
                     // "s: " + screencam.x + ", " + screencam.y + "\n" +
                     "s: " + screencam.scroll + "\n" +
-                    // "m: " + mouseTile.x + ", " + mouseTile.y + "\n" +
                     "g: " + gamepadString() + "\n" +
                     /*"h: " + (""+player.hspeed).substr(0, 4) + "\n" +
                     "   " + (""+player.haccel).substr(0, 4) + "\n" +
@@ -336,6 +348,14 @@ class World extends FlxState
     }
 }
 
+typedef TransitionData = {
+    var dx : Int;
+    var dy : Int;
+    var screenOffsetX : Int;
+    var screenOffsetY : Int;
+    var playerData : PlayerData;
+}
+
 typedef PlayerData = {
     var x : Float;
     var y : Float;
@@ -343,8 +363,6 @@ typedef PlayerData = {
     var state : Player.State;
     var hspeed : Float;
     var vspeed : Float;
-    var screenOffsetX : Int;
-    var screenOffsetY : Int;
     var leftPressed : Bool;
     var rightPressed : Bool;
     var debug : Bool;

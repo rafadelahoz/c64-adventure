@@ -6,8 +6,6 @@
 - Kill player
 - Player hp?
 
-- Navigating between rooms fails sometimes
-
 - Gamestatus with
     - Switches map (boolean variables)
     - Variables map (multitype variables, string, numeric)
@@ -16,11 +14,14 @@
     - Start point, exits...
 - List of available maps for quick access (will be replaced by world map)
 - Map properties: 
-    - All entities are black
+    - (Room?) All entities are black
         - Or other color ==> all entities are white and get tinted in engine
     - Map name (display on top/bottom, or this is for rooms?)
 - Gameplay loop
     - Player can get killed, restart the map, get kicked to world map
+
+- Game start:
+    - Customize player (name, sprite, color)
 
 ## Current
 
@@ -32,6 +33,8 @@
         - It was a map thing, just had to update world bounds
     - [DONE] Player can get stuck when they are surrounded by solids and he starts going down
         - When started to go down, player is not over layer and the current status is lost
+- Navigating between rooms fails sometimes
+    - Signs were inverted
 
 ## Descoped
 
