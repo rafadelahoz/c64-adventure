@@ -2,7 +2,8 @@
 
 ## Backlog
 
-- Moving platforms
+- Teleports between rooms
+- [?] Moving platforms
 - Kill player
 - Player hp?
 
@@ -17,6 +18,7 @@
     - (Room?) All entities are black
         - Or other color ==> all entities are white and get tinted in engine
     - Map name (display on top/bottom, or this is for rooms?)
+    
 - Gameplay loop
     - Player can get killed, restart the map, get kicked to world map
 
@@ -35,6 +37,7 @@
         - When started to go down, player is not over layer and the current status is lost
 - Navigating between rooms fails sometimes
     - Signs were inverted
+- [ERR] Navigating between rooms fails sometimes
 
 ## Descoped
 
