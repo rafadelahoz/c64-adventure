@@ -1,5 +1,6 @@
 package;
 
+import openfl.events.KeyboardEvent;
 import flixel.input.keyboard.FlxKey;
 import flixel.input.FlxInput.FlxInputState;
 import flixel.FlxG;
@@ -104,5 +105,20 @@ class Gamepad
         }
 
         return justReleased;
+    }
+
+    public static function handleBufferedState(left : Bool, right : Bool, up : Bool, down : Bool, a : Bool)
+    {
+        // TODO: Generalize this (gamepad, etc)
+        if (left)
+            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 37));
+        if (right)
+            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 39));
+        if (up)
+            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 38));
+        if (down)
+            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 40));
+        if (a)
+            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 65));
     }
 }
