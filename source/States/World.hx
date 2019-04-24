@@ -190,7 +190,6 @@ class World extends FlxState
         var hud : FlxSprite = new FlxSprite(0, 0, "assets/images/temp-hud.png");
         // hud.alpha = 0.2;
         addHudElement(hud);
-
         
         var label : flixel.text.FlxBitmapText = text.PixelText.New(12, 36, "Bananas\nWhatever\nDandelion\nBig lion\nRock monster\nSkeleton\nSkele throw");
         addHudElement(label);
