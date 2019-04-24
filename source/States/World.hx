@@ -4,7 +4,6 @@ import MapReader.ActorData;
 import flixel.FlxBasic;
 import flixel.text.FlxBitmapText;
 import flixel.FlxObject;
-import openfl.events.KeyboardEvent;
 import flixel.FlxG;
 import flixel.FlxSprite;
 import flixel.FlxState;
@@ -18,8 +17,8 @@ import MapReader.MapData;
 class World extends FlxState
 {
     var mapReader : MapReader;
-    var mapData : MapData;
-    var roomData : RoomData;
+    public var mapData : MapData;
+    public var roomData : RoomData;
     var cursorX : Int;
     var cursorY : Int;
 
@@ -29,6 +28,7 @@ class World extends FlxState
     public var hudcam : FlxCamera;
 
     public var hudGroup : FlxGroup;
+    public var hud : Hud;
 
     public var platforms : FlxGroup;
     public var solids : FlxGroup;
@@ -62,6 +62,7 @@ class World extends FlxState
         // Checked bg for testing
         // var bg = new flixel.addons.display.FlxBackdrop("assets/images/bg.png");//,1, 1, false, false);
         // bg.cameras = [screencam];
+
         var bg = new FlxSprite(0, 0);
         bg.makeGraphic(210, 156, mapReader.color(roomData.colors[0]));
         bg.scrollFactor.set(0, 0);
@@ -151,15 +152,16 @@ class World extends FlxState
 
          // Reposition player after transition
         var playerData : PlayerData = transitionData.playerData;
+        
         // 1. Adjust screen offsets
         playerData.x += transitionData.screenOffsetX*15*7;
         playerData.y += transitionData.screenOffsetY*11*14;
+        
         // 2. Reposition considering the borders of the new screen
         if (transitionData.dx < 0)
             playerData.x = roomData.columns*7-3;
         else if (transitionData.dx > 0)
             playerData.x = 0;
-        
         if (transitionData.dy < 0)
             playerData.y = roomData.rows*14-3;
         else if (transitionData.dy > 0)
@@ -170,8 +172,6 @@ class World extends FlxState
                                     playerData.upPressed, playerData.downPressed,
                                     playerData.jumpPressed);
 
-        // TODO: Increase vspeed if coming from below
-        
         player = new Player(playerData, this);
         add(player);
 
@@ -203,17 +203,8 @@ class World extends FlxState
         add(hudGroup);
         hudGroup.cameras = [hudcam];
 
-        var hud : FlxSprite = new FlxSprite(0, 0, "assets/images/temp-hud.png");
-        // hud.alpha = 0.2;
+        hud = new Hud(this);
         addHudElement(hud);
-        
-        var label : flixel.text.FlxBitmapText = text.PixelText.New(12, 36, "Bananas\nWhatever\nDandelion\nBig lion\nRock monster\nSkeleton\nSkele throw");
-        addHudElement(label);
-
-        var roomNameLabel : FlxBitmapText = text.PixelText.New(0, 0, roomData.name);
-        roomNameLabel.x = 194 - roomNameLabel.width/2;
-        roomNameLabel.y = 174;
-        addHudElement(roomNameLabel);
     }
 
     function addHudElement(element : FlxObject)
@@ -227,14 +218,20 @@ class World extends FlxState
     {
         player.preupdate();
 
-        // Handle overlaps
-
+        /* Handle overlaps */
+        // Player vs triggers
         triggers.forEachExists(function(t:FlxBasic) {
             cast(t, Solid).color = 0xFFFFFFFF;
-        });
+        });        
         FlxG.overlap(player, triggers, function(p : Player, trigger : Solid) {
             trigger.color = 0xFF00FF00;
         });
+
+        // Inventory management
+        if (Gamepad.justPressed(Gamepad.Select))
+        {
+            Inventory.moveCursor();
+        }
         
         super.update(elapsed);
 

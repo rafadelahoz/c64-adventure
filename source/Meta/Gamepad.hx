@@ -14,6 +14,7 @@ class Gamepad
     public static var Left (default, never) : String = "Left";
     public static var Down (default, never) : String = "Down";
     public static var Start (default, never) : String = "Start";
+    public static var Select (default, never) : String = "Select";
 
     public static function left() : Bool
     {
@@ -56,6 +57,8 @@ class Gamepad
                 pressed = FlxG.keys.checkStatus(FlxKey.RIGHT, FlxInputState.PRESSED);
             case Gamepad.Start:
                 return FlxG.keys.pressed.ENTER;
+            case Gamepad.Select:
+                return FlxG.keys.pressed.SPACE;
         }
 
         return pressed;
@@ -79,6 +82,8 @@ class Gamepad
                 justPressed = FlxG.keys.justPressed.RIGHT;
             case Gamepad.Start:
                 return FlxG.keys.justPressed.ENTER;
+            case Gamepad.Select:
+                return FlxG.keys.justPressed.SPACE;
         }
 
         return justPressed;
@@ -102,6 +107,8 @@ class Gamepad
                 justReleased = FlxG.keys.justReleased.RIGHT;
             case Gamepad.Start:
                 return FlxG.keys.justReleased.ENTER;
+            case Gamepad.Select:
+                return FlxG.keys.justReleased.SPACE;
         }
 
         return justReleased;

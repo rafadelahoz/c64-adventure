@@ -11,17 +11,17 @@ class PixelText
 	// System pixel font
 	public static var font : FlxBitmapFont;
 
-	static var initialized : Bool;
+	static var initialized : Bool = false;
 
 	public static function Init()
 	{
-		// if (!initialized)
+		if (!initialized)
 		{
 			// Monospace
 			var monospaceLetters = " !\"#$%&'()*+,-./0123456789:;<=>?@"+
 									"ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_'ab"+
 									"cdefghijklmnopqrstuvwxyz{|}~";
-			font = FlxBitmapFont.fromMonospace("assets/fonts/6x6.png", monospaceLetters, FlxPoint.get(6, 6));
+			font = FlxBitmapFont.fromMonospace("assets/fonts/6x6t.png", monospaceLetters, FlxPoint.get(6, 6));
 
 			initialized = true;
 		}

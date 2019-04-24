@@ -11,5 +11,8 @@ class GameStatus
         playerColor = 0xFFbfce72;
         map = "map-ents";
         room = 1;
+
+        Inventory.Init();
+        Inventory.Randomize();
     }
 }
