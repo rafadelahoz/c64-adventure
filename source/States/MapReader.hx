@@ -14,9 +14,9 @@ class MapReader
     {
     }
 
-    public function read(filename : String) 
+    public function read(mapName : String) 
     {
-        var jsonContents : String = Assets.getText("assets/maps/" + filename);
+        var jsonContents : String = Assets.getText("assets/maps/" + mapName + ".json");
         mapData = Json.parse(jsonContents);
     }
 
@@ -109,6 +109,43 @@ class MapReader
 
         return null;
     }
+
+    public function buildEntities(room : RoomData, world : World) : Void
+    {
+        if (room.actors != null)
+        {
+            for (actor in room.actors) {
+                trace("Actor " + actor);
+            }
+        }
+    }
+
+    public function findInitialRoom() : Int 
+    {
+        for (room in mapData.rooms) 
+        {
+            if (room.actors != null) 
+            {
+                if (findActor(room, "spawn") != null)
+                    return room.id;
+            }
+        }
+
+        return -1;
+    }
+
+    public function findActor(room : RoomData, type : String) : ActorData
+    {
+        if (room.actors != null)
+        {
+            for (actor in room.actors) {
+                if (actor.type == type)
+                    return actor;
+            }
+        }
+
+        return null;
+    }
 }
 
 typedef MapData = {
@@ -133,6 +170,17 @@ typedef RoomData = {
         var fg: Array<Int>;
     };
     var solids : Array<Int>;
+    var actors : Array<ActorData>;
     var gridX : Int;
     var gridY : Int;
+}
+
+typedef ActorData = {
+    var id : String;
+    var x : Int;
+    var y : Int;
+    var type : String;
+    var w : Int;
+    var h : Int;
+    var properties : Map<String, String>;
 }

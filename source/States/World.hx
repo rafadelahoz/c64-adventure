@@ -1,5 +1,6 @@
 package;
 
+import MapReader.ActorData;
 import flixel.FlxBasic;
 import flixel.text.FlxBitmapText;
 import flixel.FlxObject;
@@ -49,32 +50,12 @@ class World extends FlxState
         super();
 
         transitionData = TransitionData;
-        if (transitionData == null)
-        {
-            transitionData = {
-                dx: 0,
-                dy: 0,
-                screenOffsetX: 0,
-                screenOffsetY: 0,
-                playerData: {
-                    x: 32,
-                    y: 32,
-                    state : Player.State.Idle,
-                    facing : FlxObject.RIGHT,
-                    hspeed: 0,
-                    vspeed: 0,
-                    leftPressed: false,
-                    rightPressed: false,
-                    debug: false
-                }
-            };
-        }
     }
 
     override public function create() : Void
     {
         mapReader = new MapReader();
-        mapReader.read(GameStatus.map + ".json");
+        mapReader.read(GameStatus.map);
         mapData = mapReader.mapData;
         roomData = mapReader.getRoom(GameStatus.room);
 
@@ -114,37 +95,9 @@ class World extends FlxState
 
         mapReader.buildSolids(roomData, this, solids, oneways, ladders);
 
-        // Reposition player after transition
-        var playerData : PlayerData = transitionData.playerData;
-        // 1. Adjust screen offsets
-        playerData.x += transitionData.screenOffsetX*15*7;
-        playerData.y += transitionData.screenOffsetY*11*14;
-        // 2. Reposition considering the borders of the new screen
-        if (transitionData.dx < 0)
-            playerData.x = roomData.columns*7-3;
-        else if (transitionData.dx > 0)
-            playerData.x = 0;
-        
-        if (transitionData.dy < 0)
-            playerData.y = roomData.rows*14-3;
-        else if (transitionData.dy > 0)
-            playerData.y = 0;
+        mapReader.buildEntities(roomData, this);
 
-        // Force an input event given previous state
-        // TODO: Generalize this (gamepad, etc)
-        if (playerData.leftPressed)
-            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 37));
-        if (playerData.rightPressed)
-            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 39));
-        // TODO: Add up, down for ladders
-
-        // TODO: Increase vspeed if coming from below
-        
-        player = new Player(playerData, this);
-        add(player);
-
-        /*if (mapReader.color(roomData.colors[1]) == 0xFF000000)
-            player.color = mapReader.color(roomData.colors[1]);*/
+        spawnPlayer();       
 
         setupCameras();
         setupHUD();
@@ -161,6 +114,69 @@ class World extends FlxState
         // DEBUG
         label = text.PixelText.New(0, 0, "HELLO");
         addHudElement(label);
+    }
+
+    function spawnPlayer() 
+    {
+        // If there's no transitionData, it's the level entry
+        if (transitionData == null)
+        {
+            // Locate spawn point
+            var spawn : ActorData = mapReader.findActor(roomData, "spawn");
+            // TODO: Temporary patch until all maps have spawns
+            if (spawn == null)
+            {
+                spawn = {
+                    id: "", x: 32, y: 32, type: "spawn", w: 1, h: 1, properties: null
+                };
+            }
+
+            transitionData = {
+                dx: 0,
+                dy: 0,
+                screenOffsetX: 0,
+                screenOffsetY: 0,
+                playerData: {
+                    x: spawn.x * 7,
+                    y: spawn.y * 14,
+                    state : Player.State.Idle,
+                    facing : FlxObject.RIGHT,
+                    hspeed: 0,
+                    vspeed: 0,
+                    leftPressed: false, rightPressed: false, upPressed: false, downPressed: false, jumpPressed: false,
+                    debug: false
+                }
+            };
+        }
+
+         // Reposition player after transition
+        var playerData : PlayerData = transitionData.playerData;
+        // 1. Adjust screen offsets
+        playerData.x += transitionData.screenOffsetX*15*7;
+        playerData.y += transitionData.screenOffsetY*11*14;
+        // 2. Reposition considering the borders of the new screen
+        if (transitionData.dx < 0)
+            playerData.x = roomData.columns*7-3;
+        else if (transitionData.dx > 0)
+            playerData.x = 0;
+        
+        if (transitionData.dy < 0)
+            playerData.y = roomData.rows*14-3;
+        else if (transitionData.dy > 0)
+            playerData.y = 0;
+
+        // Force an input event given previous state
+        Gamepad.handleBufferedState(playerData.leftPressed, playerData.rightPressed, 
+                                    playerData.upPressed, playerData.downPressed,
+                                    playerData.jumpPressed);
+
+        // TODO: Increase vspeed if coming from below
+        
+        player = new Player(playerData, this);
+        add(player);
+
+        /*if (mapReader.color(roomData.colors[1]) == 0xFF000000)
+            player.color = mapReader.color(roomData.colors[1]);*/
     }
 
     function setupCameras()
@@ -260,11 +276,14 @@ class World extends FlxState
                     var newRoom : RoomData = mapReader.getRoom(newRoomId);
                     GameStatus.room = newRoomId;
 
+                    var dx : Int = tx-cursorX;
+                    var dy : Int = ty-cursorY;
+
                     var transitionData : TransitionData = {
-                        dx: tx-cursorX,
-                        dy: ty-cursorY,
-                        screenOffsetX: (tx-cursorX != 0 ? 0 : roomData.gridX - newRoom.gridX),
-                        screenOffsetY: (ty-cursorY != 0 ? 0 : roomData.gridY - newRoom.gridY),
+                        dx: dx,
+                        dy: dy,
+                        screenOffsetX: (dx != 0 ? 0 : roomData.gridX - newRoom.gridX),
+                        screenOffsetY: (dy != 0 ? 0 : roomData.gridY - newRoom.gridY),
                         playerData: {
                             x: player.x,
                             y: player.y,
@@ -274,6 +293,10 @@ class World extends FlxState
                             vspeed : player.vspeed,
                             leftPressed: Gamepad.left(),
                             rightPressed: Gamepad.right(),
+                            upPressed: Gamepad.up(),
+                            downPressed: Gamepad.down(),
+                            // Only allow jump buffering when going up
+                            jumpPressed: dy < 0 && Gamepad.pressed(Gamepad.A),
                             debug: player.debug
                         }
                     };
@@ -364,5 +387,8 @@ typedef PlayerData = {
     var vspeed : Float;
     var leftPressed : Bool;
     var rightPressed : Bool;
+    var upPressed : Bool;
+    var downPressed : Bool;
+    var jumpPressed : Bool;
     var debug : Bool;
 }
