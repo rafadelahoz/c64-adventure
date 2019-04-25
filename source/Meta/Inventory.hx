@@ -25,7 +25,7 @@ class Inventory
             return false;
     }
 
-    public static function moveCursor()
+    public static function MoveCursor()
     {
         if (items.length > 0)
         {
@@ -33,6 +33,24 @@ class Inventory
                 cursor = 0;
             else
                 cursor = (cursor+1)%items.length;
+        }
+    }
+
+    public static function GetCurrent()
+    {
+        if (cursor >= 0 && cursor < items.length)
+        {
+            return items[cursor];
+        }
+
+        return null;
+    }
+
+    public static function RemoveCurrent()
+    {
+        if (cursor >= 0 && cursor < items.length)
+        {
+            items.splice(cursor, 1);
         }
     }
 

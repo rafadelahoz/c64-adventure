@@ -33,6 +33,7 @@ class Player extends Actor
     public var state : State;
 
     var onAir : Bool;
+    var carrying : Item;
 
     public var hspeed : Float;
     public var vspeed : Float;
@@ -86,6 +87,9 @@ class Player extends Actor
             ladder = null;
         }
 
+        // TODO: Read from PlayerData
+        carrying = null;
+
         groundProbe = new FlxSprite(0, 0);
         groundProbe.makeGraphic(Std.int(width), 1, 0xFFFFFFFF);
         groundProbe.visible = false;
@@ -136,16 +140,30 @@ class Player extends Actor
                     coyoteBuffer = 0;
                 }
 
-                // Item management
-                if (!onAir && Gamepad.down())
+                /* Item management */
+                
+                // When carrying something
+                if (carrying != null)
+                {
+                    // Drop carried thing when B is released
+                    if (!Gamepad.pressed(Gamepad.B))
+                    {
+                        carrying.onRelease();
+                        carrying = null;
+                    }
+                }
+
+                // TODO: Can pickup while carrying?
+                if (!onAir && Gamepad.justPressed(Gamepad.Down))
                 {
                     var items : Array<Item> = [];
                     FlxG.overlap(this, world.items, function(self : Player, item : Item) {
-                        items.push(item);
+                        if (item != carrying)
+                            items.push(item);
                     });
 
                     var item : Item = findClosestItem(items);
-                    if (Inventory.Add(item.data))
+                    if (item != null && Inventory.Add(item.data))
                     {
                         item.destroy();
                     }
@@ -355,6 +373,17 @@ class Player extends Actor
         groundProbe.x = x;
         groundProbe.y = y + height;
 
+        // Reposition carried item
+        if (carrying != null)
+        {
+            if (facing == Left)
+                carrying.x = x - carrying.width + 1;
+            else
+                carrying.x = x + width - 1;
+
+            carrying.y = y + height/2 - carrying.height;
+        }
+
         // groundProbe.update(elapsed);
     }
 
@@ -362,6 +391,23 @@ class Player extends Actor
     {
         super.draw();
         // groundProbe.draw();
+    }
+
+    public function onUseItem(item : Item) : Bool
+    {
+        if (canUseItem())
+        {
+            carrying = item;
+            item.onCarry();
+            return true;
+        }
+
+        return false;
+    }
+
+    function canUseItem()
+    {
+        return state == State.Idle || state == State.Move || state == State.Air;
     }
 
     function findClosestItem(items : Array<Item>) : Item

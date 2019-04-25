@@ -236,7 +236,27 @@ class World extends FlxState
         // Inventory management
         if (Gamepad.justPressed(Gamepad.Select))
         {
-            Inventory.moveCursor();
+            Inventory.MoveCursor();
+        }
+
+        if (Gamepad.justPressed(Gamepad.B))
+        {
+            var item : ItemData = Inventory.GetCurrent();
+            if (item != null)
+            {
+                // TODO: Check item type and act accordingly
+                // if (item.type == "BANANAS")
+                var itemActor : Item = new Item(player.x, player.y, this, item);
+                if (player.onUseItem(itemActor)) 
+                {
+                    items.add(itemActor);
+                    Inventory.RemoveCurrent();
+                }
+                else
+                {
+                    itemActor.destroy();
+                }
+            }
         }
         
         super.update(elapsed);

@@ -1,6 +1,5 @@
 package;
 
-import flixel.util.FlxSpriteUtil;
 import text.PixelText;
 import flixel.text.FlxBitmapText;
 import flixel.group.FlxSpriteGroup;
@@ -51,18 +50,39 @@ class Hud extends FlxSpriteGroup
             }
         }
 
+        renderInventory();
+
         super.update(elapsed);
     }
 
     function renderInventory()
     {
         var ly : Int = 38;
+        var i : Int = 0;
+        var label : FlxBitmapText;
+
         for (item in Inventory.items)
         {
-            var label : FlxBitmapText = PixelText.New(12, ly, item.label);
-            add(label);
-            inventoryLabels.push(label);
+            if (i < inventoryLabels.length && inventoryLabels[i] != null)
+            {
+                label = inventoryLabels[i];
+                label.text = item.label;
+            }
+            else 
+            {
+                label = PixelText.New(12, ly, item.label);
+                add(label);
+                inventoryLabels.push(label);
+            }
+
             ly += 12;
+            i++;
+        }
+
+        while (i < inventoryLabels.length)
+        {
+            inventoryLabels[i].text = "";
+            i++;
         }
     }
 }

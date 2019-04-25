@@ -8,6 +8,8 @@ class Item extends Actor
 
     public var data : ItemData;
 
+    var state : ItemState;
+
     var vspeed : Float;
 
     public function new(X : Float, Y : Float, World : World, Data : ItemData) 
@@ -16,23 +18,43 @@ class Item extends Actor
 
         data = Data;
 
+        state = ItemState.Idle;
+
         x += 1;
-        y += 1;
-        makeGraphic(5, 12, 0x88FF00FF);
+        y += 2;
+        makeGraphic(5, 10, 0x88FF00FF);
     }
 
     override public function update(elapsed : Float)
     {
-        if (!overlapsAt(x, y+1, world.platforms))
-            vspeed += Gravity;
-        else
-            vspeed = 0;
+        switch (state)
+        {
+            case ItemState.Carried:
+                // Nop!
+            case ItemState.Idle:
+                if (!overlapsAt(x, y+1, world.platforms))
+                    vspeed += Gravity;
+                else
+                    vspeed = 0;
 
-        moveY(vspeed, function() {
-            // Touched ground
-            vspeed = 0;
-        });
+                moveY(vspeed, function() {
+                    // Touched ground
+                    vspeed = 0;
+                });
+        }
 
         super.update(elapsed);
     }
+
+    public function onCarry()
+    {
+        state = ItemState.Carried;
+    }
+
+    public function onRelease()
+    {
+        state = ItemState.Idle;
+    }
 }
+
+enum ItemState { Idle; Carried; }

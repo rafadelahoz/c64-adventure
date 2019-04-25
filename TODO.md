@@ -7,28 +7,32 @@
 - Kill player
 - Player hp?
 
-- Player picks things
-    - Press down while over it to put it in inventory directly
+- [DONE] Player picks things
+    - [DONE] Press down while over it to put it in inventory directly
 
 - Player using inventory
     - [DONE] Select current item with Select
     - Press B to use selected item
         - How?
             - World/Other entity knows what to instantiate and how
-            - Mallet: used by player as weapon (method call on player)
-            - Seed: placed by player on ground
-                When on contact with soil, it will get planted
-                A vine will grow then
-            - ? Keep pressing B to carry item
-                Will be dropped on release
-                Item will act on world
-                    - i.e. key on door
-            - Generic: drop item with graphic
+            - Items with special effects:
+                - Mallet: used by player as weapon (method call on player)
+            - Items that will act on world
+                - i.e. key on door
+                - Seed: placed by player on ground
+                    When on contact with soil, it will get planted
+                    A vine will grow then
+            - Generic use: drop item with graphic
+                - [DONE] Keep pressing B to carry item
+                - [DONE] Will be dropped on release
                 - Player to play animation
-                    - Changes player state
-                    - Can be aborted by player (because of state, ask first!)
+                    - [DONE] Changes player state
+                    - [DONE] Can be aborted by player (because of state, ask first!)
                 - Generate "item" entity with type, id, other props
                     - Graphic to be extracted given type?
+                
+    - Items to be kept where they are placed until level is exited (on death they stay as well!)
+    - Key items to be kept where they are placed even after leaving level
 
 - Interaction between key and door
     - Key is an item in the room
@@ -39,9 +43,10 @@
     - Player selects key using Select
     - Press B to produce key
     - Hold and move to carry it
-        - Player can walk, jump, climb??, switch screens? while carrying
+        - Player can walk (DONE), jump (DONE), climb (DONE), *switch screens* (TODO) while carrying
         - On hit, stop carrying => !!may lead to lost key items!!
             - Mechanism to summon key items for a price?
+            - Items can be lost all the same if the player drops them where they shouldn't
     - Release to drop key
 
 - NPCs
