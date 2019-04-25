@@ -34,7 +34,9 @@ class World extends FlxState
     public var solids : FlxGroup;
     public var oneways : FlxGroup;
     public var ladders : FlxGroup;
+
     var triggers : FlxGroup;
+    public var items : FlxGroup;
 
     var tilemapBG : FlxTilemap;
     var tilemapFG : FlxTilemap;
@@ -88,6 +90,9 @@ class World extends FlxState
 
         triggers = new FlxGroup();
         add(triggers);
+
+        items = new FlxGroup();
+        add(items);
 
         platforms = new FlxGroup();
         platforms.add(solids);
@@ -333,7 +338,20 @@ class World extends FlxState
             if (FlxG.keys.pressed.ALT)
                 oneways.add(new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 4, this));
             else if (FlxG.keys.pressed.SHIFT)
-                triggers.add(new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this));
+            {
+                // Create trigger
+                // triggers.add(new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this));
+                
+                // Create item
+                var data : ActorData = {
+                    id: "0", type: "BANANA",
+                    x: 0, y: 0, w: 0, h: 0,
+                    properties: null
+                };
+
+                var item : Item = new Item(Std.int(x / 7)*7, Std.int(y / 14)*14, this, data);
+                items.add(item);
+            }
             else
             {
                 var s = new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this);

@@ -136,6 +136,18 @@ class Player extends Actor
                     coyoteBuffer = 0;
                 }
 
+                // Item management
+                if (!onAir && Gamepad.down())
+                {
+                    var items : Array<Item> = [];
+                    FlxG.overlap(this, world.items, function(self : Player, item : Item) {
+                        items.push(item);
+                    });
+
+                    var item = findClosestItem(items);
+                    // Inventory.
+                }
+
                 // Ladder management
                 if (!onAir && (Gamepad.up() || Gamepad.down()))
                 {
@@ -349,11 +361,34 @@ class Player extends Actor
         // groundProbe.draw();
     }
 
+    function findClosestItem(items : Array<Item>) : Item
+    {
+        var item : Item = null;
+        
+        if (items.length > 0)
+        {
+            var midpoint : FlxPoint = getMidpoint();
+
+            var distance : Float = Math.POSITIVE_INFINITY;
+            for (i in items)
+            {
+                var point : FlxPoint = i.getMidpoint();
+                
+                if (midpoint.distanceTo(point) < distance)
+                {
+                    item = i;
+                    distance = midpoint.distanceTo(point);
+                } 
+            }
+        }
+
+        return item;
+    }
+
     function findClosestLadder(ladders : Array<Solid>) : Solid
     {
         var ladder : Solid = null;
         
-        // This is returning the closest stair middle to middle, which may not be the correct one
         if (ladders.length > 0)
         {
             // Check X coordinates only
