@@ -4,6 +4,7 @@ import flixel.FlxG;
 
 class Inventory 
 {
+    public static var MaxItems : Int = 11;
     public static var items : Array<ItemData>;
     public static var cursor : Int;
 
@@ -11,6 +12,17 @@ class Inventory
     {
         items = [];
         cursor = -1;
+    }
+
+    public static function Add(item : ItemData) : Bool
+    {
+        if (items.length < MaxItems)
+        {
+            items.push(item);
+            return true;
+        }
+        else
+            return false;
     }
 
     public static function moveCursor()

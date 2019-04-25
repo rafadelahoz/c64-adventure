@@ -144,8 +144,11 @@ class Player extends Actor
                         items.push(item);
                     });
 
-                    var item = findClosestItem(items);
-                    // Inventory.
+                    var item : Item = findClosestItem(items);
+                    if (Inventory.Add(item.data))
+                    {
+                        item.destroy();
+                    }
                 }
 
                 // Ladder management

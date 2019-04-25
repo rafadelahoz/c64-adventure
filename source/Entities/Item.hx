@@ -1,16 +1,16 @@
 package;
 
-import MapReader.ActorData;
+import Inventory.ItemData;
 
 class Item extends Actor
 {
     var Gravity : Float = 0.2; // 0.175; // 0.35;
 
-    var data : ActorData;
+    public var data : ItemData;
 
     var vspeed : Float;
 
-    public function new(X : Float, Y : Float, World : World, Data : ActorData) 
+    public function new(X : Float, Y : Float, World : World, Data : ItemData) 
     {
         super(X, Y, World);
 

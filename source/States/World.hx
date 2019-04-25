@@ -1,5 +1,6 @@
 package;
 
+import Inventory.ItemData;
 import MapReader.ActorData;
 import flixel.FlxBasic;
 import flixel.text.FlxBitmapText;
@@ -339,11 +340,7 @@ class World extends FlxState
                 // triggers.add(new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this));
                 
                 // Create item
-                var data : ActorData = {
-                    id: "0", type: "BANANA",
-                    x: 0, y: 0, w: 0, h: 0,
-                    properties: null
-                };
+                var data : ItemData = {id: "0", type: "Bananas", label: "Bananas"};
 
                 var item : Item = new Item(Std.int(x / 7)*7, Std.int(y / 14)*14, this, data);
                 items.add(item);
