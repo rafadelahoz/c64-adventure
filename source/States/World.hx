@@ -143,16 +143,7 @@ class World extends FlxState
                 dy: 0,
                 screenOffsetX: 0,
                 screenOffsetY: 0,
-                playerData: {
-                    x: spawn.x * 7,
-                    y: spawn.y * 14,
-                    state : Player.State.Idle,
-                    facing : FlxObject.RIGHT,
-                    hspeed: 0,
-                    vspeed: 0,
-                    leftPressed: false, rightPressed: false, upPressed: false, downPressed: false, jumpPressed: false,
-                    debug: false
-                }
+                playerData: Player.getInitialPlayerData(spawn.x * 7, spawn.y * 14)
             };
         }
 
@@ -173,13 +164,18 @@ class World extends FlxState
         else if (transitionData.dy > 0)
             playerData.y = 0;
 
+        player = new Player(playerData, this);
+        add(player);
+
+        if (playerData.carrying != null) 
+        {
+            useItem(playerData.carrying, false);
+        }
+
         // Force an input event given previous state
         Gamepad.handleBufferedState(playerData.leftPressed, playerData.rightPressed, 
                                     playerData.upPressed, playerData.downPressed,
-                                    playerData.jumpPressed);
-
-        player = new Player(playerData, this);
-        add(player);
+                                    playerData.jumpPressed, playerData.actionPressed);
 
         /*if (mapReader.color(roomData.colors[1]) == 0xFF000000)
             player.color = mapReader.color(roomData.colors[1]);*/
@@ -242,21 +238,7 @@ class World extends FlxState
         if (Gamepad.justPressed(Gamepad.B))
         {
             var item : ItemData = Inventory.GetCurrent();
-            if (item != null)
-            {
-                // TODO: Check item type and act accordingly
-                // if (item.type == "BANANAS")
-                var itemActor : Item = new Item(player.x, player.y, this, item);
-                if (player.onUseItem(itemActor)) 
-                {
-                    items.add(itemActor);
-                    Inventory.RemoveCurrent();
-                }
-                else
-                {
-                    itemActor.destroy();
-                }
-            }
+            useItem(item);
         }
         
         super.update(elapsed);
@@ -266,6 +248,27 @@ class World extends FlxState
 
         // Handle debug routines
         handleDebugRoutines();
+    }
+
+    function useItem(item : ItemData, ?current : Bool = true)
+    {
+        if (item != null)
+        {
+            // TODO: Check item type and act accordingly
+            // if (item.type == "BANANAS")
+            var itemActor : Item = new Item(player.x, player.y, this, item);
+            if (player.onUseItem(itemActor)) 
+            {
+                items.add(itemActor);
+                // Remove the item from the inventory only if it's the current one
+                if (current)
+                    Inventory.RemoveCurrent();
+            }
+            else
+            {
+                itemActor.destroy();
+            }
+        }
     }
 
     function handleRoomSwitching()
@@ -307,21 +310,7 @@ class World extends FlxState
                         dy: dy,
                         screenOffsetX: (dx != 0 ? 0 : roomData.gridX - newRoom.gridX),
                         screenOffsetY: (dy != 0 ? 0 : roomData.gridY - newRoom.gridY),
-                        playerData: {
-                            x: player.x,
-                            y: player.y,
-                            facing : player.facing,
-                            state : player.state,
-                            hspeed : player.hspeed,
-                            vspeed : player.vspeed,
-                            leftPressed: Gamepad.left(),
-                            rightPressed: Gamepad.right(),
-                            upPressed: Gamepad.up(),
-                            downPressed: Gamepad.down(),
-                            // Only allow jump buffering when going up
-                            jumpPressed: dy < 0 && Gamepad.pressed(Gamepad.A),
-                            debug: player.debug
-                        }
+                        playerData: player.getPlayerData(dy < 0)
                     };
 
                     FlxG.switchState(new World(transitionData));
@@ -396,7 +385,10 @@ class World extends FlxState
         
         str += (Gamepad.left() ? "<" : ".");
         str += (Gamepad.right() ? ">" : ".");
+        str += (Gamepad.up() ? "^" : ".");
+        str += (Gamepad.down() ? "v" : ".");
         str += (Gamepad.pressed(Gamepad.A) ? "A" : ".");
+        str += (Gamepad.pressed(Gamepad.B) ? "B" : ".");
 
         return str;
     }
@@ -422,5 +414,7 @@ typedef PlayerData = {
     var upPressed : Bool;
     var downPressed : Bool;
     var jumpPressed : Bool;
+    var actionPressed : Bool;
     var debug : Bool;
+    var carrying : ItemData;
 }

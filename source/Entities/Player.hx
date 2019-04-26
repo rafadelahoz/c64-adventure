@@ -407,7 +407,8 @@ class Player extends Actor
 
     function canUseItem()
     {
-        return state == State.Idle || state == State.Move || state == State.Air;
+        return (state == State.Idle || state == State.Move || state == State.Air) &&
+                carrying == null;
     }
 
     function findClosestItem(items : Array<Item>) : Item
@@ -473,5 +474,41 @@ class Player extends Actor
     function onVerticalCollision() : Void
     {
         vspeed = 0;
+    }
+
+    public function getPlayerData(goingUp : Bool) : PlayerData
+    {
+        return {
+            x: x,
+            y: y,
+            facing : facing,
+            state : state,
+            hspeed : hspeed,
+            vspeed : vspeed,
+            leftPressed: Gamepad.left(),
+            rightPressed: Gamepad.right(),
+            upPressed: Gamepad.up(),
+            downPressed: Gamepad.down(),
+            // Only allow jump buffering when going up
+            jumpPressed: goingUp && Gamepad.pressed(Gamepad.A),
+            actionPressed: Gamepad.pressed(Gamepad.B),
+            debug: debug,
+            carrying: (carrying == null ? null : carrying.data)
+        };
+    }
+
+    public static function getInitialPlayerData(x : Float, y : Float) : PlayerData
+    {
+        return {
+            x: x, y : y,
+            state : Player.State.Idle,
+            facing : FlxObject.RIGHT,
+            hspeed: 0,
+            vspeed: 0,
+            leftPressed: false, rightPressed: false, upPressed: false, downPressed: false, 
+            jumpPressed: false, actionPressed: false,
+            debug: false,
+            carrying: null
+        };
     }
 }

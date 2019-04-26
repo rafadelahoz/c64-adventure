@@ -30,9 +30,23 @@
                     - [DONE] Can be aborted by player (because of state, ask first!)
                 - Generate "item" entity with type, id, other props
                     - Graphic to be extracted given type?
-                
+
+- Alternate inventory
+    - Use Select to select the inventory slot (even if empty)
+    - B to interact with items
+        - When nothing is selected: pick up
+        - When something is selected: use it
+
+- Level RAM, world RAM
     - Items to be kept where they are placed until level is exited (on death they stay as well!)
+        - Level RAM, initialized empty when entering the level 
+            - Map of actor-id, room, position
     - Key items to be kept where they are placed even after leaving level
+    - When a room is loaded,
+        - for each instance in the map file
+            - if it's not already in LRAM or WRAM, create it
+        - check lram for instances in the current room and create them
+        - check wram for instances in the current room and create them
 
 - Interaction between key and door
     - Key is an item in the room

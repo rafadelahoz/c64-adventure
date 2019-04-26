@@ -19,6 +19,8 @@ class Inventory
         if (items.length < MaxItems)
         {
             items.push(item);
+            if (cursor < 0)
+                cursor = 0;
             return true;
         }
         else
@@ -51,6 +53,8 @@ class Inventory
         if (cursor >= 0 && cursor < items.length)
         {
             items.splice(cursor, 1);
+            if (cursor >= items.length)
+                cursor = items.length-1;
         }
     }
 

@@ -114,7 +114,7 @@ class Gamepad
         return justReleased;
     }
 
-    public static function handleBufferedState(left : Bool, right : Bool, up : Bool, down : Bool, a : Bool)
+    public static function handleBufferedState(left : Bool, right : Bool, up : Bool, down : Bool, a : Bool, b : Bool)
     {
         // TODO: Generalize this (gamepad, etc)
         if (left)
@@ -127,5 +127,7 @@ class Gamepad
             FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 40));
         if (a)
             FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 65));
+        if (b)
+            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 83));
     }
 }
