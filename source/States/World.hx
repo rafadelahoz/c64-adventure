@@ -349,14 +349,16 @@ class World extends FlxState
                 // triggers.add(new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this));
                 
                 // Create item
-                var data : ItemData = {id: "0", type: "Bananas", label: "Bananas"};
+                var data : ItemData = {id: "0", type: "KEY", label: "One key"};
 
                 var item : Item = new Item(Std.int(x / 7)*7, Std.int(y / 14)*14, this, data);
                 items.add(item);
             }
             else
             {
-                var s = new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this);
+                // var s = new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this);
+                var s = new LockSolid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14*4, this);
+                s.init("whatever");
                 solids.add(s);
             }
         }

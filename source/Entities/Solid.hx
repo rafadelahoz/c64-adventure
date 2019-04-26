@@ -1,7 +1,5 @@
 package;
 
-import flixel.FlxObject;
-
 class Solid extends Entity
 {
     public function new(X : Float, Y : Float, Width : Float, Height : Float, World : World)

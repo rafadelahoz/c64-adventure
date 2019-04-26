@@ -149,6 +149,11 @@ class Player extends Actor
                     if (!Gamepad.pressed(Gamepad.B))
                     {
                         carrying.onRelease();
+                        // Reposition from center
+                        var deltaX : Float = carrying.x - (facing == Left ? x + width : x);
+                        carrying.x = (facing == Left ? x + width : x);
+                        carrying.moveX(deltaX);
+
                         carrying = null;
                     }
                 }

@@ -10,6 +10,12 @@
 - [DONE] Player picks things
     - [DONE] Press down while over it to put it in inventory directly
 
+- Player carries things
+    - ? Things to have body
+        - Can't go through walls with them -> Can't climb!
+        - Increase player width while carrying
+        - When picking up
+
 - Player using inventory
     - [DONE] Select current item with Select
     - Press B to use selected item
@@ -31,11 +37,15 @@
                 - Generate "item" entity with type, id, other props
                     - Graphic to be extracted given type?
 
-- Alternate inventory
+- ? Alternate inventory
     - Use Select to select the inventory slot (even if empty)
     - B to interact with items
         - When nothing is selected: pick up
         - When something is selected: use it
+    - Hold B to hold whatever you are using
+        - Release to (pick if picking, drop if dropping)
+        - OR Release to store again + Down to drop -> Can't climb
+        - [THIS?] OR release quick to store, hold and release to carry and drop
 
 - Level RAM, world RAM
     - Items to be kept where they are placed until level is exited (on death they stay as well!)
@@ -57,7 +67,7 @@
     - Player selects key using Select
     - Press B to produce key
     - Hold and move to carry it
-        - Player can walk (DONE), jump (DONE), climb (DONE), *switch screens* (TODO) while carrying
+        - Player can walk (DONE), jump (DONE), climb (DONE), switch screens (DONE) while carrying
         - On hit, stop carrying => !!may lead to lost key items!!
             - Mechanism to summon key items for a price?
             - Items can be lost all the same if the player drops them where they shouldn't
