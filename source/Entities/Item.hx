@@ -24,9 +24,6 @@ class Item extends Actor
 
         state = ItemState.Idle;
 
-        x += 1;
-        y += 2;
-        // makeGraphic(5, 10, 0x88FF00FF);
         handleGraphic();
 
         groundProbe = new FlxSprite(0, 0);
@@ -109,6 +106,7 @@ class Item extends Actor
 
     public function onPickup()
     {
+        world.items.remove(this);
         destroy();
     }
 }

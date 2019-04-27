@@ -127,7 +127,8 @@
         - When started to go down, player is not over layer and the current status is lost
 - Navigating between rooms fails sometimes
     - Signs were inverted
-- [ERR] Navigating between rooms fails sometimes
+- [FIXED] Navigating between rooms fails sometimes
+- [FIXED] Player releasing item fails on the end of 1 tile high tunnels
 
 ## Descoped
 

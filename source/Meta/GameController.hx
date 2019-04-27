@@ -24,6 +24,8 @@ class GameController
         if (GameStatus.room < 0)
             GameStatus.room = 0;
 
+        LRAM.Init();
+
         FlxG.switchState(new World());
     }
 }

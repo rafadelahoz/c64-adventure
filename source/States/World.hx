@@ -105,6 +105,8 @@ class World extends FlxState
 
         mapReader.buildEntities(roomData, this);
 
+        restoreRoomStatus();
+
         spawnPlayer();       
 
         setupCameras();
@@ -257,7 +259,7 @@ class World extends FlxState
         {
             // TODO: Check item type and act accordingly
             // if (item.type == "BANANAS")
-            var itemActor : Item = spawnItem(item);
+            var itemActor : Item = spawnItemAt(player.x, player.y, item);
             if (player.onUseItem(itemActor)) 
             {
                 items.add(itemActor);
@@ -272,14 +274,14 @@ class World extends FlxState
         }
     }
 
-    function spawnItem(item : ItemData) : Item
+    function spawnItemAt(x : Float, y : Float, item : ItemData) : Item
     {
         switch (item.type)
         {
             case "DONUT":
-                return new ItemDonut(player.x, player.y, this, item);
+                return new ItemDonut(x, y, this, item);
             default:
-                return new Item(player.x, player.y, this, item);
+                return new Item(x, y, this, item);
         }
     }
 
@@ -310,6 +312,9 @@ class World extends FlxState
                 {
                     canMove = true;
                     trace("Moving to " + newRoomId);
+
+                    // Store room status in LRAM, WRAM
+                    storeRoomStatus();
                 
                     var newRoom : RoomData = mapReader.getRoom(newRoomId);
                     GameStatus.room = newRoomId;
@@ -333,6 +338,45 @@ class World extends FlxState
             {
                 player.x -= (tx-cursorX) * 7;
                 player.y -= (ty-cursorY) * 14;
+            }
+        }
+    }
+
+    function storeRoomStatus()
+    {
+        var itemsData : Array<LRAM.StoredItemData> = [];
+        var itemActor : Item;
+        trace("Storing items of room " + roomData.id);
+        for (item in items)
+        {
+            if (item != null && item.alive)
+            {
+                itemActor = cast(item, Item);
+                trace("Storing " + itemActor);
+                itemsData.push({
+                    x: itemActor.x,
+                    y: itemActor.y,
+                    data: itemActor.data
+                });
+            }
+        }
+
+        LRAM.StoreRoom("" + roomData.id, itemsData);
+
+        // TODO: Store important items in WRAM, or...?
+        // TODO: Actors?
+    }
+
+    function restoreRoomStatus()
+    {
+        var itemsList : Array<LRAM.StoredItemData> = LRAM.GetRoom("" + roomData.id);
+        if (itemsList != null)
+        {
+            var actor : Item = null;
+            for (item in itemsList)
+            {
+                actor = spawnItemAt(item.x, item.y, item.data);
+                items.add(actor);
             }
         }
     }

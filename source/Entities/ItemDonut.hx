@@ -48,6 +48,6 @@ class ItemDonut extends Item
     {
         world.oneways.remove(platform);
         platform.destroy();
-        destroy();
+        super.onPickup();
     }
 }

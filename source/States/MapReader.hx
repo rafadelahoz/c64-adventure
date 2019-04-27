@@ -115,7 +115,8 @@ class MapReader
         if (room.actors != null)
         {
             for (actor in room.actors) {
-                trace("Actor " + actor);
+                // trace("Actor " + actor);
+                // TODO: Instantiate actors?
             }
         }
     }

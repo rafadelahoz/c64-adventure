@@ -150,8 +150,56 @@ class Player extends Actor
                     {
                         carrying.onRelease();
                         // Reposition from center
-                        var deltaX : Float = carrying.x - (facing == Left ? x + width : x);
-                        carrying.x = (facing == Left ? x + width : x);
+                        carrying.y += 1;
+
+                        var deltaX : Float = 0;
+                        var solidAtLeft : Bool = overlapsAt(x-7, y, world.solids);
+                        var solidAtRight : Bool = overlapsAt(x+7, y, world.solids);
+                        
+                        if (solidAtLeft && solidAtRight)
+                        {
+                            var done : Bool = false;
+                            // Slow positioning?
+                            for (xx in Std.int(x+offset.x)...Std.int(x-3))
+                            {
+                                if (!overlapsAt(xx, y, world.solids))
+                                {
+                                    carrying.x = xx;
+                                    done = true;
+                                    break;
+                                }
+                            }
+
+                            if (!done)
+                            {
+                                for (xx in Std.int(x-offset.x)...Std.int(x+3))
+                                {
+                                    if (!overlapsAt(xx, y, world.solids))
+                                    {
+                                        carrying.x = xx;
+                                        done = true;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (!done)
+                            {
+                                // Can't position?
+                                carrying.x = x;
+                                trace("Positioning failed");
+                            }
+                        }
+                        else if (solidAtLeft)
+                        {
+                            deltaX = carrying.x - (x + offset.x);
+                            carrying.x = x + offset.x;
+                        }
+                        else if (solidAtRight)
+                        {
+                            deltaX = carrying.x - (x - offset.x);
+                            carrying.x = x - offset.x;
+                        }
                         carrying.moveX(deltaX);
 
                         carrying = null;
@@ -379,11 +427,14 @@ class Player extends Actor
         if (carrying != null)
         {
             if (facing == Left)
-                carrying.x = x - carrying.width + 1;
+                //carrying.moveX(x - carrying.width - carrying.x);
+                carrying.x = x - carrying.width;
             else
-                carrying.x = x + width - 1;
+                // carrying.moveX(x + width - carrying.x);
+                carrying.x = x + width;
 
-            carrying.y = y + height/2 - carrying.height;
+            // carrying.moveY(y + height/2 - carrying.height/2 - 2 - carrying.y);
+            carrying.y = y + height/2 - carrying.height/2 - 2;
         }
 
         // groundProbe.update(elapsed);
