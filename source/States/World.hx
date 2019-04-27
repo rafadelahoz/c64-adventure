@@ -1,5 +1,6 @@
 package;
 
+import flixel.input.gamepad.lists.FlxGamepadMotionValueList;
 import Inventory.ItemData;
 import MapReader.ActorData;
 import flixel.FlxBasic;
@@ -256,7 +257,7 @@ class World extends FlxState
         {
             // TODO: Check item type and act accordingly
             // if (item.type == "BANANAS")
-            var itemActor : Item = new Item(player.x, player.y, this, item);
+            var itemActor : Item = spawnItem(item);
             if (player.onUseItem(itemActor)) 
             {
                 items.add(itemActor);
@@ -268,6 +269,17 @@ class World extends FlxState
             {
                 itemActor.destroy();
             }
+        }
+    }
+
+    function spawnItem(item : ItemData) : Item
+    {
+        switch (item.type)
+        {
+            case "DONUT":
+                return new ItemDonut(player.x, player.y, this, item);
+            default:
+                return new Item(player.x, player.y, this, item);
         }
     }
 
@@ -373,6 +385,13 @@ class World extends FlxState
                     "   " + (""+player.haccel).substr(0, 4) + "\n" +
                     "   " + (""+player.xRemainder).substr(0, 4) + "\n" + */
                     "";
+
+        if (FlxG.keys.justPressed.D)
+        {
+            Inventory.Add({
+                type: "DONUT", label: "Cool Donut", id: "xxx"
+            });
+        }
     }
 
     function updateCursor()

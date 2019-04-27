@@ -61,7 +61,8 @@ class Inventory
     // Test purposes only!
     public static function Randomize()
     {
-        var types : Array<String> = ["Mallet", "Cacti", "Dandelion", "Big dragon", "Jumpo", "Whatever", "Red potion", "Rock monster", "Skeleton", "Skele throw"];
+        // var types : Array<String> = ["Mallet", "Cacti", "Dandelion", "Big dragon", "Jumpo", "Whatever", "Red potion", "Rock monster", "Skeleton", "Skele throw"];
+        var types : Array<String> = ["KEY", "APPLE", "DONUT", "STAR", "POTION", "POTION", "SHRIMP"];
         var type : String = null;
 
         items = [];

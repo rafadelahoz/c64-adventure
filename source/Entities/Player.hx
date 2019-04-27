@@ -170,7 +170,7 @@ class Player extends Actor
                     var item : Item = findClosestItem(items);
                     if (item != null && Inventory.Add(item.data))
                     {
-                        item.destroy();
+                        item.onPickup();
                     }
                 }
 
@@ -369,9 +369,6 @@ class Player extends Actor
             debug = !debug;
 
         solid = (!debug);
-
-        groundProbe.x = x;
-        groundProbe.y = y + height;
 
         super.update(elapsed);
 
