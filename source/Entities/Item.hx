@@ -47,7 +47,7 @@ class Item extends Actor
             case "STAR":
                 animation.add("idle", [4]);
             case "POTION":
-                animation.add("idle", [FlxG.random.getObject([5, 6])]);
+                animation.add("idle", [data.properties.flavour]);
             case "SHRIMP":
                 animation.add("idle", [7]);
             default:
@@ -76,6 +76,16 @@ class Item extends Actor
         }
 
         super.update(elapsed);
+
+        // Good items stay in room bounds
+        if (x < world.left)
+            x = world.left;
+        else if (x > world.right - width)
+            x = world.right - width;
+        if (y < world.top)
+            y = world.top;
+        else if (y > world.bottom)
+            y = world.bottom;
 
         groundProbe.x = x;
         groundProbe.y = y + height;

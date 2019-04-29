@@ -72,7 +72,8 @@ class Inventory
             items.push({
                 type: type,
                 label: type,
-                id: null
+                id: null,
+                properties: (type == "POTION" ? {"flavour": FlxG.random.int(5, 6)} : null)
             });
         }
     }
@@ -83,4 +84,5 @@ typedef ItemData = {
     var label : String;
     var id : String;
     // other props?
+    var ?properties : Dynamic;
 }

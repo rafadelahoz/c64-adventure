@@ -5,16 +5,11 @@
 - Teleports between rooms
 - [?] Moving platforms
 - Kill player
+    - Player touches something bad with no hp left
+    - Screen bg turns red, player and the killer entity are displayed only
+    - Wait for a sec, player dissappears in a cloud puff
+    - Options appear: "AGAIN" "TO MAP"
 - Player hp?
-
-- [DONE] Player picks things
-    - [DONE] Press down while over it to put it in inventory directly
-
-- Player carries things
-    - ? Things to have body
-        - Can't go through walls with them -> Can't climb!
-        - Increase player width while carrying
-        - When picking up
 
 - Player using inventory
     - [DONE] Select current item with Select
@@ -36,6 +31,14 @@
                     - [DONE] Can be aborted by player (because of state, ask first!)
                 - Generate "item" entity with type, id, other props
                     - Graphic to be extracted given type?
+                        - Item database
+
+
+
+- Pause effect for when things are happening
+    - Makes things look jankier
+    - Stop movement and all (not animations?) for 0.5s
+    - Play some fx for things dissapearing (i.e. cloud puff)
 
 - ? Alternate inventory
     - Use Select to select the inventory slot (even if empty)
@@ -95,6 +98,7 @@
 - Gamestatus with
     - Switches map (boolean variables)
     - Variables map (multitype variables, string, numeric)
+    - LRAM with switches for the current map only?
 
 - Maps and things
     - List of available maps for quick access (will be replaced by world map)
@@ -115,6 +119,14 @@
 - Game start:
     - Customize player (name, sprite, color)
 
+### Maybe not
+
+- [???] Player carries things
+    - ? Things to have body
+        - Can't go through walls with them -> Can't climb!
+        - Increase player width while carrying
+        - When picking up
+
 ## Current
 
 ## Done
@@ -129,6 +141,9 @@
     - Signs were inverted
 - [FIXED] Navigating between rooms fails sometimes
 - [FIXED] Player releasing item fails on the end of 1 tile high tunnels
+- [DONE] Player picks things
+    - [DONE] Press down while over it to put it in inventory directly
+- [DONE] Don't drop things outside the room area
 
 ## Descoped
 

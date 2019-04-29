@@ -33,7 +33,7 @@ class Player extends Actor
     public var state : State;
 
     var onAir : Bool;
-    var carrying : Item;
+    public var carrying : Item;
 
     public var hspeed : Float;
     public var vspeed : Float;

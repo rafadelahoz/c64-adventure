@@ -117,6 +117,7 @@ class MapReader
             for (actor in room.actors) {
                 // trace("Actor " + actor);
                 // TODO: Instantiate actors?
+                // Check if they have to be created, using LRAM, WRAM
             }
         }
     }
@@ -125,11 +126,8 @@ class MapReader
     {
         for (room in mapData.rooms) 
         {
-            if (room.actors != null) 
-            {
-                if (findActor(room, "spawn") != null)
-                    return room.id;
-            }
+            if (findActor(room, "spawn") != null)
+                return room.id;
         }
 
         return -1;

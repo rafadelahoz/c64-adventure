@@ -49,6 +49,11 @@ class World extends FlxState
 
     var label : flixel.text.FlxBitmapText;
 
+    public var left     (get, null) : Float;
+    public var right    (get, null) : Float;
+    public var top      (get, null) : Float;
+    public var bottom   (get, null) : Float;
+
     public function new(?TransitionData : TransitionData = null)
     {
         super();
@@ -349,7 +354,7 @@ class World extends FlxState
         trace("Storing items of room " + roomData.id);
         for (item in items)
         {
-            if (item != null && item.alive)
+            if (item != null && item.alive && player.carrying != item)
             {
                 itemActor = cast(item, Item);
                 trace("Storing " + itemActor);
@@ -379,6 +384,26 @@ class World extends FlxState
                 items.add(actor);
             }
         }
+    }
+
+    inline function get_left() : Float
+    {
+        return 0;
+    }
+
+    inline function get_right() : Float
+    {
+        return roomData.columns*7;
+    }
+
+    inline function get_top() : Float
+    {
+        return 0;
+    }
+
+    inline function get_bottom() : Float
+    {
+        return roomData.rows*14;
     }
 
     /* FUNNY DEBUG AREA */
