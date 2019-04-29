@@ -18,7 +18,9 @@
         - If we don't keep it, it's safer, but player can only take things out of the level when properly leaving
             - More puzzle possibilities, maybe
                 - Item to leave the level anywere without losing your items: useful for farming
-        - [DONE] In order to restart we need to keep the original inventory in LRAM and restore it on restart-exit
+        - In order to restart we need to 
+            - [DONE] keep the original inventory in LRAM and restore it on restart-exit
+            - Checkpoints have to store temporary inventory without overwriting the original one
 
 
 - Player using inventory

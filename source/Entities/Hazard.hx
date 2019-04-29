@@ -2,6 +2,8 @@ package;
 
 class Hazard extends Actor
 {
+    public static var TypeSpikes (default, never) : String = "spikes";
+    
     public var type : String;
     public var power : Int;
 
@@ -12,7 +14,15 @@ class Hazard extends Actor
         type = Type;
 
         // TODO: Use type to configure graphic, power
-        makeGraphic(7, 14, 0xFFFF000a);
-        power = 6;
+        switch (type)
+        {
+            case TypeSpikes:
+                loadGraphic("assets/images/hazards.png", true, 7, 14);
+                animation.add("idle", [0]);
+                animation.play("idle");
+            default:
+                makeGraphic(7, 14, 0xFFFF000a);
+                power = 6;
+        }
     }
 }

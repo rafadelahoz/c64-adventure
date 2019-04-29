@@ -549,7 +549,10 @@ class Player extends Actor
         world.onPlayerDead();
         visible = true;
         if (killer != null)
+        {
             killer.visible = true;
+            world.add(killer);
+        }
         new FlxTimer().start(1, function(t:FlxTimer) {
             destroy();
 
