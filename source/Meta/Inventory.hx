@@ -77,6 +77,33 @@ class Inventory
             });
         }
     }
+
+    public static function Backup() : Array<ItemData>
+    {
+        var copy : Array<ItemData> = [];
+
+        for (item in items)
+        {
+            copy.push(clone(item));
+        }
+
+        return copy;
+    }
+
+    public static function Restore(backup : Array<ItemData>) : Void
+    {
+        items = backup;
+    }
+
+    static function clone(item : ItemData) : ItemData
+    {
+        return {
+            type: item.type,
+            label: item.label,
+            id: item.id,
+            properties: item.properties
+        };
+    }
 }
 
 typedef ItemData = {

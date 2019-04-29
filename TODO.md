@@ -11,6 +11,16 @@
     - Options appear: "AGAIN" "TO MAP"
 - Player hp?
 
+- On player death:
+    - Restart level or exit to map
+    - Is inventory kept?
+        - [NOPE] If we keep it and restart level, player may have items she shouldn't or even make the level unplayable? lost a key item?
+        - If we don't keep it, it's safer, but player can only take things out of the level when properly leaving
+            - More puzzle possibilities, maybe
+                - Item to leave the level anywere without losing your items: useful for farming
+        - [DONE] In order to restart we need to keep the original inventory in LRAM and restore it on restart-exit
+
+
 - Player using inventory
     - [DONE] Select current item with Select
     - Press B to use selected item
@@ -32,8 +42,6 @@
                 - Generate "item" entity with type, id, other props
                     - Graphic to be extracted given type?
                         - Item database
-
-
 
 - Pause effect for when things are happening
     - Makes things look jankier

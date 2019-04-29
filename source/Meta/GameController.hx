@@ -25,7 +25,17 @@ class GameController
             GameStatus.room = 0;
 
         LRAM.Init();
+        LRAM.inventoryOnEnter = Inventory.Backup();
 
         FlxG.switchState(new World());
+    }
+
+    public static function RestartMap()
+    {
+        // TODO: Keep inventory? Set it to initial?
+        Inventory.Restore(LRAM.inventoryOnEnter);
+        
+        // TODO: Find hospital, checkpoint...? for that, avoid EnterMap
+        EnterMap();
     }
 }

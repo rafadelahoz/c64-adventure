@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxSpriteUtil;
 import flixel.input.gamepad.lists.FlxGamepadMotionValueList;
 import Inventory.ItemData;
 import MapReader.ActorData;
@@ -32,10 +33,13 @@ class World extends FlxState
     public var hudGroup : FlxGroup;
     public var hud : Hud;
 
+    var background : FlxSprite;
+
     public var platforms : FlxGroup;
     public var solids : FlxGroup;
     public var oneways : FlxGroup;
     public var ladders : FlxGroup;
+    public var hazards : FlxGroup;
 
     var triggers : FlxGroup;
     public var items : FlxGroup;
@@ -72,10 +76,10 @@ class World extends FlxState
         // var bg = new flixel.addons.display.FlxBackdrop("assets/images/bg.png");//,1, 1, false, false);
         // bg.cameras = [screencam];
 
-        var bg = new FlxSprite(0, 0);
-        bg.makeGraphic(210, 156, mapReader.color(roomData.colors[0]));
-        bg.scrollFactor.set(0, 0);
-        add(bg);
+        background = new FlxSprite(0, 0);
+        background.makeGraphic(210, 156, mapReader.color(roomData.colors[0]));
+        background.scrollFactor.set(0, 0);
+        add(background);
 
         solids = new FlxGroup();
         add(solids);
@@ -95,6 +99,9 @@ class World extends FlxState
 
         ladders = new FlxGroup();
         add(ladders);
+
+        hazards = new FlxGroup();
+        add(hazards);
 
         triggers = new FlxGroup();
         add(triggers);
@@ -122,7 +129,7 @@ class World extends FlxState
         add(grid);
 
         screencam.follow(player, flixel.FlxCamera.FlxCameraFollowStyle.PLATFORMER);
-        bg.cameras = [screencam];
+        background.cameras = [screencam];
 
         super.create();
 
@@ -229,6 +236,11 @@ class World extends FlxState
         player.preupdate();
 
         /* Handle overlaps */
+        // Player vs hazards
+        FlxG.overlap(player, hazards, function(p : Player, hazard : Hazard) {
+            p.onCollisionWithHazard(hazard);
+        });
+
         // Player vs triggers
         triggers.forEachExists(function(t:FlxBasic) {
             cast(t, Solid).color = 0xFFFFFFFF;
@@ -386,6 +398,23 @@ class World extends FlxState
         }
     }
 
+    public function onPlayerDead() 
+    {
+        FlxSpriteUtil.fill(background, 0xFFFF000a);
+        
+        tilemapBG.visible = false;
+        tilemapFG.visible = false;
+        
+        solids.visible = false;
+        solids.visible = false;
+        platforms.visible = false;
+        oneways.visible = false;
+        ladders.visible = false;
+        hazards.visible = false;
+        triggers.visible = false;
+        items.visible = false;
+    }
+
     inline function get_left() : Float
     {
         return 0;
@@ -423,7 +452,10 @@ class World extends FlxState
         if (FlxG.mouse.justPressed)
         {
             if (FlxG.keys.pressed.ALT)
-                oneways.add(new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 4, this));
+            {
+                // oneways.add(new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 4, this));
+                hazards.add(new Hazard(Std.int(x / 7)*7, Std.int(y / 14)*14, this, "spikes"));
+            }
             else if (FlxG.keys.pressed.SHIFT)
             {
                 // Create trigger

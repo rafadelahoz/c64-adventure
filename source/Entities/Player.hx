@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxTimer;
 import flixel.FlxBasic;
 import flixel.math.FlxMath;
 import flixel.math.FlxPoint;
@@ -9,7 +10,7 @@ import flixel.FlxObject;
 
 import World.PlayerData;
 
-enum State { Idle; Move; Air; Climb; }
+enum State { Idle; Move; Air; Climb; Dying; }
 
 class Player extends Actor
 {
@@ -336,6 +337,10 @@ class Player extends Actor
                     if (vspeed != 0)
                         x = FlxMath.lerp(x, ladder.x+ladder.width/2 - width/2 , 0.35);
                 }
+            case State.Dying:
+                vspeed = 0;
+                hspeed = 0;
+                haccel = 0;
             default:
                 trace("Don't know what to do with state = " + state);
         }
@@ -410,6 +415,8 @@ class Player extends Actor
                     animation.play("idle");
                 
                 flipX = (facing == Left);
+            case Dying:
+                animation.pause();
         }
         
         // Debug zone
@@ -527,6 +534,29 @@ class Player extends Actor
     function onVerticalCollision() : Void
     {
         vspeed = 0;
+    }
+
+    public function onCollisionWithHazard(hazard : Hazard)
+    {
+        // die?
+        handleDeath(hazard);
+    }
+
+    function handleDeath(?killer : FlxBasic = null)
+    {
+        state = Dying;
+        world.onPlayerDead();
+        visible = true;
+        if (killer != null)
+            killer.visible = true;
+        new FlxTimer().start(1, function(t:FlxTimer) {
+            destroy();
+
+            t.start(1, function(_t:FlxTimer) {
+                _t.destroy();
+                GameController.RestartMap();
+            });
+        });
     }
 
     public function getPlayerData(goingUp : Bool) : PlayerData
