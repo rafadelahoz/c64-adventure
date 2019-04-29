@@ -1,7 +1,6 @@
 package;
 
 import flixel.util.FlxSpriteUtil;
-import flixel.input.gamepad.lists.FlxGamepadMotionValueList;
 import Inventory.ItemData;
 import MapReader.ActorData;
 import flixel.FlxBasic;

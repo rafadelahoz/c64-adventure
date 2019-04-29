@@ -1,7 +1,6 @@
 package;
 
 import flixel.FlxSprite;
-import flixel.FlxG;
 import Inventory.ItemData;
 
 class Item extends Actor
