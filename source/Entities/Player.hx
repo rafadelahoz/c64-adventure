@@ -539,7 +539,8 @@ class Player extends Actor
     public function onCollisionWithHazard(hazard : Hazard)
     {
         // die?
-        handleDeath(hazard);
+        if (state != State.Dying)
+            handleDeath(hazard);
     }
 
     function handleDeath(?killer : FlxBasic = null)
@@ -554,7 +555,7 @@ class Player extends Actor
 
             t.start(1, function(_t:FlxTimer) {
                 _t.destroy();
-                GameController.RestartMap();
+                world.onPlayerDead(true);
             });
         });
     }

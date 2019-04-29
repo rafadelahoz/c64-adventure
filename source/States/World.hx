@@ -398,21 +398,29 @@ class World extends FlxState
         }
     }
 
-    public function onPlayerDead() 
+    public function onPlayerDead(?dissappeared : Bool = false) 
     {
-        FlxSpriteUtil.fill(background, 0xFFFF000a);
-        
-        tilemapBG.visible = false;
-        tilemapFG.visible = false;
-        
-        solids.visible = false;
-        solids.visible = false;
-        platforms.visible = false;
-        oneways.visible = false;
-        ladders.visible = false;
-        hazards.visible = false;
-        triggers.visible = false;
-        items.visible = false;
+        if (!dissappeared)
+        {
+            FlxSpriteUtil.fill(background, 0xFFFF000a);
+            
+            tilemapBG.visible = false;
+            tilemapFG.visible = false;
+            
+            solids.visible = false;
+            solids.visible = false;
+            platforms.visible = false;
+            oneways.visible = false;
+            ladders.visible = false;
+            hazards.visible = false;
+            triggers.visible = false;
+            items.visible = false;
+        }
+        else
+        {
+            var gameoverthing : GameOverThing = new GameOverThing(this);
+            addHudElement(gameoverthing);
+        }
     }
 
     inline function get_left() : Float
