@@ -20,9 +20,26 @@ class Hazard extends Actor
                 loadGraphic("assets/images/hazards.png", true, 7, 14);
                 animation.add("idle", [0]);
                 animation.play("idle");
+                power = 6;
             default:
                 makeGraphic(7, 14, 0xFFFF000a);
                 power = 6;
         }
+    }
+
+    public function damages(player : Player) : Int
+    {
+        var damage : Int  = power;
+
+        // Special checks given type
+        switch (type)
+        {
+            case TypeSpikes:
+                // Don't damage things that are not falling
+                if (player.vspeed <= 0)
+                    damage = -1;
+        }
+
+        return damage;
     }
 }

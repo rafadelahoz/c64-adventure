@@ -540,7 +540,10 @@ class Player extends Actor
     {
         // die?
         if (state != State.Dying)
-            handleDeath(hazard);
+        {
+            if (hazard.damages(this) > 0)
+                handleDeath(hazard);
+        }
     }
 
     function handleDeath(?killer : FlxBasic = null)
