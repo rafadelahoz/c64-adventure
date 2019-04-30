@@ -2,6 +2,8 @@
 
 ## Backlog
 
+- ERR: Going down a ladder into a new screen makes carried item lost
+
 - Teleports between rooms
 - [?] Moving platforms
 - Kill player

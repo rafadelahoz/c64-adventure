@@ -3,6 +3,7 @@ package;
 class Hazard extends Actor
 {
     public static var TypeSpikes (default, never) : String = "spikes";
+    public static var TypeStar(default, never) : String = "star";
     
     public var type : String;
     public var power : Int;
@@ -21,6 +22,10 @@ class Hazard extends Actor
                 animation.add("idle", [0]);
                 animation.play("idle");
                 power = 6;
+            case TypeStar:
+                makeGraphic(7, 14, 0x00FFFFFF);
+                flixel.util.FlxSpriteUtil.drawCircle(this, -1, -1, -1, 0xFFAAAA00);
+                power = 1;
             default:
                 makeGraphic(7, 14, 0xFFFF000a);
                 power = 6;

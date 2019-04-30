@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
 import flixel.FlxBasic;
 import flixel.math.FlxMath;
@@ -10,7 +11,7 @@ import flixel.FlxObject;
 
 import World.PlayerData;
 
-enum State { Idle; Acting; Climb; Dying; }
+enum State { Idle; Acting; Climb; Hurt; Dying; }
 
 class Player extends Actor
 {
@@ -48,6 +49,10 @@ class Player extends Actor
     var ladder : Solid;
 
     var actingTimer : FlxTimer;
+    var invulnerableTimer : FlxTimer;
+
+    var InvulnerableDuration : Float = 1;
+    var invulnerable : Bool;
 
     public var debug (default, null) : Bool = false;
 
@@ -59,6 +64,7 @@ class Player extends Actor
         animation.add('walk', [1, 0], 8);
         animation.add('jump', [1]);
         animation.add('act', [1]);
+        animation.add('hurt', [2]);
 
         animation.play('idle');
 
@@ -77,6 +83,7 @@ class Player extends Actor
         facing = PlayerData.facing;
 
         actingTimer = new FlxTimer();
+        invulnerableTimer = new FlxTimer();
 
         state = PlayerData.state;
         if (state == State.Climb)
@@ -97,6 +104,8 @@ class Player extends Actor
 
         // TODO: Read from PlayerData
         carrying = null;
+
+        invulnerable = false;
 
         groundProbe = new FlxSprite(0, 0);
         groundProbe.makeGraphic(Std.int(width), 1, 0xFFFFFFFF);
@@ -269,7 +278,7 @@ class Player extends Actor
                             x = FlxMath.lerp(x, ladder.x+ladder.width/2 - width/2 , 0.35);
                         }
 
-                        state = Climb;
+                        switchState(Climb);
                     }
                 }
                 
@@ -310,7 +319,7 @@ class Player extends Actor
                 {
                     ladder = null;
                     vspeed = 0;
-                    state = State.Idle;
+                    switchState(State.Idle);
                 }
                 else
                 {
@@ -337,13 +346,21 @@ class Player extends Actor
                     if (!onAir && vspeed == 0 && (Gamepad.left() || Gamepad.right()))
                     {
                         vspeed = 0;
-                        state = State.Idle;
+                        switchState(State.Idle);
                     }
 
                     // Reposition slowly
                     if (vspeed != 0)
                         x = FlxMath.lerp(x, ladder.x+ladder.width/2 - width/2 , 0.35);
                 }
+            case State.Hurt:
+                if (facing == Left)
+                    haccel = HorizontalAccel * 0.3;
+                else
+                    haccel = -HorizontalAccel * 0.3;
+
+                if (onAir)
+                    vspeed += Gravity;
             case State.Dying:
                 vspeed = 0;
                 hspeed = 0;
@@ -427,12 +444,20 @@ class Player extends Actor
                     animation.play("idle");
                 
                 flipX = (facing == Left);
+            case Hurt:
+                animation.play("hurt");
+                flipX = (facing == Left);
             case Dying:
                 animation.pause();
             case Acting:
                 // ?
                 animation.play("act");
         }
+
+        if (invulnerable)
+            flixel.util.FlxSpriteUtil.flicker(this);
+        else
+            FlxSpriteUtil.stopFlickering(this);
         
         // Debug zone
         if (FlxG.keys.justPressed.G)
@@ -481,6 +506,8 @@ class Player extends Actor
         {
             case Acting:
                 actingTimer.start(ActingDuration, onActingTimer);
+            case Hurt:
+                actingTimer.start(HurtDuration, onHurtTimer);
             default:
                 // nothing
         }
@@ -491,9 +518,14 @@ class Player extends Actor
     function onActingTimer(t : FlxTimer)
     {
         if (ladder == null)
-            state = Idle;
+            switchState(Idle);
         else
-            state = Climb;
+            switchState(Climb);
+    }
+
+    function onHurtTimer(t : FlxTimer)
+    {
+        switchState(Idle);
     }
 
     public function onUseItem(item : Item) : Bool
@@ -584,16 +616,47 @@ class Player extends Actor
     public function onCollisionWithHazard(hazard : Hazard)
     {
         // die?
-        if (state != State.Dying)
+        if (state != State.Hurt && state != State.Dying && !invulnerable)
         {
-            if (hazard.damages(this) > 0)
-                handleDeath(hazard);
+            var damage : Int = hazard.damages(this);
+            if (damage > -1)
+            {
+                if (LRAM.hp - damage < 0)
+                    handleDeath(hazard);
+                else
+                    onHit(damage, hazard);
+            }
+                
+        }
+    }
+
+    var HurtDuration : Float = 0.5;
+    public function onHit(damage : Int, by : Entity)
+    {
+        if (!invulnerable)
+        {
+            LRAM.hp -= damage;
+
+            if (by.x + by.width / 2 < x + width / 2)
+                facing = Left;
+            else
+                facing = Right;
+
+            hspeed = (facing == Right ? -1 : 1)*HorizontalSpeed*0.85;
+            vspeed = -VerticalSpeed*0.366;
+
+            invulnerable = true;
+            invulnerableTimer.start(InvulnerableDuration, function(t:FlxTimer) {
+                invulnerable = false;
+            });
+
+            switchState(Hurt);
         }
     }
 
     function handleDeath(?killer : FlxBasic = null)
     {
-        state = Dying;
+        switchState(Dying);
         // Hide everything, change bg color
         world.onPlayerDead();
 
