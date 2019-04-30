@@ -6,10 +6,16 @@
 - [?] Moving platforms
 - Kill player
     - Player touches something bad with no hp left
-    - Screen bg turns red, player and the killer entity are displayed only
+    - [DONE] Screen bg turns red, player and the killer entity are displayed only
     - Wait for a sec, player dissappears in a cloud puff
-    - Options appear: "AGAIN" "TO MAP"
-- Player hp?
+    - [DONE] Options appear: "AGAIN" "TO MAP"
+    - All items not present in the original inventory are lost
+        - Generate all instances and make them bounce away from player!
+- Player hp
+    - When player character is hit, it moves backwards considering contact point, and loses hp
+        - During this movement, no control is available
+    - A small period of invulnerability is granted, during which the player can move freely
+
 
 - On player death:
     - Restart level or exit to map
@@ -61,6 +67,8 @@
         - [THIS?] OR release quick to store, hold and release to carry and drop
 
 - Level RAM, world RAM
+    - Enemies status to be kept
+        - Until the player strays too far from the room? or always?
     - Items to be kept where they are placed until level is exited (on death they stay as well!)
         - Level RAM, initialized empty when entering the level 
             - Map of actor-id, room, position

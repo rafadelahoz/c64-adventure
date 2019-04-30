@@ -13,11 +13,6 @@ class Actor extends Entity
         yRemainder = 0;
     }
 
-    override public function update(elapsed : Float)
-    {
-        super.update(elapsed);
-    }
-
     public function moveX(amount : Float, ?callback : Void -> Void = null) : Void
     {
         xRemainder += amount;

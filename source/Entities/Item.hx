@@ -56,7 +56,7 @@ class Item extends Actor
         animation.play("idle");
     }
 
-    override public function update(elapsed : Float)
+    override public function onUpdate(elapsed : Float)
     {
         switch (state)
         {
@@ -74,7 +74,7 @@ class Item extends Actor
                 });
         }
 
-        super.update(elapsed);
+        super.onUpdate(elapsed);
 
         // Good items stay in room bounds
         if (x < world.left)

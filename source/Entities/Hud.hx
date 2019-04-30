@@ -12,6 +12,8 @@ class Hud extends FlxSpriteGroup
     var cursor : FlxSprite;
     var inventoryLabels : Array<FlxBitmapText>;
 
+    public var playerDead : Bool;
+
     public function new(World : World)
     {
         super(0, 0);
@@ -32,21 +34,26 @@ class Hud extends FlxSpriteGroup
         roomNameLabel.x = 194 - roomNameLabel.width/2;
         roomNameLabel.y = 174;
         add(roomNameLabel);
+
+        playerDead = false;
     }
 
     override public function update(elapsed : Float) : Void
     {
-        if (Inventory.cursor < 0 || Inventory.items.length <= 0)
-            cursor.y = -200;
-        else
+        if (!playerDead)
         {
-            cursor.y = 35 + 12*Inventory.cursor;
-            for (i in 0...inventoryLabels.length)
+            if (Inventory.cursor < 0 || Inventory.items.length <= 0)
+                cursor.y = -200;
+            else
             {
-                if (i == Inventory.cursor)
-                    inventoryLabels[i].color = 0xFF000000;
-                else
-                    inventoryLabels[i].color = 0xFFFFF0FF;
+                cursor.y = 35 + 12*Inventory.cursor;
+                for (i in 0...inventoryLabels.length)
+                {
+                    if (i == Inventory.cursor)
+                        inventoryLabels[i].color = 0xFF000000;
+                    else
+                        inventoryLabels[i].color = 0xFFFFF0FF;
+                }
             }
         }
 

@@ -14,8 +14,25 @@ class Entity extends FlxSprite
         moves = false;
     }
 
-    override public function update(elapsed : Float) : Void
+    public function onPause() {}
+
+    public function onUnpause() {}
+
+    public function onUpdate(elapsed : Float)
     {
         super.update(elapsed);
+    }
+
+    public function onPausedUpdate(elapsed : Float)
+    {
+        super.update(elapsed);
+    }
+
+    override public function update(elapsed : Float) : Void
+    {
+        if (!world.paused)
+            onUpdate(elapsed);
+        else
+            onPausedUpdate(elapsed);        
     }
 }

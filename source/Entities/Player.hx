@@ -10,7 +10,7 @@ import flixel.FlxObject;
 
 import World.PlayerData;
 
-enum State { Idle; Move; Air; Climb; Dying; }
+enum State { Idle; Acting; Climb; Dying; }
 
 class Player extends Actor
 {
@@ -41,9 +41,13 @@ class Player extends Actor
 
     public var haccel : Float;
 
+    // Used for ground collision checks
     var groundProbe : FlxSprite;
 
+    // Reference to the ladder currently being climbed
     var ladder : Solid;
+
+    var actingTimer : FlxTimer;
 
     public var debug (default, null) : Bool = false;
 
@@ -54,6 +58,7 @@ class Player extends Actor
         animation.add('idle', [0]);
         animation.add('walk', [1, 0], 8);
         animation.add('jump', [1]);
+        animation.add('act', [1]);
 
         animation.play('idle');
 
@@ -70,6 +75,8 @@ class Player extends Actor
         haccel = 0;
 
         facing = PlayerData.facing;
+
+        actingTimer = new FlxTimer();
 
         state = PlayerData.state;
         if (state == State.Climb)
@@ -115,14 +122,14 @@ class Player extends Actor
         });
     }
 
-    override public function update(elapsed : Float) : Void
+    override public function onUpdate(elapsed : Float) : Void
     {
         var wasOnAir : Bool = onAir;
         onAir = checkOnAir();
 
         switch (state)
         {
-            case State.Idle, State.Move, State.Air:
+            case State.Idle:
                 if (!wasOnAir && onAir && coyoteBuffer == 0)
                 {
                     coyoteBuffer = CoyoteTime;
@@ -341,11 +348,16 @@ class Player extends Actor
                 vspeed = 0;
                 hspeed = 0;
                 haccel = 0;
-            default:
-                trace("Don't know what to do with state = " + state);
+            case State.Acting:
+                // ?
+                if (ladder != null)
+                    vspeed = 0;
+                else if (onAir)
+                    vspeed += Gravity;
+
+                haccel = 0;
         }
         
-
         hspeed += haccel;
         if (Math.abs(hspeed) > HorizontalSpeed)
         {
@@ -394,7 +406,7 @@ class Player extends Actor
         // Graphics
         switch (state)
         {
-            case Idle, Move, Air:
+            case Idle:
                 if (onAir)
                 {
                     animation.play("jump");
@@ -417,6 +429,9 @@ class Player extends Actor
                 flipX = (facing == Left);
             case Dying:
                 animation.pause();
+            case Acting:
+                // ?
+                animation.play("act");
         }
         
         // Debug zone
@@ -425,7 +440,7 @@ class Player extends Actor
 
         solid = (!debug);
 
-        super.update(elapsed);
+        super.onUpdate(elapsed);
 
         groundProbe.x = x;
         groundProbe.y = y + height;
@@ -447,10 +462,38 @@ class Player extends Actor
         // groundProbe.update(elapsed);
     }
 
+    override public function onPausedUpdate(elapsed : Float)
+    {
+        animation.pause();
+    }
+
     override public function draw()
     {
         super.draw();
         // groundProbe.draw();
+    }
+
+    // TODO: This to be configured by... item used?
+    var ActingDuration : Float = 0.15;
+    function switchState(newState : State)
+    {
+        switch (newState)
+        {
+            case Acting:
+                actingTimer.start(ActingDuration, onActingTimer);
+            default:
+                // nothing
+        }
+
+        state = newState;
+    }
+
+    function onActingTimer(t : FlxTimer)
+    {
+        if (ladder == null)
+            state = Idle;
+        else
+            state = Climb;
     }
 
     public function onUseItem(item : Item) : Bool
@@ -459,6 +502,8 @@ class Player extends Actor
         {
             carrying = item;
             item.onCarry();
+            switchState(Acting);
+
             return true;
         }
 
@@ -467,7 +512,7 @@ class Player extends Actor
 
     function canUseItem()
     {
-        return (state == State.Idle || state == State.Move || state == State.Air) &&
+        return (state == State.Idle) &&
                 carrying == null;
     }
 
@@ -549,16 +594,34 @@ class Player extends Actor
     function handleDeath(?killer : FlxBasic = null)
     {
         state = Dying;
+        // Hide everything, change bg color
         world.onPlayerDead();
+
+        // Make sure we are visible, ...
         visible = true;
+        
+        // ...also our carried item, ...
+        if (carrying != null)
+        {
+            carrying.visible = true;
+            world.add(carrying);
+        }
+
+        // ...and the killer as well
         if (killer != null)
         {
             killer.visible = true;
             world.add(killer);
         }
-        new FlxTimer().start(1, function(t:FlxTimer) {
-            destroy();
 
+        // Now wait for a tad
+        new FlxTimer().start(1, function(t:FlxTimer) {
+            // Then die
+            destroy();
+            if (carrying != null)
+                carrying.destroy();
+
+            // Then game over
             t.start(1, function(_t:FlxTimer) {
                 _t.destroy();
                 world.onPlayerDead(true);

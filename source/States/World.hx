@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxTimer;
 import flixel.util.FlxSpriteUtil;
 import Inventory.ItemData;
 import MapReader.ActorData;
@@ -56,6 +57,9 @@ class World extends FlxState
     public var right    (get, null) : Float;
     public var top      (get, null) : Float;
     public var bottom   (get, null) : Float;
+
+    public var paused : Bool;
+    var pauseTimer : FlxTimer;
 
     public function new(?TransitionData : TransitionData = null)
     {
@@ -129,6 +133,9 @@ class World extends FlxState
 
         screencam.follow(player, flixel.FlxCamera.FlxCameraFollowStyle.PLATFORMER);
         background.cameras = [screencam];
+
+        pauseTimer = new FlxTimer();
+        paused = false;
 
         super.create();
 
@@ -399,6 +406,8 @@ class World extends FlxState
 
     public function onPlayerDead(?dissappeared : Bool = false) 
     {
+        hud.playerDead = true;
+
         if (!dissappeared)
         {
             FlxSpriteUtil.fill(background, 0xFFFF000a);
@@ -420,6 +429,25 @@ class World extends FlxState
             var gameoverthing : GameOverThing = new GameOverThing(this);
             addHudElement(gameoverthing);
         }
+    }
+
+    public function pause(?duration : Float = -1, ?callback : Void -> Void = null)
+    {
+        if (paused)
+            return;
+        
+        paused = true;
+        if (duration > 0)
+            pauseTimer.start(duration, function(t:FlxTimer) {
+                if (callback != null)
+                    callback();
+                unpause();
+            });
+    }
+
+    public function unpause()
+    {
+        paused = false;
     }
 
     inline function get_left() : Float

@@ -53,14 +53,21 @@ class LockSolid extends Solid
             width = closedWidth;
             height = closedHeight;
 
+            var handled : Bool = false;
             FlxG.overlap(this, world.items, function(self : LockSolid, item : Item) {
+                if (handled)
+                    return;
+
                 if (item.data.type == "KEY")
                 {
                     // TODO: Check color
                     if (closed)
                     {
-                        closed = false;
-                        item.destroy();
+                        handled = true;
+                        world.pause(0.5, function() {
+                            closed = false;
+                            item.destroy();
+                        });
                     }
                 }
             });
