@@ -9,7 +9,7 @@ class GameStatus
     public static function Init()
     {
         playerColor = 0xFFbfce72;
-        map = "map-ents";
+        map = "desert";
         room = 1;
 
         Inventory.Init();

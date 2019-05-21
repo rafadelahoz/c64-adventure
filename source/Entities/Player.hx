@@ -372,7 +372,8 @@ class Player extends Actor
                 else if (onAir)
                     vspeed += Gravity;
 
-                haccel = 0;
+                if (!onAir)
+                    haccel = 0;
         }
         
         hspeed += haccel;
