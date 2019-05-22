@@ -18,7 +18,6 @@
         - During this movement, no control is available
     - A small period of invulnerability is granted, during which the player can move freely
 
-
 - On player death:
     - Restart level or exit to map
     - Is inventory kept?
@@ -30,6 +29,15 @@
             - [DONE] keep the original inventory in LRAM and restore it on restart-exit
             - Checkpoints have to store temporary inventory without overwriting the original one
 
+
+- Hazards
+    - Damage player / kill directly
+
+- Enemies
+    - Damage player
+    - Have behaviours
+        - Walk around
+        - Jump around
 
 - Player using inventory
     - [DONE] Select current item with Select
