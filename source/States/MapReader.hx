@@ -1,6 +1,5 @@
 package;
 
-import hscript.Expr.CType;
 import flixel.group.FlxGroup;
 import lime.utils.Assets;
 import haxe.Json;

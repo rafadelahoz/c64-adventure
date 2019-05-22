@@ -13,6 +13,11 @@ class GameController
         GameStatus.Init();
     }
 
+    public static function EnterWorldMap()
+    {
+        FlxG.switchState(new MapListRoom());
+    }
+
     public static function EnterMap()
     {
         // Locate initial room using a MapReader
