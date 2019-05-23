@@ -692,6 +692,11 @@ class Player extends Actor
         });
     }
 
+    public function triggerDeath()
+    {
+        handleDeath();
+    }
+
     public function getPlayerData(goingUp : Bool) : PlayerData
     {
         return {
