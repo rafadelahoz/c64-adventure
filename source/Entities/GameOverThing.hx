@@ -65,7 +65,7 @@ class GameOverThing extends FlxSpriteGroup
                 GameController.RestartMap();
             else
                 // TODO: Back to map selection
-                GameController.RestartMap();
+                GameController.AbandonMap();
         }
 
         super.update(elapsed);

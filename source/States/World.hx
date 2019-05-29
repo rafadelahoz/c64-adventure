@@ -528,6 +528,11 @@ class World extends FlxState
                 type: "DONUT", label: "Cool Donut", id: "xxx"
             });
         }
+
+        if (FlxG.keys.justPressed.ESCAPE)
+        {
+            player.triggerDeath();
+        }
     }
 
     function updateCursor()

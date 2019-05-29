@@ -13,6 +13,16 @@ class GameController
         GameStatus.Init();
     }
 
+    public static function EnterWorldMap()
+    {
+        FlxG.switchState(new MapListRoom());
+    }
+
+    public static function SetCurrentMap(name : String)
+    {
+        GameStatus.map = name;
+    }
+
     public static function EnterMap()
     {
         // Locate initial room using a MapReader
@@ -37,5 +47,11 @@ class GameController
         
         // TODO: Find hospital, checkpoint...? for that, avoid EnterMap
         EnterMap();
+    }
+
+    public static function AbandonMap()
+    {
+        Inventory.Restore(LRAM.inventoryOnEnter);
+        EnterWorldMap();
     }
 }

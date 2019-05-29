@@ -14,6 +14,6 @@ class Boot extends FlxState
         text.PixelText.Init();
 
         GameController.Init();
-        GameController.EnterMap();
+        GameController.EnterWorldMap();
     }
 }

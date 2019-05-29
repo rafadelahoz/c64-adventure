@@ -17,7 +17,7 @@
     - When player character is hit, it moves backwards considering contact point, and loses hp
         - During this movement, no control is available
     - A small period of invulnerability is granted, during which the player can move freely
-
+    - Display HP
 
 - On player death:
     - Restart level or exit to map
@@ -30,6 +30,15 @@
             - [DONE] keep the original inventory in LRAM and restore it on restart-exit
             - Checkpoints have to store temporary inventory without overwriting the original one
 
+
+- Hazards
+    - Damage player / kill directly
+
+- Enemies
+    - Damage player
+    - Have behaviours
+        - Walk around
+        - Jump around
 
 - Player using inventory
     - [DONE] Select current item with Select
@@ -57,6 +66,7 @@
     - Makes things look jankier
     - Stop movement and all (not animations?) for 0.5s
     - Play some fx for things dissapearing (i.e. cloud puff)
+        - Cloud puff to not be affected by pause
 
 - ? Alternate inventory
     - Use Select to select the inventory slot (even if empty)
@@ -121,7 +131,7 @@
     - LRAM with switches for the current map only?
 
 - Maps and things
-    - List of available maps for quick access (will be replaced by world map)
+    - [DONE] List of available maps for quick access (will be replaced by world map)
     - [DONE] Maps to start in the spawn point
     - Maps to have exits
         - Exits are uniquely identified (mapid+exitid?)
@@ -134,7 +144,7 @@
     - Map name (display on top/bottom, or this is for rooms?)
     
 - Gameplay loop
-    - Player can get killed, restart the map, get kicked to world map
+    - [DONE] Player can get killed, restart the map, get kicked to world map
 
 - Game start:
     - Customize player (name, sprite, color)
