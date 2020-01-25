@@ -1,9 +1,11 @@
 package;
 
+import flixel.FlxG;
+
 class Hazard extends Actor
 {
     public static var TypeSpikes (default, never) : String = "spikes";
-    public static var TypeStar(default, never) : String = "star";
+    public static var TypeStar(default, never) : String = "pointy";
     
     public var type : String;
     public var power : Int;
@@ -21,10 +23,22 @@ class Hazard extends Actor
                 loadGraphic("assets/images/hazards.png", true, 7, 14);
                 animation.add("idle", [0]);
                 animation.play("idle");
+                setSize(7, 10);
+                offset.y = 4;
+                y += 4;
+                
                 power = 6;
             case TypeStar:
-                makeGraphic(7, 14, 0x00FFFFFF);
-                flixel.util.FlxSpriteUtil.drawCircle(this, -1, -1, -1, 0xFFAAAA00);
+                // makeGraphic(7, 14, 0x00FFFFFF);
+                // flixel.util.FlxSpriteUtil.drawCircle(this, -1, -1, -1, 0xFFAAAA00);
+                loadGraphic("assets/images/hazards.png", true, 7, 14);
+                animation.add("idle", [1]);
+                animation.play("idle");
+                setSize(5, 12);
+                offset.set(1, 1);
+                x += 1;
+                y += 1;
+
                 power = 1;
             default:
                 makeGraphic(7, 14, 0xFFFF000a);

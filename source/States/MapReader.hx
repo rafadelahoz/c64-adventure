@@ -122,6 +122,9 @@ class MapReader
                     case "spikes":
                         var spikes : Hazard = new Hazard(actor.x*7, actor.y*14, world, actor.type, actor.properties);
                         world.hazards.add(spikes);
+                    case "pointy":
+                        var pointy : Hazard = new Hazard(actor.x*7, actor.y*14, world, actor.type, actor.properties);
+                        world.hazards.add(pointy);
                     default:
                         // nop
                 }
