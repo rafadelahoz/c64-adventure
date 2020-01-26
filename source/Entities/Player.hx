@@ -26,6 +26,7 @@ class Player extends Actor
     var Gravity : Float = 0.2; // 0.175; // 0.35;
     var MaxVspeed : Float = 15; // 12.5; // 25;
     var ClimbSpeed : Float = 1;
+    var DoubleJumpFactor : Float = 0.85;
 
     var HorizontalAccel : Float = 0.2;
     var Friction : Float = 0.6;
@@ -303,9 +304,22 @@ class Player extends Actor
                         haccel = 0;
                     }
 
-                    if ((!onAir || coyoteBuffer > 0) && Gamepad.justPressed(Gamepad.A))
+                    // Special case: double jump shrimps
+                    var carryingShrimp : Bool = (carrying != null && carrying.data.type == "SHRIMP");
+
+                    if ((!onAir || coyoteBuffer > 0 || carryingShrimp) && Gamepad.justPressed(Gamepad.A))
                     {
                         vspeed = -VerticalSpeed;
+
+                        // Make sure to only use the shrimp on a double jump
+                        if (onAir && carryingShrimp) 
+                        {
+                            // Use the shrimp
+                            carrying.destroy();
+                            carrying = null;
+                            vspeed *= DoubleJumpFactor;
+                        }
+                        
                         onAir = true;
                         coyoteBuffer = 0;
                     }
