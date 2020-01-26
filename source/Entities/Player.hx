@@ -1,5 +1,6 @@
 package;
 
+import flixel.group.FlxGroup.FlxTypedGroupIterator;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
 import flixel.FlxBasic;
@@ -90,10 +91,13 @@ class Player extends Actor
         {
             // Initialize!
             var ladders : Array<Solid> = [];
-            FlxG.overlap(this, world.ladders, function(self : Player, aLadder : Solid) {
-                aLadder.color = 0xFF00FF0a;
-                ladders.push(aLadder);
-            });
+            var iterator : FlxTypedGroupIterator<FlxBasic> = world.ladders.iterator();
+            while (iterator.hasNext())
+            {
+                var aLadder : Solid = cast(iterator.next(), Solid);
+                if (this.overlaps(aLadder))
+                    ladders.push(aLadder);
+            }
 
             ladder = findClosestLadder(ladders);
         }
