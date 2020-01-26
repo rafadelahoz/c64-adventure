@@ -102,7 +102,7 @@ class MapReader
     {
         for (room in mapData.rooms)
         {
-            if (room.id == id)
+            if (room != null && room.id == id)
                 return room;
         }
 

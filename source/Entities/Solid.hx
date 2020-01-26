@@ -28,6 +28,8 @@ class Solid extends Entity
             makeGraphic(Std.int(Width), Std.int(Height), c);
 
         setSize(Std.int(Width), Std.int(Height));
+
+        visible = false;
     }
 
     override public function onUpdate(elapsed : Float)
