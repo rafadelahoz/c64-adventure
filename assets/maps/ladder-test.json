@@ -1020,7 +1020,7 @@
 					"h": 1
 				}
 			],
-			"gridX": 0,
+			"gridX": 1,
 			"gridY": 2
 		},
 		null,
@@ -2550,7 +2550,7 @@
 				0
 			],
 			"actors": [],
-			"gridX": 2,
+			"gridX": 3,
 			"gridY": 2
 		},
 		{
@@ -3067,7 +3067,7 @@
 				0
 			],
 			"actors": [],
-			"gridX": 2,
+			"gridX": 3,
 			"gridY": 3
 		},
 		{
@@ -4080,7 +4080,7 @@
 			],
 			"actors": [],
 			"gridY": 1,
-			"gridX": 0
+			"gridX": 1
 		},
 		{
 			"id": 6,
@@ -4596,7 +4596,7 @@
 				0
 			],
 			"actors": [],
-			"gridX": 2,
+			"gridX": 3,
 			"gridY": 1
 		},
 		{
@@ -5114,7 +5114,7 @@
 			],
 			"actors": [],
 			"gridY": 0,
-			"gridX": 0
+			"gridX": 1
 		},
 		{
 			"id": 8,
@@ -5630,26 +5630,31 @@
 				1
 			],
 			"actors": [],
-			"gridX": 1,
+			"gridX": 2,
 			"gridY": 0
-		}
+		},
+		null
 	],
 	"grid": [
+		null,
 		7,
 		8,
+		null,
 		null,
 		5,
 		5,
 		6,
+		null,
 		0,
 		0,
 		3,
+		null,
 		2,
 		2,
 		4
 	],
 	"size": {
-		"x": 3,
+		"x": 4,
 		"y": 4
 	}
 }
