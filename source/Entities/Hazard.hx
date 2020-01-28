@@ -1,7 +1,5 @@
 package;
 
-import flixel.FlxG;
-
 class Hazard extends Actor
 {
     public static var TypeSpikes (default, never) : String = "spikes";
