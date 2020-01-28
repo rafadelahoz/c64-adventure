@@ -14,6 +14,14 @@ class ItemDonut extends Item
         world.oneways.add(platform);
     }
 
+    override function destroy() 
+    {
+        world.oneways.remove(platform);
+        platform.destroy();
+        platform = null;
+        super.destroy();
+    }
+
     override function handleGraphic()
     {
         super.handleGraphic();

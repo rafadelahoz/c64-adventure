@@ -247,6 +247,11 @@ class World extends FlxState
             p.onCollisionWithHazard(hazard);
         });
 
+        // Items vs hazards
+        FlxG.overlap(items, hazards, function(i : Item, hazard : Hazard) {
+            i.onCollisionWithHazard(hazard);
+        });
+
         // Player vs triggers
         triggers.forEachExists(function(t:FlxBasic) {
             cast(t, Solid).color = 0xFFFFFFFF;
@@ -410,7 +415,7 @@ class World extends FlxState
 
         if (!dissappeared)
         {
-            FlxSpriteUtil.fill(background, 0xFFFF000a);
+            FlxSpriteUtil.fill(background, 0xFF5d0800);
             
             tilemapBG.visible = false;
             tilemapFG.visible = false;

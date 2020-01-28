@@ -56,6 +56,12 @@ class Item extends Actor
         animation.play("idle");
     }
 
+    override public function destroy()
+    {
+        world.items.remove(this);
+        super.destroy();
+    }
+
     override public function onUpdate(elapsed : Float)
     {
         switch (state)
@@ -88,6 +94,18 @@ class Item extends Actor
 
         groundProbe.x = x;
         groundProbe.y = y + height;
+    }
+
+    public function onCollisionWithHazard(hazard : Hazard)
+    {
+        // if (vspeed > 0)
+        {
+            // Puff!
+            world.add(new FxPuff(x + width/2, y + height/2, world));
+
+            // Then die
+            destroy();
+        }
     }
 
     private function checkOnAir() : Bool
