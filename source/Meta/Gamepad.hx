@@ -1,5 +1,6 @@
 package;
 
+import flixel.input.gamepad.FlxGamepad;
 import openfl.events.KeyboardEvent;
 import flixel.input.keyboard.FlxKey;
 import flixel.input.FlxInput.FlxInputState;
@@ -40,25 +41,33 @@ class Gamepad
     {
         var pressed : Bool = false;
 
+        var gamepad : FlxGamepad = FlxG.gamepads.lastActive;
+
         switch (button) {
             case Gamepad.A:
                 pressed = FlxG.keys.checkStatus(FlxKey.A, FlxInputState.PRESSED);
+                pressed = pressed || (gamepad != null && gamepad.pressed.A);
             case Gamepad.B:
-                return FlxG.keys.pressed.S;
+                pressed = FlxG.keys.pressed.S;
+                pressed = pressed || (gamepad != null && gamepad.pressed.X);
             case Gamepad.Up:
-                return FlxG.keys.pressed.UP;
+                pressed = FlxG.keys.pressed.UP;
+                pressed = pressed || (gamepad != null && (gamepad.pressed.LEFT_STICK_DIGITAL_UP || gamepad.pressed.LEFT_STICK_DIGITAL_UP));
             case Gamepad.Down:
-                return FlxG.keys.pressed.DOWN;
+                pressed = FlxG.keys.pressed.DOWN;
+                pressed = pressed || (gamepad != null && (gamepad.pressed.LEFT_STICK_DIGITAL_DOWN || gamepad.pressed.LEFT_STICK_DIGITAL_DOWN));
             case Gamepad.Left:
-                // return FlxG.keys.pressed.LEFT;
                 pressed = FlxG.keys.checkStatus(FlxKey.LEFT, FlxInputState.PRESSED);
+                pressed = pressed || (gamepad != null && (gamepad.pressed.LEFT_STICK_DIGITAL_LEFT || gamepad.pressed.LEFT_STICK_DIGITAL_LEFT));
             case Gamepad.Right:
-                // return FlxG.keys.pressed.RIGHT;
                 pressed = FlxG.keys.checkStatus(FlxKey.RIGHT, FlxInputState.PRESSED);
+                pressed = pressed || (gamepad != null && (gamepad.pressed.LEFT_STICK_DIGITAL_RIGHT || gamepad.pressed.LEFT_STICK_DIGITAL_RIGHT));
             case Gamepad.Start:
-                return FlxG.keys.pressed.ENTER;
+                pressed = FlxG.keys.pressed.ENTER;
+                pressed = pressed || (gamepad != null && (gamepad.pressed.START || gamepad.pressed.START));
             case Gamepad.Select:
-                return FlxG.keys.pressed.SPACE;
+                pressed =  FlxG.keys.pressed.SPACE;
+                pressed = pressed || (gamepad != null && (gamepad.pressed.BACK || gamepad.pressed.BACK));
         }
 
         return pressed;
@@ -117,6 +126,7 @@ class Gamepad
     public static function handleBufferedState(left : Bool, right : Bool, up : Bool, down : Bool, a : Bool, b : Bool)
     {
         // TODO: Generalize this (gamepad, etc)
+        // TODO: Maybe this only works for windows??
         if (left)
             FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 37));
         if (right)
