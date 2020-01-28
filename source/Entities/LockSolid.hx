@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxTimer;
 import flixel.FlxG;
 
 class LockSolid extends Solid
@@ -10,6 +11,8 @@ class LockSolid extends Solid
     var closed : Bool;
     var closedWidth : Int;
     var closedHeight : Int;
+
+    var handled : Bool;
 
     public function new(X : Float, Y : Float, Width : Float, Height : Float, World : World)
     {
@@ -33,6 +36,7 @@ class LockSolid extends Solid
         // TODO: Check lram in order to close/unclose
 
         closed = true;
+        handled = false;
     }
 
     override public function update(elapsed : Float)
@@ -53,17 +57,33 @@ class LockSolid extends Solid
             width = closedWidth;
             height = closedHeight;
 
-            var handled : Bool = false;
             FlxG.overlap(this, world.items, function(self : LockSolid, item : Item) {
-                if (handled)
+                if (self.handled)
                     return;
 
                 if (item.data.type == "KEY")
                 {
                     // TODO: Check color
-                    if (closed)
+                    if (closed && !self.handled)
                     {
-                        handled = true;
+                        self.handled = true;
+                        // Wait a tad
+                        new FlxTimer().start(0.45, function(t : FlxTimer) {
+                            // Key Puff Effect
+                            trace("KEY PUFF");
+                            world.add(new FxPuff(item.x + item.width/2, item.y + item.height/2, world));
+
+                            // Tiles Puff Effect
+                            var heightInTiles : Float = height / 14;
+                            var yy = y + (14/2);
+                            var i = 0;
+                            while (i < heightInTiles)
+                            {
+                                world.add(new FxPuff(x + width/2, yy + i * 14, world));
+                                i++;
+                            }
+                        });
+                        
                         world.pause(0.5, function() {
                             closed = false;
                             item.destroy();

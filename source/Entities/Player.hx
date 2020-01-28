@@ -698,6 +698,10 @@ class Player extends Actor
 
         // Now wait for a tad
         new FlxTimer().start(1, function(t:FlxTimer) {
+
+            // Puff!
+            world.add(new FxPuff(x + width/2, y + height/2, world));
+
             // Then die
             destroy();
             if (carrying != null)
