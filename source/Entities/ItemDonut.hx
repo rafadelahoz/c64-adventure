@@ -16,9 +16,12 @@ class ItemDonut extends Item
 
     override function destroy() 
     {
-        world.oneways.remove(platform);
-        platform.destroy();
-        platform = null;
+        if (platform != null)
+        {
+            world.oneways.remove(platform);
+            platform.destroy();
+            platform = null;
+        }
         super.destroy();
     }
 
