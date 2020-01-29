@@ -125,6 +125,22 @@ class MapReader
                     case "pointy":
                         var pointy : Hazard = new Hazard(actor.x*7, actor.y*14, world, actor.type, actor.properties);
                         world.hazards.add(pointy);
+                    case "item":
+                        if (actor.properties != null)
+                        {
+                            var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
+                            var type = properties.get("type");
+                            var item : Item = new Item(actor.x*7, actor.y*14, world, {
+                                id: "dodo",
+                                type: type,
+                                label: type
+                            });
+                            world.items.add(item);
+                        }
+                        else
+                        {
+                            trace("Item with no properties?");
+                        }
                     default:
                         // nop
                 }
@@ -191,5 +207,5 @@ typedef ActorData = {
     var type : String;
     var w : Int;
     var h : Int;
-    var properties : Map<String, String>;
+    var properties : Dynamic;
 }
