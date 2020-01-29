@@ -148,6 +148,10 @@ class MapReader
                                     LRAM.HandleSingleItemSpawn(actor.id);
                                 }
                             }
+                            else
+                            {
+                                world.items.add(item);
+                            }
                         }
                         else
                         {
