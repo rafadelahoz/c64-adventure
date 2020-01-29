@@ -1,10 +1,10 @@
 {
 	"id": "id-103",
-	"name": "Wisconsin",
+	"name": "Caves of pink",
 	"rooms": [
 		{
 			"id": 0,
-			"name": "Room 0 name",
+			"name": "Where is this",
 			"colors": [
 				"#2b2b2b",
 				"#404040",
@@ -523,6 +523,28 @@
 					"type": "spawn",
 					"w": 1,
 					"h": 1
+				},
+				{
+					"id": "4.1580323860210",
+					"x": "11",
+					"y": "8",
+					"type": "door",
+					"w": "1",
+					"h": "1",
+					"properties": {
+						"color": "A"
+					}
+				},
+				{
+					"id": "4.1580323870282",
+					"x": "3",
+					"y": "8",
+					"type": "item",
+					"w": "1",
+					"h": "1",
+					"properties": {
+						"type": "KEY"
+					}
 				}
 			],
 			"gridX": 0,
@@ -530,7 +552,7 @@
 		},
 		{
 			"id": 1,
-			"name": "Room 1 name",
+			"name": "An offer",
 			"colors": [
 				"#2b2b2b",
 				"#404040",
@@ -1047,7 +1069,7 @@
 		},
 		{
 			"id": 2,
-			"name": "Room 2 name",
+			"name": "Can't reach it?",
 			"colors": [
 				"#2b2b2b",
 				"#404040",
@@ -1590,6 +1612,19 @@
 					"type": "spikes",
 					"w": 1,
 					"h": 1
+				},
+				{
+					"id": "4.1580323987222",
+					"x": "3",
+					"y": "3",
+					"type": "teleport",
+					"w": "1",
+					"h": "1",
+					"properties": {
+						"target": "4",
+						"tileX": "3",
+						"tileY": "6"
+					}
 				}
 			],
 			"gridX": 2,
@@ -1597,7 +1632,7 @@
 		},
 		{
 			"id": 3,
-			"name": "Room 3 name",
+			"name": "The way",
 			"colors": [
 				"#2b2b2b",
 				"#9ae29b",
@@ -2609,7 +2644,7 @@
 		},
 		{
 			"id": 4,
-			"name": "Room 4 name",
+			"name": "Someone's house",
 			"colors": [
 				"#2b2b2b",
 				"#9ae29b",
@@ -3120,7 +3155,21 @@
 				0,
 				0
 			],
-			"actors": [],
+			"actors": [
+				{
+					"id": "4.1580323965413",
+					"x": "2",
+					"y": "5",
+					"type": "teleport",
+					"w": "1",
+					"h": "1",
+					"properties": {
+						"target": "(room id)",
+						"tileX": "4",
+						"tileY": "4"
+					}
+				}
+			],
 			"gridX": 3,
 			"gridY": 2
 		}

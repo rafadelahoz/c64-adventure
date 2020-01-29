@@ -130,17 +130,33 @@ class MapReader
                         {
                             var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
                             var type = properties.get("type");
+
                             var item : Item = new Item(actor.x*7, actor.y*14, world, {
-                                id: "dodo",
+                                id: actor.id,
                                 type: type,
                                 label: type
                             });
-                            world.items.add(item);
+
+                            // Keys (others?) to be spawned once in the level
+                            if (type == "KEY")
+                            {
+                                if (LRAM.IsSingleItemSpawned(actor.id))
+                                    item.destroy();
+                                else 
+                                {
+                                    world.items.add(item);
+                                    LRAM.HandleSingleItemSpawn(actor.id);
+                                }
+                            }
                         }
                         else
                         {
                             trace("Item with no properties?");
                         }
+                    case "door":
+                        var door : LockSolid = new LockSolid(actor.x*7, actor.y*14, actor.w*7, actor.h*14, world);
+                        door.init(actor.id);
+                        world.solids.add(door);
                     default:
                         // nop
                 }

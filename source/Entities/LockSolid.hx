@@ -23,7 +23,6 @@ class LockSolid extends Solid
             thickness: 1, color: 0xFF000000
         });
 
-        closed = false;
         closedWidth = Std.int(width);
         closedHeight = Std.int(height);
     }
@@ -33,9 +32,9 @@ class LockSolid extends Solid
         lockId = id;
         lockColor = color;
 
-        // TODO: Check lram in order to close/unclose
+        // Check lram in order to close/unclose
+        closed = !LRAM.IsLockSolidOpen(lockId);
 
-        closed = true;
         handled = false;
     }
 
@@ -67,6 +66,10 @@ class LockSolid extends Solid
                     if (closed && !self.handled)
                     {
                         self.handled = true;
+
+                        // Store that the door is opened
+                        LRAM.OpenLockSolid(lockId);
+
                         // Wait a tad
                         new FlxTimer().start(0.45, function(t : FlxTimer) {
                             // Key Puff Effect
