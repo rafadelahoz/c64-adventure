@@ -1,10 +1,10 @@
 {
 	"id": "id-10",
-	"name": "Wisconsin",
+	"name": "DUMMY LAND",
 	"rooms": [
 		{
 			"id": 0,
-			"name": "Room 0 name",
+			"name": "Beginnings",
 			"colors": [
 				"#6abfc6",
 				"#887ecb",
@@ -554,7 +554,7 @@
 		},
 		{
 			"id": 1,
-			"name": "Room 1 name",
+			"name": "The wall",
 			"colors": [
 				"#5cab5e",
 				"#50459b",
@@ -1591,7 +1591,7 @@
 		},
 		{
 			"id": 2,
-			"name": "Room 2 name",
+			"name": "Blue flowers",
 			"colors": [
 				"#5cab5e",
 				"#50459b",
@@ -2108,7 +2108,7 @@
 		},
 		{
 			"id": 3,
-			"name": "Room 3 name",
+			"name": "Flower stairs",
 			"colors": [
 				"#5cab5e",
 				"#887ecb",
@@ -2674,7 +2674,7 @@
 		},
 		{
 			"id": 4,
-			"name": "Room 4 name",
+			"name": "Yellow flowers",
 			"colors": [
 				"#cb7e75",
 				"#c9d487",
