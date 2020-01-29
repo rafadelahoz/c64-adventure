@@ -315,6 +315,7 @@ class Player extends Actor
                         if (onAir && carryingShrimp) 
                         {
                             // Use the shrimp
+                            world.add(new FxPuff(carrying.x + carrying.width/2, carrying.y + carrying.height/2, world));
                             carrying.destroy();
                             carrying = null;
                             vspeed *= DoubleJumpFactor;
