@@ -66,6 +66,8 @@ class Inventory
         var type : String = null;
 
         items = [];
+        items.push({type: "SHRIMP", label: "SHRIMP", id: null});
+        items.push({type: "SHRIMP", label: "SHRIMP", id: null});
         while (items.length < FlxG.random.int(0, 11))
         {
             type = FlxG.random.getObject(types);

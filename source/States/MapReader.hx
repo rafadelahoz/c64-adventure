@@ -128,29 +128,20 @@ class MapReader
                     case "item":
                         if (actor.properties != null)
                         {
-                            var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
-                            var type = properties.get("type");
-
-                            var item : Item = new Item(actor.x*7, actor.y*14, world, {
-                                id: actor.id,
-                                type: type,
-                                label: type
-                            });
-
-                            // Keys (others?) to be spawned once in the level
-                            if (type == "KEY")
+                            // Items to be spawned once per level
+                            if (!LRAM.IsItemSpawned(actor.id))
                             {
-                                if (LRAM.IsSingleItemSpawned(actor.id))
-                                    item.destroy();
-                                else 
-                                {
-                                    world.items.add(item);
-                                    LRAM.HandleSingleItemSpawn(actor.id);
-                                }
-                            }
-                            else
-                            {
+                                var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
+                                var type = properties.get("type");
+
+                                var item : Item = new Item(actor.x*7, actor.y*14, world, {
+                                    id: actor.id,
+                                    type: type,
+                                    label: type
+                                });
+
                                 world.items.add(item);
+                                LRAM.HandleItemSpawn(actor.id);
                             }
                         }
                         else

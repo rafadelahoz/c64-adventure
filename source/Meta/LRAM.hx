@@ -9,14 +9,14 @@ class LRAM
     public static var inventoryOnEnter : Array<ItemData>;
 
     static var OpenedLockSolids : Map<String, Bool>;
-    static var SpawnedSingleItems : Array<String>;
+    static var SpawnedItems : Array<String>;
 
     public static function Init()
     {
         roomItems = new Map<String, Array<StoredItemData>>();
         hp = 3;
         OpenedLockSolids = new Map<String, Bool>();
-        SpawnedSingleItems = new Array<String>();
+        SpawnedItems = new Array<String>();
     }
 
     public static function StoreRoom(roomId : String, items : Array<StoredItemData>)
@@ -40,14 +40,14 @@ class LRAM
         return (OpenedLockSolids.exists(id) && OpenedLockSolids.get(id) == true);
     }
 
-    public static function IsSingleItemSpawned(id : String) : Bool
+    public static function IsItemSpawned(id : String) : Bool
     {
-        return (SpawnedSingleItems.indexOf(id) > -1);
+        return (SpawnedItems.indexOf(id) > -1);
     }
 
-    public static function HandleSingleItemSpawn(id : String)
+    public static function HandleItemSpawn(id : String)
     {
-        SpawnedSingleItems.push(id);
+        SpawnedItems.push(id);
     }
 }
 
