@@ -42,6 +42,11 @@ class Hazard extends Actor
                 makeGraphic(7, 14, 0xFFFF000a);
                 power = 6;
         }
+
+        if (world.roomData.colors.length > 3)
+            color = new MapReader().color(world.roomData.colors[3]);
+        else // White by default
+            color = 0xFFFFFFFF;
     }
 
     public function damages(player : Player) : Int
