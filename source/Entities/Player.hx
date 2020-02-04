@@ -120,13 +120,47 @@ class Player extends Actor
 
     private function checkOnAir() : Bool
     {
-        var onGround =
-            groundProbe.overlaps(world.solids) ||
-            (vspeed >= 0 &&
-                (groundProbe.overlaps(world.oneways) &&
-                !groundProbe.overlapsAt(x, y+height-1, world.oneways)));
+        var onGround = groundProbe.overlaps(world.solids) || checkOnewaysGround();
 
         return !onGround;
+    }
+
+    function checkOnewaysGround(delta : Float = 0) : Bool
+    {
+        var onewaysGroundCheck : Bool = false;
+        // = (groundProbe.overlaps(world.oneways) &&
+        //        !groundProbe.overlapsAt(x, y+height-1, world.oneways))
+        if (vspeed >= 0)
+        {
+            var oneways : Array<FlxBasic> = findOverlappingOneways();
+            if (oneways.length > 0)
+            {
+                onewaysGroundCheck = true;
+                for (oneway in oneways)
+                {
+                    if (groundProbe.overlapsAt(x, y+height-1, oneway))
+                    {
+                        onewaysGroundCheck = false;
+                        break;
+                    }
+                }
+            }
+        }
+
+        return onewaysGroundCheck;
+    }
+
+    function findOverlappingOneways() : Array<FlxBasic>
+    {
+        var oneways : Array<FlxBasic> = [];
+
+        for (oneway in world.oneways) 
+        {
+            if (groundProbe.overlaps(oneway))
+                oneways.push(oneway);
+        }
+
+        return oneways;
     }
 
     public function preupdate() : Void

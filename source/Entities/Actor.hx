@@ -54,8 +54,7 @@ class Actor extends Entity
             while (move != 0)
             {
                 if (solid && (overlapsAt(x, y + delta, world.solids) ||
-                    (delta > 0 && !overlapsAt(x, y, world.oneways) &&
-                    overlapsAt(x, y + delta, world.oneways))))
+                    (delta > 0 && checkDeltaOnEachOneway(delta))))
                 {
                     if (callback != null) {
                         callback();
@@ -71,5 +70,27 @@ class Actor extends Entity
 
             }
         }
+    }
+
+    function checkDeltaOnEachOneway(delta : Float) : Bool
+    {
+        // !overlapsAt(x, y, world.oneways) &&
+        //            overlapsAt(x, y + delta, world.oneways)
+        for (oneway in world.oneways) 
+        {
+            // If it's not currently overlapping with us
+            if (!overlapsAt(x, y, oneway)) 
+            {
+                // But will be after delta
+                if (overlapsAt(x, y+delta, oneway))
+                {
+                    // Then there's collision
+                    return true;
+                }
+            }
+        }
+
+        // Otherwise, there's no collision
+        return false;
     }
 }
