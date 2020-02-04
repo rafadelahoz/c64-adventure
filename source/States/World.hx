@@ -40,6 +40,7 @@ class World extends FlxState
     public var oneways : FlxGroup;
     public var ladders : FlxGroup;
     public var hazards : FlxGroup;
+    public var teleports : FlxGroup;
 
     var triggers : FlxGroup;
     public var items : FlxGroup;
@@ -105,6 +106,9 @@ class World extends FlxState
 
         hazards = new FlxGroup();
         add(hazards);
+
+        teleports = new FlxGroup();
+        add(teleports);
 
         triggers = new FlxGroup();
         add(triggers);
@@ -426,6 +430,7 @@ class World extends FlxState
             oneways.visible = false;
             ladders.visible = false;
             hazards.visible = false;
+            teleports.visible = false;
             triggers.visible = false;
             items.visible = false;
         }

@@ -278,6 +278,21 @@ class Player extends Actor
                     }
                 }
 
+                if (!onAir && (Gamepad.justPressed(Gamepad.Up)))
+                {
+                    var activableTeleports : Array<Teleport> = [];
+                    trace("START OVERLAP");
+                    if (FlxG.overlap(this, world.teleports, function(self : Player, aTeleport : Teleport) {
+                            activableTeleports.push(aTeleport);
+                            trace("OVERLAP TELEPORT");
+                        })) 
+                    {
+                        trace("FINISH OVERLAPS " + activableTeleports.length);
+                        var closest : Teleport = cast(findClosestEntity(cast(activableTeleports)));
+                        closest.onTeleport();
+                    }
+                }
+
                 // Ladder management
                 if (!onAir && (Gamepad.up() || Gamepad.down()))
                 {
@@ -653,6 +668,30 @@ class Player extends Actor
             ladder.color = 0xFFFFFFFF;
         
         return ladder;
+    }
+
+    function findClosestEntity(entities : Array<Entity>) : Entity
+    {
+        var entity : Entity = null;
+        
+        if (entities.length > 0)
+        {
+            var midpoint : FlxPoint = getMidpoint();
+
+            var distance : Float = Math.POSITIVE_INFINITY;
+            for (i in entities)
+            {
+                var point : FlxPoint = i.getMidpoint();
+                
+                if (midpoint.distanceTo(point) < distance)
+                {
+                    entity = i;
+                    distance = midpoint.distanceTo(point);
+                } 
+            }
+        }
+
+        return entity;
     }
 
     function onHorizontalCollision() : Void

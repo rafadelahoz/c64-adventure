@@ -1,5 +1,6 @@
 package;
 
+import Teleport.TeleportData;
 import flixel.group.FlxGroup;
 import lime.utils.Assets;
 import haxe.Json;
@@ -152,6 +153,16 @@ class MapReader
                         var door : LockSolid = new LockSolid(actor.x*7, actor.y*14, actor.w*7, actor.h*14, world);
                         door.init(actor.id);
                         world.solids.add(door);
+                    case "teleport":
+                        var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
+                        var data : TeleportData = {
+                            target: properties.get("target"),
+                            tileX: properties.get("tileX"),
+                            tileY: properties.get("tileY")
+                        };
+
+                        var teleport : Teleport = new Teleport(actor.x*7, actor.y*14, actor.w*7, actor.h*14, data, world);
+                        world.teleports.add(teleport);
                     default:
                         // nop
                 }
