@@ -815,6 +815,20 @@ class Player extends Actor
         };
     }
 
+    public function getPlayerTeleportData() : PlayerData
+    {
+        return {
+            x: x, y: y, facing: facing,
+            state: State.Idle, hspeed: 0, vspeed: 0,
+            leftPressed: false, rightPressed: false,
+            upPressed: false, downPressed: false,
+            jumpPressed: false,
+            actionPressed: false,
+            debug: debug,
+            carrying: null
+        };
+    }
+
     public static function getInitialPlayerData(x : Float, y : Float) : PlayerData
     {
         return {

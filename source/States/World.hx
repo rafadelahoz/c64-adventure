@@ -1,5 +1,6 @@
 package;
 
+import Teleport.TeleportData;
 import flixel.util.FlxTimer;
 import flixel.util.FlxSpriteUtil;
 import Inventory.ItemData;
@@ -168,7 +169,7 @@ class World extends FlxState
                 dy: 0,
                 screenOffsetX: 0,
                 screenOffsetY: 0,
-                playerData: Player.getInitialPlayerData(spawn.x * 7, spawn.y * 14)
+                playerData: Player.getInitialPlayerData(spawn.x * Constants.TileWidth, spawn.y * Constants.TileHeight)
             };
         }
 
@@ -176,16 +177,16 @@ class World extends FlxState
         var playerData : PlayerData = transitionData.playerData;
         
         // 1. Adjust screen offsets
-        playerData.x += transitionData.screenOffsetX*15*7;
-        playerData.y += transitionData.screenOffsetY*11*14;
+        playerData.x += transitionData.screenOffsetX*15*Constants.TileWidth;
+        playerData.y += transitionData.screenOffsetY*11*Constants.TileHeight;
         
         // 2. Reposition considering the borders of the new screen
         if (transitionData.dx < 0)
-            playerData.x = roomData.columns*7-3;
+            playerData.x = roomData.columns*Constants.TileWidth-3;
         else if (transitionData.dx > 0)
             playerData.x = 0;
         if (transitionData.dy < 0)
-            playerData.y = roomData.rows*14-3;
+            playerData.y = roomData.rows*Constants.TileHeight-3;
         else if (transitionData.dy > 0)
             playerData.y = 0;
 
@@ -372,6 +373,25 @@ class World extends FlxState
                 player.y -= (ty-cursorY) * 14;
             }
         }
+    }
+
+    public function teleportTo(data : TeleportData)
+    {
+        var newRoomId : Int = data.target;
+        var newRoom : RoomData = mapReader.getRoom(newRoomId);
+        GameStatus.room = newRoomId;
+
+        storeRoomStatus();
+        
+        var transitionData = {
+            dx: 0, dy: 0, screenOffsetX: 0, screenOffsetY: 0,
+            playerData: player.getPlayerTeleportData()
+        };
+
+        transitionData.playerData.x = data.tileX * Constants.TileWidth;
+        transitionData.playerData.y = data.tileY * Constants.TileHeight;
+
+        FlxG.switchState(new World(transitionData));
     }
 
     function storeRoomStatus()
