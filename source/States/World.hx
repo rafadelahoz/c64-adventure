@@ -142,6 +142,19 @@ class World extends FlxState
         pauseTimer = new FlxTimer();
         paused = false;
 
+        if (transitionData.teleporting)
+        {
+            player.findGround();
+            
+            var fader : Fader = new Fader(this);
+            // pause();
+            fader.fade(true, function() {
+                trace("FADED IN");
+                remove(fader);
+                fader.destroy();
+            });
+        }
+
         super.create();
 
         // DEBUG
@@ -165,6 +178,7 @@ class World extends FlxState
             }
 
             transitionData = {
+                teleporting: true,
                 dx: 0,
                 dy: 0,
                 screenOffsetX: 0,
@@ -356,6 +370,7 @@ class World extends FlxState
                     var dy : Int = ty-cursorY;
 
                     var transitionData : TransitionData = {
+                        teleporting: false,
                         dx: dx,
                         dy: dy,
                         screenOffsetX: (dx != 0 ? 0 : roomData.gridX - newRoom.gridX),
@@ -383,7 +398,8 @@ class World extends FlxState
 
         storeRoomStatus();
         
-        var transitionData = {
+        var transitionData : TransitionData = {
+            teleporting: true,
             dx: 0, dy: 0, screenOffsetX: 0, screenOffsetY: 0,
             playerData: player.getPlayerTeleportData()
         };
@@ -587,6 +603,7 @@ class World extends FlxState
 }
 
 typedef TransitionData = {
+    var teleporting : Bool;
     var dx : Int;
     var dy : Int;
     var screenOffsetX : Int;

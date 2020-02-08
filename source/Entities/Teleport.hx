@@ -20,22 +20,11 @@ class Teleport extends Entity
 
     public function onTeleport() 
     {
-        // whawtha!
-        trace("TELEPORTTTT");
-
         world.pause();
-        var fader : FlxSprite = new FlxSprite(0, 0);
-        world.add(fader);
-        fader.cameras = [world.screencam];
-        fader.scrollFactor.set(0, 0);
-        fader.makeGraphic(320, 240, 0xFF000000);
-        fader.alpha = 0;
-        FlxTween.tween(fader, {alpha: 1}, 0.25, {
-            ease: FlxEase.linear, onComplete: function(t:FlxTween) {
-                world.teleportTo(data);
-            }
+        var fader : Fader = new Fader(world);
+        fader.fade(false, function() {
+            world.teleportTo(data);
         });
-        
     }
 }
 

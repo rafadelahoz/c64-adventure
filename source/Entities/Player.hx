@@ -281,13 +281,10 @@ class Player extends Actor
                 if (!onAir && (Gamepad.justPressed(Gamepad.Up)))
                 {
                     var activableTeleports : Array<Teleport> = [];
-                    trace("START OVERLAP");
                     if (FlxG.overlap(this, world.teleports, function(self : Player, aTeleport : Teleport) {
                             activableTeleports.push(aTeleport);
-                            trace("OVERLAP TELEPORT");
                         })) 
                     {
-                        trace("FINISH OVERLAPS " + activableTeleports.length);
                         var closest : Teleport = cast(findClosestEntity(cast(activableTeleports)));
                         closest.onTeleport();
                     }
@@ -792,6 +789,25 @@ class Player extends Actor
     public function triggerDeath()
     {
         handleDeath();
+    }
+
+    public function findGround()
+    {
+        // Store the starting point in case we fail
+        var startY : Float = y;
+        
+        while (checkOnAir() && y < world.roomData.rows * Constants.TileHeight)
+        {
+            y++;
+            groundProbe.y = y + height;
+        }
+
+        // In case there was no ground, get back to the starting point
+        if (y >= world.roomData.rows * Constants.TileHeight)
+        {
+            y = startY;
+            groundProbe.y = y+height;
+        }
     }
 
     public function getPlayerData(goingUp : Bool) : PlayerData
