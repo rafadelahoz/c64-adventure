@@ -61,12 +61,13 @@ class Player extends Actor
     public function new(PlayerData : PlayerData, World : World) {
         super(PlayerData.x, PlayerData.y, World);
 
+        var g : Int = GameStatus.playerGraphic * 3;
         loadGraphic('assets/images/player-sheet.png', true, 11, 18);
-        animation.add('idle', [0]);
-        animation.add('walk', [1, 0], 8);
-        animation.add('jump', [1]);
-        animation.add('act', [1]);
-        animation.add('hurt', [2]);
+        animation.add('idle', [g+0]);
+        animation.add('walk', [g+1, g+0], 8);
+        animation.add('jump', [g+1]);
+        animation.add('act', [g+1]);
+        animation.add('hurt', [g+2]);
 
         animation.play('idle');
 
