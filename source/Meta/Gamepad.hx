@@ -67,7 +67,7 @@ class Gamepad
                 pressed = pressed || (gamepad != null && (gamepad.pressed.START || gamepad.pressed.START));
             case Gamepad.Select:
                 pressed =  FlxG.keys.pressed.SPACE;
-                pressed = pressed || (gamepad != null && (gamepad.pressed.BACK || gamepad.pressed.BACK));
+                pressed = pressed || (gamepad != null && (gamepad.pressed.GUIDE || gamepad.pressed.Y));
         }
 
         return pressed;
@@ -76,23 +76,34 @@ class Gamepad
     public static function justPressed(button : String) : Bool
     {
         var justPressed : Bool = false;
+
+        var gamepad : FlxGamepad = FlxG.gamepads.lastActive;
+
         switch (button) {
             case Gamepad.A:
                 justPressed = FlxG.keys.justPressed.A;
+                justPressed = justPressed || (gamepad != null && gamepad.justPressed.A);
             case Gamepad.B:
-                return FlxG.keys.justPressed.S;
+                justPressed = FlxG.keys.justPressed.S;
+                justPressed = justPressed || (gamepad != null && gamepad.justPressed.X);
             case Gamepad.Up:
-                return FlxG.keys.justPressed.UP;
+                justPressed = FlxG.keys.justPressed.UP;
+                justPressed = justPressed || (gamepad != null && (gamepad.justPressed.LEFT_STICK_DIGITAL_UP || gamepad.justPressed.LEFT_STICK_DIGITAL_UP));
             case Gamepad.Down:
-                return FlxG.keys.justPressed.DOWN;
+                justPressed = FlxG.keys.justPressed.DOWN;
+                justPressed = justPressed || (gamepad != null && (gamepad.justPressed.LEFT_STICK_DIGITAL_DOWN || gamepad.justPressed.LEFT_STICK_DIGITAL_DOWN));
             case Gamepad.Left:
                 justPressed = FlxG.keys.justPressed.LEFT;
+                justPressed = justPressed || (gamepad != null && (gamepad.justPressed.LEFT_STICK_DIGITAL_LEFT || gamepad.justPressed.LEFT_STICK_DIGITAL_LEFT));
             case Gamepad.Right:
                 justPressed = FlxG.keys.justPressed.RIGHT;
+                justPressed = justPressed || (gamepad != null && (gamepad.justPressed.LEFT_STICK_DIGITAL_RIGHT || gamepad.justPressed.LEFT_STICK_DIGITAL_RIGHT));
             case Gamepad.Start:
-                return FlxG.keys.justPressed.ENTER;
+                justPressed = FlxG.keys.justPressed.ENTER;
+                justPressed = justPressed || (gamepad != null && gamepad.justPressed.START);
             case Gamepad.Select:
-                return FlxG.keys.justPressed.SPACE;
+                justPressed = FlxG.keys.justPressed.SPACE;
+                justPressed = justPressed || (gamepad != null && (gamepad.justPressed.GUIDE || gamepad.justPressed.Y));
         }
 
         return justPressed;
@@ -101,23 +112,34 @@ class Gamepad
     public static function justReleased(button : String) : Bool
     {
         var justReleased : Bool = false;
+
+        var gamepad : FlxGamepad = FlxG.gamepads.lastActive;
+
         switch (button) {
             case Gamepad.A:
                 justReleased = FlxG.keys.justReleased.A;
+                justReleased = justReleased || (gamepad != null && gamepad.justReleased.A);
             case Gamepad.B:
-                return FlxG.keys.justReleased.S;
+                justReleased = FlxG.keys.justReleased.S;
+                justReleased = justReleased || (gamepad != null && gamepad.justReleased.X);
             case Gamepad.Up:
-                return FlxG.keys.justReleased.UP;
+                justReleased = FlxG.keys.justReleased.UP;
+                justReleased = justReleased || (gamepad != null && (gamepad.justReleased.LEFT_STICK_DIGITAL_UP || gamepad.justReleased.LEFT_STICK_DIGITAL_UP));
             case Gamepad.Down:
-                return FlxG.keys.justReleased.DOWN;
+                justReleased = FlxG.keys.justReleased.DOWN;
+                justReleased = justReleased || (gamepad != null && (gamepad.justReleased.LEFT_STICK_DIGITAL_DOWN || gamepad.justReleased.LEFT_STICK_DIGITAL_DOWN));
             case Gamepad.Left:
                 justReleased = FlxG.keys.justReleased.LEFT;
+                justReleased = justReleased || (gamepad != null && (gamepad.justReleased.LEFT_STICK_DIGITAL_LEFT || gamepad.justReleased.LEFT_STICK_DIGITAL_LEFT));
             case Gamepad.Right:
                 justReleased = FlxG.keys.justReleased.RIGHT;
+                justReleased = justReleased || (gamepad != null && (gamepad.justReleased.LEFT_STICK_DIGITAL_RIGHT || gamepad.justReleased.LEFT_STICK_DIGITAL_RIGHT));
             case Gamepad.Start:
-                return FlxG.keys.justReleased.ENTER;
+                justReleased = FlxG.keys.justReleased.ENTER;
+                justReleased = justReleased || (gamepad != null && gamepad.justReleased.START);
             case Gamepad.Select:
-                return FlxG.keys.justReleased.SPACE;
+                justReleased = FlxG.keys.justReleased.SPACE;
+                justReleased = justReleased || (gamepad != null && (gamepad.justReleased.GUIDE || gamepad.justReleased.Y));
         }
 
         return justReleased;
