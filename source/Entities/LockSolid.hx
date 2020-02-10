@@ -1,5 +1,7 @@
 package;
 
+import flixel.FlxSprite;
+import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
 
@@ -18,11 +20,20 @@ class LockSolid extends Solid
     {
         super(X, Y, Width, Height, World);
 
-        makeGraphic(Std.int(Width), Std.int(Height), 0xFFFFFFFF);
-        flixel.util.FlxSpriteUtil.drawRect(this, 1, 1, Width-2, Height-2, 0x00000000, {
-            thickness: 1, color: 0xFF000000
-        });
-
+        makeGraphic(Std.int(Width), Std.int(Height), 0x00FFFFFF);
+        var lockY : Int = Std.int(height/2 - 7);
+        if (Height == Constants.TileHeight)
+            lockY = 0;
+        else if (Height == Constants.TileHeight*2)
+            lockY = Constants.TileHeight;
+            
+        FlxSpriteUtil.drawRect(this, 0, 2, Width, lockY-2, 0xFFFFFFFF);
+        FlxSpriteUtil.drawRect(this, 0, lockY+14, Width, Height - (lockY+14), 0xFFFFFFFF);
+        
+        stamp(new FlxSprite(0, 0, "assets/images/lock.png"), 0, lockY);
+        if (lockY > 0)
+            stamp(new FlxSprite(0, 0, "assets/images/lock-top.png"), 0, 0);
+        
         closedWidth = Std.int(width);
         closedHeight = Std.int(height);
     }

@@ -86,9 +86,6 @@ class World extends FlxState
         background.scrollFactor.set(0, 0);
         add(background);
 
-        solids = new FlxGroup();
-        add(solids);
-
         tilemapBG = new FlxTilemap();
         tilemapBG.loadMapFromArray(roomData.tiles.bg, roomData.columns, roomData.rows, "assets/images/tileset.png", 7, 14);
         tilemapBG.color = mapReader.color(roomData.colors[1]);
@@ -98,6 +95,9 @@ class World extends FlxState
         tilemapFG.loadMapFromArray(roomData.tiles.fg, roomData.columns, roomData.rows, "assets/images/tileset.png", 7, 14);
         tilemapFG.color = mapReader.color(roomData.colors[2]);
         add(tilemapFG);
+
+        solids = new FlxGroup();
+        add(solids);
 
         oneways = new FlxGroup();
         add(oneways);
