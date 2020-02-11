@@ -84,8 +84,9 @@ class LockSolid extends Solid
 
                 if (item.data.type == "KEY")
                 {
-                    // TODO: Check color
-                    if (closed && !self.handled)
+                    // Check color
+                    // TODO: All keys open gray doors?
+                    if (closed && !self.handled && (item.color == color))
                     {
                         self.handled = true;
 

@@ -160,7 +160,7 @@ class MapReader
                                 var itemData : Inventory.ItemData = {
                                     id: actor.id,
                                     type: "KEY",
-                                    label: flavour + " KEY",
+                                    label: (flavour == "NONE" ? "" : flavour + " ") + "KEY",
                                     properties: properties
                                 };
 
