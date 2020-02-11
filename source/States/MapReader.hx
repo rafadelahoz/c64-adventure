@@ -149,9 +149,33 @@ class MapReader
                         {
                             trace("Item with no properties?");
                         }
+                    case "key":
+                        if (actor.properties != null)
+                        {
+                            // Items to be spawned once per level
+                            if (!LRAM.IsItemSpawned(actor.id))
+                            {
+                                var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
+                                var flavour = properties.get("flavour");
+                                var itemData : Inventory.ItemData = {
+                                    id: actor.id,
+                                    type: "KEY",
+                                    label: flavour + " KEY",
+                                    properties: properties
+                                };
+
+                                var key : Item = new Item(actor.x * Constants.TileWidth, actor.y * Constants.TileHeight, world, itemData);
+                                world.items.add(key);
+                                LRAM.HandleItemSpawn(actor.id);
+                            }
+                        }
                     case "door":
                         var door : LockSolid = new LockSolid(actor.x*7, actor.y*14, actor.w*7, actor.h*14, world);
-                        door.init(actor.id);
+                        var flavour : String = "NONE";
+                        var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
+                        if (properties != null)
+                            flavour = properties.get("color");
+                        door.init(actor.id, flavour);
                         world.solids.add(door);
                     case "teleport":
                         var properties : haxe.DynamicAccess<Dynamic> = actor.properties;

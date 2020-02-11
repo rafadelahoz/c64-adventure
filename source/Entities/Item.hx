@@ -39,6 +39,18 @@ class Item extends Actor
             case "KEY":
                 animation.add("idle", [1]);
                 animation.add("carry", [11]);
+
+                switch (data.properties.flavour) 
+                {
+                    case "NONE":    color = 0xFFbfbfbf;
+                    case "CHERRY":  color = 0xFFf7a8a2;
+                    case "LAPIS":   color = 0xFF87d6dd;
+                    case "ROSE":    color = 0xFFea9ff6;
+                    case "PEAR":    color = 0xFF94e089;
+                    case "LILAC":   color = 0xFFbfb0ff;
+                    case "HONEY":   color = 0xFFbfce72;
+                }
+
             case "APPLE":
                 animation.add("idle", [2]);
             case "DONUT":
