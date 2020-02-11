@@ -279,8 +279,13 @@ class Player extends Actor
                     }
                 }
 
+                // Entering things
                 if (!onAir && (Gamepad.justPressed(Gamepad.Up)))
                 {
+                    // TODO: Level exits as doors?
+                    // var activableExits : Array<Teleport> = [];
+
+                    // Teleports
                     var activableTeleports : Array<Teleport> = [];
                     if (FlxG.overlap(this, world.teleports, function(self : Player, aTeleport : Teleport) {
                             activableTeleports.push(aTeleport);

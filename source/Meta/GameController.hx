@@ -40,9 +40,21 @@ class GameController
         FlxG.switchState(new World());
     }
 
+    public static function ClearMap(exitName : String)
+    {
+        if (!GameStatus.isExitClear(exitName)) 
+        {
+            GameStatus.setExitClear(exitName);
+        }
+
+        /* TODO: You probably want to provide the exit name to the world
+           map somehow in order to play some effect or whatever */
+        EnterWorldMap();
+    }
+
     public static function RestartMap()
     {
-        // TODO: Keep inventory? Set it to initial?
+        // Set inventory to initial
         Inventory.Restore(LRAM.inventoryOnEnter);
         
         // TODO: Find hospital, checkpoint...? for that, avoid EnterMap

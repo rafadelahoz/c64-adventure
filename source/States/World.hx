@@ -42,6 +42,7 @@ class World extends FlxState
     public var ladders : FlxGroup;
     public var hazards : FlxGroup;
     public var teleports : FlxGroup;
+    public var exits : FlxGroup;
 
     var triggers : FlxGroup;
     public var items : FlxGroup;
@@ -110,6 +111,9 @@ class World extends FlxState
 
         teleports = new FlxGroup();
         add(teleports);
+
+        exits = new FlxGroup();
+        add(exits);
 
         triggers = new FlxGroup();
         add(triggers);
@@ -274,9 +278,18 @@ class World extends FlxState
         // Player vs triggers
         triggers.forEachExists(function(t:FlxBasic) {
             cast(t, Solid).color = 0xFFFFFFFF;
-        });        
+        });
         FlxG.overlap(player, triggers, function(p : Player, trigger : Solid) {
             trigger.color = 0xFF00FF00;
+        });
+
+        // Player vs Exits
+        FlxG.overlap(player, exits, function(p : Player, e : Solid) {
+            pause();
+            var fader = new Fader(this);
+            fader.fade(false, function() {
+                GameController.ClearMap("EXIT-20123");
+            });
         });
 
         // Inventory management
@@ -467,6 +480,7 @@ class World extends FlxState
             ladders.visible = false;
             hazards.visible = false;
             teleports.visible = false;
+            exits.visible = false;
             triggers.visible = false;
             items.visible = false;
         }
