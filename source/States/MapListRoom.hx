@@ -32,6 +32,10 @@ class MapListRoom extends FlxState
             return assetName.indexOf("assets/maps/") > -1;
         });
 
+        textAssets.sort(function(a : String, b : String) : Int {
+            return (a > b ? 1 : -1);
+        });
+
         var rexp = ~/.*\/(.*?).json/;
         var xx : Int = 16;
         var yy : Int = 8;
@@ -67,7 +71,11 @@ class MapListRoom extends FlxState
     override public function update(elapsed : Float)
     {
         if (Gamepad.justPressed(Gamepad.Up))
-            current = (current-1)%labels.length;
+        {
+            current -= 1;
+            if (current < 0)
+                current = labels.length-1;
+        }
         else if (Gamepad.justPressed(Gamepad.Down))
             current = (current+1)%labels.length;
 
