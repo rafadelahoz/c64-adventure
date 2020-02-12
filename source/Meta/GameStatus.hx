@@ -1,5 +1,6 @@
 package;
 
+@:allow(DebugSwitchesPanel)
 class GameStatus
 {
     public static var playerGraphic : Int;

@@ -86,7 +86,8 @@ class Item extends Actor
         switch (state)
         {
             case ItemState.Carried:
-                // Nop!
+                if (data.type == "KEY")
+                    flipX = (world.player.facing == Player.Left);
             case ItemState.Idle:
                 if (checkOnAir())
                     vspeed += Gravity;

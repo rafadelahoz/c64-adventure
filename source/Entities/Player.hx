@@ -16,8 +16,8 @@ enum State { Idle; Acting; Climb; Hurt; Dying; }
 
 class Player extends Actor
 {
-    static var Left : Int = -1;
-    static var Right : Int = 1;
+    public static var Left : Int = -1;
+    public static var Right : Int = 1;
 
     var HorizontalSpeed : Float = 0.65; // 0.5; // 1;
     var HorizontalAirFactor : Float = 0.7;
@@ -543,6 +543,13 @@ class Player extends Actor
         groundProbe.y = y + height;
 
         // Reposition carried item
+        repositionCarriedItem();
+
+        // groundProbe.update(elapsed);
+    }
+
+    function repositionCarriedItem()
+    {
         if (carrying != null)
         {
             if (facing == Left)
@@ -555,8 +562,6 @@ class Player extends Actor
             // carrying.moveY(y + height/2 - carrying.height/2 - 2 - carrying.y);
             carrying.y = y + height/2 - carrying.height/2 - 2;
         }
-
-        // groundProbe.update(elapsed);
     }
 
     override public function onPausedUpdate(elapsed : Float)
@@ -606,6 +611,7 @@ class Player extends Actor
         {
             carrying = item;
             item.onCarry();
+            repositionCarriedItem();
             switchState(Acting);
 
             return true;

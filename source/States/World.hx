@@ -550,6 +550,9 @@ class World extends FlxState
     /* FUNNY DEBUG AREA */
     function handleDebugRoutines()
     {
+        if (FlxG.keys.justPressed.F9)
+            openSubState(new DebugSubstate(this));
+
         updateCursor();
 
         var cx : Float = FlxG.mouse.screenX + 2;
