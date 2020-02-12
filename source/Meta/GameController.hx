@@ -49,7 +49,7 @@ class GameController
 
         /* TODO: You probably want to provide the exit name to the world
            map somehow in order to play some effect or whatever */
-        EnterWorldMap();
+        // EnterWorldMap();
     }
 
     public static function RestartMap()

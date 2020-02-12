@@ -262,46 +262,55 @@ class World extends FlxState
 
     override public function update(elapsed : Float) : Void
     {
-        player.preupdate();
+        if (!paused)
+        {
+            player.preupdate();
 
-        /* Handle overlaps */
-        // Player vs hazards
-        FlxG.overlap(player, hazards, function(p : Player, hazard : Hazard) {
-            p.onCollisionWithHazard(hazard);
-        });
-
-        // Items vs hazards
-        FlxG.overlap(items, hazards, function(i : Item, hazard : Hazard) {
-            i.onCollisionWithHazard(hazard);
-        });
-
-        // Player vs triggers
-        triggers.forEachExists(function(t:FlxBasic) {
-            cast(t, Solid).color = 0xFFFFFFFF;
-        });
-        FlxG.overlap(player, triggers, function(p : Player, trigger : Solid) {
-            trigger.color = 0xFF00FF00;
-        });
-
-        // Player vs Exits
-        FlxG.overlap(player, exits, function(p : Player, e : Solid) {
-            pause();
-            var fader = new Fader(this);
-            fader.fade(false, function() {
-                GameController.ClearMap("EXIT-20123");
+            /* Handle overlaps */
+            // Player vs hazards
+            FlxG.overlap(player, hazards, function(p : Player, hazard : Hazard) {
+                p.onCollisionWithHazard(hazard);
             });
-        });
 
-        // Inventory management
-        if (Gamepad.justPressed(Gamepad.Select))
-        {
-            Inventory.MoveCursor();
-        }
+            // Items vs hazards
+            FlxG.overlap(items, hazards, function(i : Item, hazard : Hazard) {
+                i.onCollisionWithHazard(hazard);
+            });
 
-        if (Gamepad.justPressed(Gamepad.B))
-        {
-            var item : ItemData = Inventory.GetCurrent();
-            useItem(item);
+            // Player vs triggers
+            triggers.forEachExists(function(t:FlxBasic) {
+                cast(t, Solid).color = 0xFFFFFFFF;
+            });
+            FlxG.overlap(player, triggers, function(p : Player, trigger : Solid) {
+                trigger.color = 0xFF00FF00;
+            });
+
+            // Player vs Exits
+            FlxG.overlap(player, exits, function(p : Player, e : Solid) {
+                pause();
+                wait(1, function() {
+                    var fader = new Fader(this);
+                    fader.fade(false, function() {
+                        wait(1, function() {
+                            GameController.ClearMap("EXIT-20123");
+                            var clearThing : CourseClearThing = new CourseClearThing(this);
+                            addHudElement(clearThing);
+                        });
+                    });
+                });
+            });
+
+            // Inventory management
+            if (Gamepad.justPressed(Gamepad.Select))
+            {
+                Inventory.MoveCursor();
+            }
+
+            if (Gamepad.justPressed(Gamepad.B))
+            {
+                var item : ItemData = Inventory.GetCurrent();
+                useItem(item);
+            }
         }
         
         super.update(elapsed);
@@ -528,6 +537,14 @@ class World extends FlxState
     inline function get_bottom() : Float
     {
         return roomData.rows*14;
+    }
+
+    function wait(seconds : Float, callback : Void -> Void)
+    {
+        new FlxTimer().start(seconds, function(t:FlxTimer) {
+            t.destroy();
+            callback();
+        });
     }
 
     /* FUNNY DEBUG AREA */
