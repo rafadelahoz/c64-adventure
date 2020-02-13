@@ -1,5 +1,7 @@
 package;
 
+import flixel.effects.FlxFlicker;
+import DebugSubstate.BlurDirection;
 import flixel.FlxSprite;
 import text.PixelText;
 import flixel.text.FlxBitmapText;
@@ -7,12 +9,18 @@ import flixel.group.FlxSpriteGroup;
 
 class DebugSwitchesPanel extends FlxSpriteGroup
 {
+    var substate : DebugSubstate;
+
     var switches : Array<FlxBitmapText>;
     var current : Int;
 
-    public function new(X : Float, Y : Float)
+    var focused : Bool;
+
+    public function new(X : Float, Y : Float, DebugState : DebugSubstate)
     {
         super(X, Y);
+
+        substate = DebugState;
 
         text(0, 0, "@=============@");
 
@@ -26,6 +34,32 @@ class DebugSwitchesPanel extends FlxSpriteGroup
         }
 
         current = 0;
+
+        focused = false;
+    }
+
+    public function focus()
+    {
+        focused = true;
+        FlxFlicker.flicker(this, 0.25);
+    }
+
+    public function blur()
+    {
+        focused = false;
+    }
+
+    override public function update(elapsed : Float)
+    {
+        if (focused)
+        {
+            if (Gamepad.justPressed(Gamepad.Left))
+                substate.onPanelBlur(this, BlurDirection.Left);
+            else if (Gamepad.justPressed(Gamepad.Right))
+                substate.onPanelBlur(this, BlurDirection.Right);
+        }
+
+        super.update(elapsed);
     }
 
     function text(char : Int, line : Int, text : String, ?color : Int = 0xFFFFFFFF) : FlxBitmapText

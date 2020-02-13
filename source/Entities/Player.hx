@@ -74,7 +74,7 @@ class Player extends Actor
         setSize(5, 12);
         offset.set(3, 4);
 
-        color = GameStatus.playerColor;
+        refreshColor();
 
         hspeed = PlayerData.hspeed;
         vspeed = PlayerData.vspeed;
@@ -117,6 +117,11 @@ class Player extends Actor
         groundProbe.makeGraphic(Std.int(width), 1, 0xFFFFFFFF);
         groundProbe.visible = false;
         world.add(groundProbe);
+    }
+
+    public function refreshColor()
+    {
+        color = GameStatus.playerColor;
     }
 
     private function checkOnAir() : Bool

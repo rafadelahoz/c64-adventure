@@ -1,5 +1,7 @@
 package;
 
+import flixel.effects.FlxFlicker;
+import DebugSubstate.BlurDirection;
 import flixel.util.FlxTimer;
 import flixel.FlxG;
 import Inventory.ItemData;
@@ -10,13 +12,19 @@ import flixel.group.FlxSpriteGroup;
 
 class DebugInventoryPanel extends FlxSpriteGroup
 {
+    var substate : DebugSubstate;
+
     var labels : Array<FlxBitmapText>;
     var current : Int;
     var items : Map<String, ItemData>;
 
-    public function new(X : Float, Y : Float)
+    var focused : Bool;
+
+    public function new(X : Float, Y : Float, DebugState : DebugSubstate)
     {
         super(X, Y);
+
+        substate = DebugState;
 
         setupItems();
 
@@ -32,37 +40,57 @@ class DebugInventoryPanel extends FlxSpriteGroup
         }
 
         current = 0;
+
+        focused = false;
+    }
+
+    public function focus()
+    {
+        focused = true;
+        FlxFlicker.flicker(this, 0.25);
+    }
+
+    public function blur()
+    {
+        focused = false;
     }
 
     override public function update(elapsed : Float)
     {
-        if (Gamepad.justPressed(Gamepad.Up))
+        if (focused)
         {
-            current -= 1;
-            if (current < 0)
-                current = labels.length-1;
-        }
-        else if (Gamepad.justPressed(Gamepad.Down))
-            current = (current+1) % labels.length;
+            if (Gamepad.justPressed(Gamepad.Up))
+            {
+                current -= 1;
+                if (current < 0)
+                    current = labels.length-1;
+            }
+            else if (Gamepad.justPressed(Gamepad.Down))
+                current = (current+1) % labels.length;
 
-        for (label in labels)
-            label.color = 0xFFFFFFFF;
-        
-        labels[current].color = 0xFFFFde1a;
+            for (label in labels)
+                label.color = 0xFFFFFFFF;
+            
+            labels[current].color = 0xFFFFde1a;
 
-        if (Gamepad.justPressed(Gamepad.A))
-        {
-            var item : ItemData = items.get(labels[current].text);
-            var data : ItemData = {
-                id: "DEBUG-" + FlxG.random.int(3000),
-                type: item.type,
-                label: item.label,
-                properties: item.properties
-            };
+            if (Gamepad.justPressed(Gamepad.A))
+            {
+                var item : ItemData = items.get(labels[current].text);
+                var data : ItemData = {
+                    id: "DEBUG-" + FlxG.random.int(3000),
+                    type: item.type,
+                    label: item.label,
+                    properties: item.properties
+                };
 
-            Inventory.Add(data);
+                Inventory.Add(data);
 
-            timedText(Std.int((labels[current].x - x)/ 6), Std.int((labels[current].y - y) / 6), "ADDED!", 0.35);
+                timedText(Std.int((labels[current].x - x)/ 6), Std.int((labels[current].y - y) / 6), "ADDED!", 0.35);
+            }
+            else if (Gamepad.justPressed(Gamepad.Left))
+                substate.onPanelBlur(this, BlurDirection.Left);
+            else if (Gamepad.justPressed(Gamepad.Right))
+                substate.onPanelBlur(this, BlurDirection.Right);
         }
 
         super.update(elapsed);

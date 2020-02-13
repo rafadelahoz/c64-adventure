@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxObject;
 import flixel.text.FlxBitmapText;
 import text.PixelText;
 import flixel.FlxBasic;
@@ -14,8 +15,14 @@ class DebugSubstate extends FlxSubState
     // Char height (6px)
     public static final CH : Int = 6;
 
-    var world : World;
+    public var world : World;
     var cursor : DebugCursor;
+
+    var inventoryPanel : DebugInventoryPanel;
+    var playerPanel : DebugPlayerPanel;
+    var switchesPanel : DebugSwitchesPanel;
+
+    var alreadyBlurred : Bool;
 
     public function new(World : World)
     {
@@ -26,14 +33,16 @@ class DebugSubstate extends FlxSubState
         text(1, 1, "- DEBUG MENU - ");
         text(1, 3, "Press F9 to close");
 
-        // buildInventoryPanel();
-        addObject(new DebugInventoryPanel(char(1), line(5)));
-        // addObject(new DebugPlayerPanel(char(18), line(5)));
-        // addObject(new DebugSwitchesPanel(char(18+18), line(5)));
-        // buildExitsPanel();
+        addObject(inventoryPanel = new DebugInventoryPanel(char(1), line(5), this));
+        addObject(playerPanel = new DebugPlayerPanel(char(18), line(5), this));
+        addObject(switchesPanel = new DebugSwitchesPanel(char(18+18), line(5), this));
+
+        inventoryPanel.focus();
         
         cursor = new DebugCursor();
         addObject(cursor);
+
+        alreadyBlurred = false;
     }
 
     function char(char : Int) : Int
@@ -60,12 +69,58 @@ class DebugSubstate extends FlxSubState
         add(object);
     }
 
+    public function onPanelBlur(panel : FlxObject, direction : BlurDirection)
+    {
+        // Blur only once per step
+        if (!alreadyBlurred)
+        {
+            alreadyBlurred = true;
+
+            if (panel == switchesPanel)
+            {
+                switch (direction)
+                {
+                    case BlurDirection.Right:
+                        switchesPanel.focus();
+                    case BlurDirection.Left:
+                        playerPanel.focus();
+                        switchesPanel.blur();
+                }
+            }
+            else if (panel == playerPanel)
+            {
+                switch (direction)
+                {
+                    case BlurDirection.Right:
+                        switchesPanel.focus();
+                        playerPanel.blur();
+                    case BlurDirection.Left:
+                        inventoryPanel.focus();
+                        playerPanel.blur();
+                }
+            }
+            else if (panel == inventoryPanel)
+            {
+                switch (direction)
+                {
+                    case BlurDirection.Right:
+                        playerPanel.focus();
+                        inventoryPanel.blur();
+                    default:
+                        inventoryPanel.focus();
+                }
+            }
+        }
+    }
+
     override public function update(elapsed : Float)
     {
         if (FlxG.keys.justPressed.F9)
             close();
 
         super.update(elapsed);
+
+        alreadyBlurred = false;
     }
 }
 
@@ -94,3 +149,5 @@ class DebugCursor extends FlxSprite
         super.draw();
     }
 }
+
+enum BlurDirection { Left; Right; }
