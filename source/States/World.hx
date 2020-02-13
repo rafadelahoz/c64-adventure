@@ -566,29 +566,9 @@ class World extends FlxState
 
         if (FlxG.mouse.justPressed)
         {
-            if (FlxG.keys.pressed.ALT)
-            {
-                // oneways.add(new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 4, this));
-                hazards.add(new Hazard(Std.int(x / 7)*7, Std.int(y / 14)*14, this, "spikes"));
-            }
-            else if (FlxG.keys.pressed.SHIFT)
-            {
-                // Create trigger
-                // triggers.add(new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this));
-                
-                // Create item
-                var data : ItemData = {id: "0", type: "KEY", label: "One key"};
-
-                var item : Item = new Item(Std.int(x / 7)*7, Std.int(y / 14)*14, this, data);
-                items.add(item);
-            }
-            else
-            {
-                // var s = new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this);
-                var s = new LockSolid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14*4, this);
-                s.init("whatever");
-                solids.add(s);
-            }
+            var s = new LockSolid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14*4, this);
+            s.init("whatever");
+            solids.add(s);
         }
 
         label.text = "p: " + player.x + ", " + player.y + "\n" +
@@ -601,13 +581,6 @@ class World extends FlxState
                     "   " + (""+player.haccel).substr(0, 4) + "\n" +
                     "   " + (""+player.xRemainder).substr(0, 4) + "\n" + */
                     "";
-
-        if (FlxG.keys.justPressed.D)
-        {
-            Inventory.Add({
-                type: "DONUT", label: "Cool Donut", id: "xxx"
-            });
-        }
 
         if (FlxG.keys.justPressed.ESCAPE)
         {

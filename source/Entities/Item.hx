@@ -65,7 +65,7 @@ class Item extends Actor
             case "STAR":
                 animation.add("idle", [4]);
             case "POTION":
-                animation.add("idle", [data.properties.flavour]);
+                animation.add("idle", [data.properties.flavour == "SPEED" ? 0 : 1]);
             case "SHRIMP":
                 animation.add("idle", [7]);
             default:

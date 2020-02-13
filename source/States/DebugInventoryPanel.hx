@@ -128,6 +128,6 @@ class DebugInventoryPanel extends FlxSpriteGroup
         items.set("KEY",        {id: null, type: "KEY", label: "KEY", properties: {flavour: "NONE"}});
         items.set("MAUVE KEY",  {id: null, type: "KEY", label: "MAUVE KEY", properties: {flavour: "MAUVE"}});
         items.set("CHERRY KEY", {id: null, type: "KEY", label: "CHERRY KEY", properties: {flavour: "CHERRY"}});
-        
+        items.set("SPEED POTION", {id: null, type: "POTION", label: "SPEED POTION", properties: {flavour: "SPEED"}});
     }
 }
