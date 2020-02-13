@@ -2019,7 +2019,7 @@
 					"type": "exit",
 					"w": 1,
 					"h": 1,
-					"properites": {
+					"properties": {
 						"name": "exit"
 					}
 				},

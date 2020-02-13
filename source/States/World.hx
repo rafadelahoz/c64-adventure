@@ -286,13 +286,13 @@ class World extends FlxState
             });
 
             // Player vs Exits
-            FlxG.overlap(player, exits, function(p : Player, e : Solid) {
+            FlxG.overlap(player, exits, function(p : Player, e : MapExit) {
                 pause();
                 wait(1, function() {
                     var fader = new Fader(this);
                     fader.fade(false, function() {
                         wait(1, function() {
-                            GameController.ClearMap("EXIT-20123");
+                            GameController.ClearMap(e.name);
                             var clearThing : CourseClearThing = new CourseClearThing(this);
                             addHudElement(clearThing);
                         });

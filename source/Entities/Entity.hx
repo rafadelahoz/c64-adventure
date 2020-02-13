@@ -1,5 +1,6 @@
 package;
 
+import flixel.util.FlxTimer;
 import flixel.FlxSprite;
 
 class Entity extends FlxSprite
@@ -35,4 +36,12 @@ class Entity extends FlxSprite
         else
             onPausedUpdate(elapsed);        
     }
+
+    function wait(seconds : Float, callback : Void -> Void)
+    {
+        new FlxTimer().start(seconds, function(t:FlxTimer) {
+            t.destroy();
+            callback();
+        });
+    }    
 }

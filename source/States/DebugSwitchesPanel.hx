@@ -27,7 +27,7 @@ class DebugSwitchesPanel extends FlxSpriteGroup
         switches = [];
         var char : Int = 1;
         var line : Int = 1;
-        for (sw in GameStatus.switches.keys())
+        for (sw in GameStatus.exits.keys())
         {
             switches.push(text(char, line, sw));
             line++;

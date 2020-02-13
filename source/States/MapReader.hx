@@ -115,18 +115,15 @@ class MapReader
         if (room.actors != null)
         {
             for (actor in room.actors) {
-                // trace("Actor " + actor);
-                // TODO: Instantiate actors?
                 // Check if they have to be created, using LRAM, WRAM
                 var x : Float = actor.x * Constants.TileWidth;
                 var y : Float = actor.y * Constants.TileHeight;
+                var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
 
                 switch (actor.type)
                 {
                     case "exit":
-                        var exit : Solid = new Solid(x, y, Constants.TileWidth, Constants.TileHeight, world);
-                        exit.makeGraphic(Constants.TileWidth, Constants.TileHeight, 0xFFFF1f5a);
-                        exit.visible = true;
+                        var exit : MapExit = new MapExit(x, y, Constants.TileWidth, Constants.TileHeight, properties.get("name"), world);
                         world.exits.add(exit);
                     case "spikes":
                         var spikes : Hazard = new Hazard(actor.x*7, actor.y*14, world, actor.type, actor.properties);
