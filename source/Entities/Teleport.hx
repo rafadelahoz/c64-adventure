@@ -1,10 +1,5 @@
 package;
 
-import flixel.tweens.FlxEase;
-import flixel.tweens.FlxTween;
-import flixel.tweens.FlxTween.FlxTweenManager;
-import flixel.FlxSprite;
-
 class Teleport extends Entity
 {
     var data : TeleportData;
@@ -13,9 +8,19 @@ class Teleport extends Entity
     {
         super(X, Y, World);
 
-        makeGraphic(Std.int(Width), Std.int(Height), 0x44FFFFFF);
-
         data = Data;
+
+        visible = data.visible;
+        if (visible)
+        {
+            // TODO: Prepare door graphic
+            makeGraphic(Std.int(Width), Std.int(Height), 0xFFFFFFFF);
+            color = data.color;
+        }
+        else
+        {
+            makeGraphic(Std.int(Width), Std.int(Height), 0x00000000);
+        }
     }
 
     public function onTeleport() 
@@ -32,4 +37,6 @@ typedef TeleportData = {
     var target : Int;   // Target room id
     var tileX : Int;    // Target tile x
     var tileY : Int;    // Target tile y
+    var ?visible : Bool; // Is the door visible?
+    var ?color : Int;    // Color for the graphic?
 };

@@ -812,15 +812,17 @@ class Player extends Actor
     {
         // Store the starting point in case we fail
         var startY : Float = y;
+        // Try to ground up to this point: 1.5 tiles
+        var limitY : Float = startY + height * 1.5;
         
-        while (checkOnAir() && y < world.roomData.rows * Constants.TileHeight)
+        while (checkOnAir() && y < limitY)
         {
             y++;
             groundProbe.y = y + height;
         }
 
         // In case there was no ground, get back to the starting point
-        if (y >= world.roomData.rows * Constants.TileHeight)
+        if (y >= limitY)
         {
             y = startY;
             groundProbe.y = y+height;

@@ -24,7 +24,7 @@ class MapReader
     {
         var color : Int = 0xFF000000;
 
-        if (value.charAt(0) == "#")
+        if (value != null && value.length > 0 && value.charAt(0) == "#")
         {
             color = Std.parseInt("0xFF" + value.substr(1));
         }
@@ -184,10 +184,16 @@ class MapReader
                         world.solids.add(door);
                     case "teleport":
                         var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
+                        var visible : String = properties.get("visible");
+                        if (visible == null)
+                            visible = "false";
+                        var color : Int = color(properties.get("color"));
                         var data : TeleportData = {
                             target: properties.get("target"),
                             tileX: properties.get("tileX"),
-                            tileY: properties.get("tileY")
+                            tileY: properties.get("tileY"),
+                            visible: (visible == "true"),
+                            color : color
                         };
 
                         var teleport : Teleport = new Teleport(actor.x*7, actor.y*14, actor.w*7, actor.h*14, data, world);
