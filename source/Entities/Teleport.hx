@@ -14,7 +14,8 @@ class Teleport extends Entity
         if (visible)
         {
             // TODO: Prepare door graphic
-            makeGraphic(Std.int(Width), Std.int(Height), 0xFFFFFFFF);
+            // makeGraphic(Std.int(Width), Std.int(Height), 0xFFFFFFFF);
+            loadGraphic("assets/images/door.png");
             color = data.color;
         }
         else
