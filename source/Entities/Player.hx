@@ -1,5 +1,6 @@
 package;
 
+import flixel.effects.FlxFlicker;
 import flixel.group.FlxGroup.FlxTypedGroupIterator;
 import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
@@ -532,9 +533,10 @@ class Player extends Actor
         }
 
         if (invulnerable)
-            flixel.util.FlxSpriteUtil.flicker(this);
+            // flixel.util.FlxSpriteUtil.flicker(this);
+            FlxFlicker.flicker(this, 0);
         else
-            FlxSpriteUtil.stopFlickering(this);
+            FlxFlicker.stopFlickering(this);
         
         // Debug zone
         if (FlxG.keys.justPressed.G)
