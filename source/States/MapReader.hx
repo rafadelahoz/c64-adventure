@@ -14,11 +14,19 @@ class MapReader
     {
     }
 
-    public function read(mapName : String) 
+    #if sys
+    public function read(mapName : String)
     {
-        var jsonContents : String = Assets.getText("assets/maps/" + mapName + ".json");
+        var jsonContents : String = sys.io.File.getContent(MapListRoom.mapsDirectory + mapName + ".json");
         mapData = Json.parse(jsonContents);
     }
+    #else
+    public function read(mapName : String) 
+    {
+        var jsonContents : String = Assets.getText(MapListRoom.mapsDirectory + mapName + ".json");
+        mapData = Json.parse(jsonContents);
+    }
+    #end
 
     public function color(value : String) : Int
     {

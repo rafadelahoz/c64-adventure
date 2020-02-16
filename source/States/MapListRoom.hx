@@ -10,6 +10,12 @@ import text.PixelText;
 
 class MapListRoom extends FlxState
 {
+    #if sys
+    public static var mapsDirectory : String = "/c64/assets/maps/";
+    #else
+    public static var mapsDirectory : String = "assets/maps/";
+    #end
+
     var labelGroup : FlxGroup;
     var labels : Array<FlxBitmapText>;
 
@@ -27,10 +33,19 @@ class MapListRoom extends FlxState
 
         labels = [];
 
+        #if sys
+        trace("Reading " + mapsDirectory);
+        var maps : Array<String> = sys.FileSystem.readDirectory(mapsDirectory);
+        var textAssets : Array<String> = [];
+        // Prepend the path for compatibility
+        for (map in maps)
+            textAssets.push(mapsDirectory + map);
+        #else
         var textAssets : Array<String> = Assets.list(AssetType.TEXT);
         textAssets = textAssets.filter(function (assetName : String) : Bool {
-            return assetName.indexOf("assets/maps/") > -1;
+            return assetName.indexOf(mapsDirectory) > -1;
         });
+        #end
 
         textAssets.sort(function(a : String, b : String) : Int {
             return (a > b ? 1 : -1);
@@ -43,12 +58,19 @@ class MapListRoom extends FlxState
         var entity : FlxBitmapText = null;
 
         for (textAsset in textAssets) {
-            rexp.match(textAsset);
-            label = rexp.matched(1);
-            entity = PixelText.New(xx, yy, label);
-            labelGroup.add(entity);
-            labels.push(entity);
-            yy += 8;
+            try
+            {
+                rexp.match(textAsset);
+                label = rexp.matched(1);
+                entity = PixelText.New(xx, yy, label);
+                labelGroup.add(entity);
+                labels.push(entity);
+                yy += 8;
+            } 
+            catch (e : Dynamic)
+            {
+                // NOP!
+            }
         }
 
         cursor = PixelText.New(5, 3, ">");
