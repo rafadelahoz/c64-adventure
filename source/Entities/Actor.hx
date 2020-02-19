@@ -93,4 +93,14 @@ class Actor extends Entity
         // Otherwise, there's no collision
         return false;
     }
+
+    public function isRiding(solid : Solid) : Bool
+    {
+        return overlapsAt(x, y+1, solid);
+    }
+
+    public function squish()
+    {
+
+    }
 }

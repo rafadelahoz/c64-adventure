@@ -315,6 +315,10 @@ class World extends FlxState
         
         super.update(elapsed);
 
+        // Late update?
+        for (solid in solids)
+            cast(solid, Solid).lateUpdate();
+
         // Check if the player is OOB and we need to switch rooms
         handleRoomSwitching();
 
@@ -566,9 +570,18 @@ class World extends FlxState
 
         if (FlxG.mouse.justPressed)
         {
-            var s = new LockSolid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14*4, this);
-            s.init("whatever");
-            solids.add(s);
+            if (FlxG.keys.pressed.ALT)
+            {
+                var s = new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 14, 28, this);
+                s.visible = true;
+                solids.add(s);
+            }
+            else
+            {
+                var s = new LockSolid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14*4, this);
+                s.init("whatever");
+                solids.add(s);
+            }
         }
 
         label.text = "p: " + player.x + ", " + player.y + "\n" +

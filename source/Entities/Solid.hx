@@ -7,6 +7,11 @@ class Solid extends Entity
 {
     var ladderSprite : FlxTileblock;
 
+    var xRemainder : Float;
+    var yRemainder : Float;
+
+    var ridingActors : Array<Actor>;
+
     public function new(X : Float, Y : Float, Width : Float, Height : Float, World : World)
     {
         super(X, Y, World);
@@ -42,11 +47,117 @@ class Solid extends Entity
         super.onUpdate(elapsed);
     }
 
+    public function lateUpdate()
+    {
+        /* DEBUG: Moveable solid */
+        if (width > 7 && height > 14)
+        {
+            var h : Float = 0;
+            var v : Float = 0;
+            if (FlxG.keys.pressed.L)
+                h = 1;
+            else if (FlxG.keys.pressed.J)
+                h = -1;
+            if (FlxG.keys.pressed.I)
+                v = -1;
+            else if (FlxG.keys.pressed.K)
+                v = 1;
+            
+            if (h != 0 || v != 0)
+                move(h, v);
+        }
+    }
+
     override public function draw()
     {
         if (ladderSprite != null)
             ladderSprite.draw();
         
         super.draw();
+    }
+
+    public function move(horizontal : Float, vertical : Float)
+    {
+        xRemainder += horizontal;
+        yRemainder += vertical;
+        var moveX : Int = Std.int(xRemainder);
+        var moveY : Int = Std.int(yRemainder);
+
+        if (moveX != 0 || moveY != 0)
+        {
+            // Fetch all riding actors
+            getAllRidingActors(); 
+
+            solid = false;
+            world.solids.remove(this);
+
+            var allActors : Array<Actor> = [];
+            world.forEachOfType(Actor, function(actor : Actor) {
+                allActors.push(actor);
+            }, true);
+
+            if (moveY != 0)
+            {
+                yRemainder -= moveY;
+                y += moveY;
+
+                for (actor in allActors)
+                {
+                    if (overlaps(actor))
+                    {
+                        // Push actor
+                        if (moveY > 0)
+                            actor.moveY(y + height - actor.y, actor.squish);
+                        else if (moveY < 0)
+                            actor.moveY(y - (actor.y + actor.height), actor.squish);
+                    }
+                    else if (ridingActors.indexOf(actor) >= 0)
+                    {
+                        // Carry actor
+                        actor.moveY(moveY, function() {
+                            trace("FINISHED INSIDE");
+                        });
+                    }
+                }
+            }
+
+            if (moveX != 0)
+            {
+                xRemainder -= moveX;
+                x += moveX;
+                
+                for (actor in allActors)
+                {
+                    if (overlaps(actor))
+                    {
+                        // Push actor
+                        if (moveX > 0)
+                            actor.moveX(x + width - actor.x, actor.squish);
+                        else if (moveX < 0)
+                            actor.moveX(x - (actor.x + actor.width), actor.squish);
+                    }
+                    else if (ridingActors.indexOf(actor) >= 0)
+                    {
+                        // Carry actor
+                        actor.moveX(moveX);
+                    }
+                }
+            }
+
+            world.solids.add(this);
+            solid = true;
+        }
+    }
+
+    function getAllRidingActors()
+    {
+        ridingActors = [];
+        if (world.player.isRiding(this))
+            ridingActors.push(world.player);
+
+        // TODO: Add the rest
+        // Items
+        // Enemies
+        // No more ?    
     }
 }
