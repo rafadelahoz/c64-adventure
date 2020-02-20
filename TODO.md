@@ -4,23 +4,23 @@
 
 - ERR: Going down a ladder into a new screen makes carried item lost
 
-- Teleports between rooms
-- [?] Moving platforms
+- [DONE] Teleports between rooms
+- [DONE] Moving platforms
 - Kill player
     - Player touches something bad with no hp left
     - [DONE] Screen bg turns red, player and the killer entity are displayed only
-    - Wait for a sec, player dissappears in a cloud puff
+    - [DONE] Wait for a sec, player dissappears in a cloud puff
     - [DONE] Options appear: "AGAIN" "TO MAP"
     - All items not present in the original inventory are lost
         - Generate all instances and make them bounce away from player!
 - Player hp
-    - When player character is hit, it moves backwards considering contact point, and loses hp
-        - During this movement, no control is available
-    - A small period of invulnerability is granted, during which the player can move freely
+    - [DONE] When player character is hit, it moves backwards considering contact point, and loses hp
+        - [DONE] During this movement, no control is available
+    - [DONE] A small period of invulnerability is granted, during which the player can move freely
     - Display HP
 
 - On player death:
-    - Restart level or exit to map
+    - [DONE] Restart level or exit to map
     - Is inventory kept?
         - [NOPE] If we keep it and restart level, player may have items she shouldn't or even make the level unplayable? lost a key item?
         - If we don't keep it, it's safer, but player can only take things out of the level when properly leaving
@@ -32,7 +32,7 @@
 
 
 - Hazards
-    - Damage player / kill directly
+    - [DONE] Basic: Damage player / kill directly
 
 - Enemies
     - Damage player
@@ -92,19 +92,19 @@
         - check wram for instances in the current room and create them
 
 - Interaction between key and door
-    - Key is an item in the room
-    - Down to pick key
-    - Door is a block which can be opened
-        - It can be climbed an all, it's also a solid
-    - Key is an item in player inventory
-    - Player selects key using Select
-    - Press B to produce key
-    - Hold and move to carry it
-        - Player can walk (DONE), jump (DONE), climb (DONE), switch screens (DONE) while carrying
-        - On hit, stop carrying => !!may lead to lost key items!!
-            - Mechanism to summon key items for a price?
-            - Items can be lost all the same if the player drops them where they shouldn't
-    - Release to drop key
+    - [DONE] Key is an item in the room
+    - [DONE] Down to pick key
+    - [DONE] Door is a block which can be opened
+        - [DONE] It can be climbed an all, it's also a solid
+    - [DONE] Key is an item in player inventory
+    - [DONE] Player selects key using Select
+    - [DONE] Press B to produce key
+    - [DONE] Hold and move to carry it
+        - [DONE] Player can walk (DONE), jump (DONE), climb (DONE), switch screens (DONE) while carrying
+        - [DONE] On hit, stop carrying => !!may lead to lost key items!!
+            - [!!!] Mechanism to summon key items for a price?
+            - [!!!] Items can be lost all the same if the player drops them where they shouldn't
+    - [DONE] Release to drop key
 
 - NPCs
     - Actors with
@@ -133,10 +133,10 @@
 - Maps and things
     - [DONE] List of available maps for quick access (will be replaced by world map)
     - [DONE] Maps to start in the spawn point
-    - Maps to have exits
-        - Exits are uniquely identified (mapid+exitid?)
-        - When used, they are "cleared"
-            - Array of exits and state (cleared, not) in GameStatus
+    - [DONE] Maps to have exits
+        - [DONE] Exits are uniquely identified (mapid+exitid?)
+        - [DONE] When used, they are "cleared"
+            - [DONE] Array of exits and state (cleared, not) in GameStatus
 
 - Map properties: 
     - (Room?) All entities are black
