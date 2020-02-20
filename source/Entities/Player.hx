@@ -54,7 +54,7 @@ class Player extends Actor
     var actingTimer : FlxTimer;
     var invulnerableTimer : FlxTimer;
 
-    var InvulnerableDuration : Float = 1;
+    var InvulnerableDuration : Float = 2;
     var invulnerable : Bool;
 
     public var debug (default, null) : Bool = false;
@@ -534,7 +534,7 @@ class Player extends Actor
 
         if (invulnerable)
             // flixel.util.FlxSpriteUtil.flicker(this);
-            FlxFlicker.flicker(this, 0);
+            FlxFlicker.flicker(this, 0, true, false);
         else
             FlxFlicker.stopFlickering(this);
         
