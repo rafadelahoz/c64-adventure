@@ -546,13 +546,18 @@ class Player extends Actor
 
         super.onUpdate(elapsed);
 
+        handleAfterMovement();
+
+        // groundProbe.update(elapsed);
+    }
+
+    public function handleAfterMovement()
+    {
         groundProbe.x = x;
         groundProbe.y = y + height;
 
         // Reposition carried item
         repositionCarriedItem();
-
-        // groundProbe.update(elapsed);
     }
 
     function repositionCarriedItem()

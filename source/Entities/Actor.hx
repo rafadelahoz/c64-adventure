@@ -3,7 +3,7 @@ package;
 class Actor extends Entity
 {
     public var xRemainder : Float;
-    var yRemainder : Float;
+    public var yRemainder : Float;
 
     public function new(X : Float, Y : Float, World : World)
     {
@@ -101,6 +101,7 @@ class Actor extends Entity
 
     public function squish()
     {
-
+        // TODO: Temporary violence
+        // destroy();
     }
 }

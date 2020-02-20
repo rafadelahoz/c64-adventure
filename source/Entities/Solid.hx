@@ -1,5 +1,6 @@
 package;
 
+import flixel.FlxBasic;
 import flixel.tile.FlxTileblock;
 import flixel.FlxG;
 
@@ -93,7 +94,9 @@ class Solid extends Entity
 
             var allActors : Array<Actor> = [];
             world.forEachOfType(Actor, function(actor : Actor) {
-                allActors.push(actor);
+                // Avoid moving hazards
+                if (!Std.is(actor, Hazard))
+                    allActors.push(actor);
             }, true);
 
             if (moveY != 0)
@@ -114,9 +117,13 @@ class Solid extends Entity
                     else if (ridingActors.indexOf(actor) >= 0)
                     {
                         // Carry actor
-                        actor.moveY(moveY, function() {
-                            trace("FINISHED INSIDE");
-                        });
+                        actor.yRemainder = 0;
+                        actor.moveY(moveY);
+                        // Special player case
+                        if (Std.is(actor, Player))
+                        {
+                            cast(actor, Player).handleAfterMovement();
+                        }
                     }
                 }
             }
@@ -152,11 +159,19 @@ class Solid extends Entity
     function getAllRidingActors()
     {
         ridingActors = [];
+
+        // Player
         if (world.player.isRiding(this))
             ridingActors.push(world.player);
 
-        // TODO: Add the rest
         // Items
+        world.items.forEach(function(item : FlxBasic) {
+            if (cast(item, Actor).isRiding(this))
+                ridingActors.push(cast(item, Actor));
+        });
+
+        // TODO: Add the rest
+        
         // Enemies
         // No more ?    
     }
