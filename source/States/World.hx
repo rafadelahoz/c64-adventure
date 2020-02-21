@@ -1,5 +1,6 @@
 package;
 
+import flixel.addons.plugin.FlxScrollingText.ScrollingTextData;
 import Teleport.TeleportData;
 import flixel.util.FlxTimer;
 import flixel.util.FlxSpriteUtil;
@@ -570,7 +571,12 @@ class World extends FlxState
 
         if (FlxG.mouse.justPressed)
         {
-            if (FlxG.keys.pressed.ALT)
+            if (FlxG.keys.pressed.SHIFT)
+            {
+                var s = new FallingSolid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this);
+                solids.add(s);
+            }
+            else if (FlxG.keys.pressed.ALT)
             {
                 var s = new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 14, 28, this);
                 s.visible = true;

@@ -2,7 +2,6 @@ package;
 
 import flixel.effects.FlxFlicker;
 import flixel.group.FlxGroup.FlxTypedGroupIterator;
-import flixel.util.FlxSpriteUtil;
 import flixel.util.FlxTimer;
 import flixel.FlxBasic;
 import flixel.math.FlxMath;

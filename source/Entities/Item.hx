@@ -62,6 +62,7 @@ class Item extends Actor
                 animation.add("idle", [2]);
             case "DONUT":
                 animation.add("idle", [3]);
+                color = 0xFF7869c4;
             case "STAR":
                 animation.add("idle", [4]);
             case "POTION":

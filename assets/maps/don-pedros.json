@@ -1532,6 +1532,126 @@
 					"properties": {
 						"type": "stairs"
 					}
+				},
+				{
+					"id": "6.1582315954390",
+					"x": 6,
+					"y": 6,
+					"type": "falling",
+					"w": 1,
+					"h": 1,
+					"properties": {
+						"color": "#ff0a1a",
+						"oneway": true
+					}
+				},
+				{
+					"id": "6.1582315955340",
+					"x": 7,
+					"y": 6,
+					"type": "falling",
+					"w": 1,
+					"h": 1,
+					"properties": {
+						"color": "#ff0a1a",
+						"oneway": true
+					}
+				},
+				{
+					"id": "6.1582315955820",
+					"x": 8,
+					"y": 6,
+					"type": "falling",
+					"w": 1,
+					"h": 1,
+					"properties": {
+						"color": "#ff0a1a",
+						"oneway": true
+					}
+				},
+				{
+					"id": "6.1582315956277",
+					"x": 9,
+					"y": 6,
+					"type": "falling",
+					"w": 1,
+					"h": 1,
+					"properties": {
+						"color": "#ff0a1a",
+						"oneway": true
+					}
+				},
+				{
+					"id": "6.1582315956724",
+					"x": 10,
+					"y": 6,
+					"type": "falling",
+					"w": 1,
+					"h": 1,
+					"properties": {
+						"color": "#ff0a1a",
+						"oneway": true
+					}
+				},
+				{
+					"id": "6.1582315957173",
+					"x": 11,
+					"y": 6,
+					"type": "falling",
+					"w": 1,
+					"h": 1,
+					"properties": {
+						"color": "#ff0a1a",
+						"oneway": true
+					}
+				},
+				{
+					"id": "6.1582315957614",
+					"x": 12,
+					"y": 6,
+					"type": "falling",
+					"w": 1,
+					"h": 1,
+					"properties": {
+						"color": "#ff0a1a",
+						"oneway": true
+					}
+				},
+				{
+					"id": "6.1582315958046",
+					"x": 13,
+					"y": 6,
+					"type": "falling",
+					"w": 1,
+					"h": 1,
+					"properties": {
+						"color": "#ff0a1a",
+						"oneway": true
+					}
+				},
+				{
+					"id": "6.1582315958501",
+					"x": 14,
+					"y": 6,
+					"type": "falling",
+					"w": 1,
+					"h": 1,
+					"properties": {
+						"color": "#ff0a1a",
+						"oneway": true
+					}
+				},
+				{
+					"id": "6.1582315958918",
+					"x": 15,
+					"y": 6,
+					"type": "falling",
+					"w": 1,
+					"h": 1,
+					"properties": {
+						"color": "#ff0a1a",
+						"oneway": true
+					}
 				}
 			],
 			"gridX": 0,

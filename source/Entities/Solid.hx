@@ -17,6 +17,11 @@ class Solid extends Entity
     {
         super(X, Y, World);
 
+        handleGraphic(Width, Height);
+    }
+
+    function handleGraphic(?Width : Float = -1, ?Height : Float = -1)
+    {
         ladderSprite = null;
 
         var c = 0x88FF0a00; // Full solid
@@ -89,8 +94,18 @@ class Solid extends Entity
             // Fetch all riding actors
             getAllRidingActors(); 
 
+            var itIsSolid = true;
             solid = false;
-            world.solids.remove(this);
+            if (world.solids.members.indexOf(this) >= 0)
+            {
+                world.solids.remove(this);
+                itIsSolid = true;
+            }
+            else if (world.oneways.members.indexOf(this) >= 0)
+            {
+                world.oneways.remove(this);
+                itIsSolid = false;
+            }
 
             var allActors : Array<Actor> = [];
             world.forEachOfType(Actor, function(actor : Actor) {
@@ -151,7 +166,11 @@ class Solid extends Entity
                 }
             }
 
-            world.solids.add(this);
+            if (itIsSolid)
+                world.solids.add(this);
+            else 
+                world.oneways.add(this);
+                
             solid = true;
         }
     }

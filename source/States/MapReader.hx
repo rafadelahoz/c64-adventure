@@ -126,6 +126,9 @@ class MapReader
                 // Check if they have to be created, using LRAM, WRAM
                 var x : Float = actor.x * Constants.TileWidth;
                 var y : Float = actor.y * Constants.TileHeight;
+                var w : Float = actor.w * Constants.TileWidth;
+                var h : Float = actor.h * Constants.TileHeight;
+
                 var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
 
                 switch (actor.type)
@@ -134,10 +137,10 @@ class MapReader
                         var exit : MapExit = new MapExit(x, y, Constants.TileWidth, Constants.TileHeight, properties.get("name"), world);
                         world.exits.add(exit);
                     case "spikes":
-                        var spikes : Hazard = new Hazard(actor.x*7, actor.y*14, world, actor.type, actor.properties);
+                        var spikes : Hazard = new Hazard(x, y, world, actor.type, actor.properties);
                         world.hazards.add(spikes);
                     case "pointy":
-                        var pointy : Hazard = new Hazard(actor.x*7, actor.y*14, world, actor.type, actor.properties);
+                        var pointy : Hazard = new Hazard(x, y, world, actor.type, actor.properties);
                         world.hazards.add(pointy);
                     case "item":
                         if (actor.properties != null)
@@ -148,7 +151,7 @@ class MapReader
                                 var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
                                 var type = properties.get("type");
 
-                                var item : Item = new Item(actor.x*7, actor.y*14, world, {
+                                var item : Item = new Item(x, y, world, {
                                     id: actor.id,
                                     type: type,
                                     label: type
@@ -177,13 +180,13 @@ class MapReader
                                     properties: properties
                                 };
 
-                                var key : Item = new Item(actor.x * Constants.TileWidth, actor.y * Constants.TileHeight, world, itemData);
+                                var key : Item = new Item(x, y, world, itemData);
                                 world.items.add(key);
                                 LRAM.HandleItemSpawn(actor.id);
                             }
                         }
                     case "door":
-                        var door : LockSolid = new LockSolid(actor.x*7, actor.y*14, actor.w*7, actor.h*14, world);
+                        var door : LockSolid = new LockSolid(x, y, w, h, world);
                         var flavour : String = "NONE";
                         var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
                         if (properties != null)
@@ -191,7 +194,6 @@ class MapReader
                         door.init(actor.id, flavour);
                         world.solids.add(door);
                     case "teleport":
-                        var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
                         var visible : String = properties.get("visible");
                         if (visible == null)
                             visible = "false";
@@ -204,8 +206,16 @@ class MapReader
                             color : color
                         };
 
-                        var teleport : Teleport = new Teleport(actor.x*7, actor.y*14, actor.w*7, actor.h*14, data, world);
+                        var teleport : Teleport = new Teleport(x, y, w, h, data, world);
                         world.teleports.add(teleport);
+                    case "falling": 
+                        var color : Int = color(properties.get("color"));
+                        var falling : FallingSolid = new FallingSolid(x, y, w, h, world);
+                        falling.color = color;
+                        if (properties.get("oneway"))
+                            world.oneways.add(falling);
+                        else
+                            world.solids.add(falling);
                     default:
                         // nop
                 }
