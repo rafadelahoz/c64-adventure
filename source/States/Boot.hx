@@ -11,6 +11,8 @@ class Boot extends FlxState
 
         bgColor = 0xFF000000;
 
+        Palette.Init();
+
         text.PixelText.Init();
 
         GameController.Init();
