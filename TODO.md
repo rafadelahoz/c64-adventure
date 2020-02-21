@@ -130,18 +130,11 @@
     - Variables map (multitype variables, string, numeric)
     - LRAM with switches for the current map only?
 
-- Maps and things
-    - [DONE] List of available maps for quick access (will be replaced by world map)
-    - [DONE] Maps to start in the spawn point
-    - [DONE] Maps to have exits
-        - [DONE] Exits are uniquely identified (mapid+exitid?)
-        - [DONE] When used, they are "cleared"
-            - [DONE] Array of exits and state (cleared, not) in GameStatus
-
 - Map properties: 
     - (Room?) All entities are black
         - Or other color ==> all entities are white and get tinted in engine
-    - Map name (display on top/bottom, or this is for rooms?)
+    - [DONE] Map name (display on top/bottom)
+    - [DONE] Room name
     
 - Gameplay loop
     - [DONE] Player can get killed, restart the map, get kicked to world map
@@ -174,6 +167,14 @@
 - [DONE] Player picks things
     - [DONE] Press down while over it to put it in inventory directly
 - [DONE] Don't drop things outside the room area
+
+- [DONE] Maps and things
+    - [DONE] List of available maps for quick access (will be replaced by world map)
+    - [DONE] Maps to start in the spawn point
+    - [DONE] Maps to have exits
+        - [DONE] Exits are uniquely identified (mapid+exitid?)
+        - [DONE] When used, they are "cleared"
+            - [DONE] Array of exits and state (cleared, not) in GameStatus
 
 ## Descoped
 
