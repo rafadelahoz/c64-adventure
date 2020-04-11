@@ -56,6 +56,9 @@ class Player extends Actor
     var InvulnerableDuration : Float = 2;
     var invulnerable : Bool;
 
+    // Testing area
+    var shadow : FlxSprite;
+
     public var debug (default, null) : Bool = false;
 
     public function new(PlayerData : PlayerData, World : World) {
@@ -71,8 +74,16 @@ class Player extends Actor
 
         animation.play('idle');
 
+        shadow = new FlxSprite(x, y);
+        shadow.loadGraphic('assets/images/player-sheet-bg.png', true, 11, 18);
+        shadow.animation.copyFrom(animation);
+        shadow.color = new MapReader().color(world.roomData.colors[0]);
+
         setSize(5, 12);
         offset.set(3, 4);
+
+        shadow.setSize(5, 12);
+        shadow.offset.set(3, 4);
 
         refreshColor();
 
@@ -531,6 +542,11 @@ class Player extends Actor
                 animation.play("act");
         }
 
+        shadow.animation.play(animation.curAnim.name);
+        shadow.animation.paused = animation.paused;
+        shadow.flipX = flipX;
+        shadow.flipY = flipY;
+
         if (invulnerable)
             // flixel.util.FlxSpriteUtil.flicker(this);
             FlxFlicker.flicker(this, 0, true, false);
@@ -544,6 +560,10 @@ class Player extends Actor
         solid = (!debug);
 
         super.onUpdate(elapsed);
+
+        shadow.x = x;
+        shadow.y = y;
+        shadow.update(elapsed);
 
         handleAfterMovement();
 
@@ -582,6 +602,7 @@ class Player extends Actor
 
     override public function draw()
     {
+        shadow.draw();
         super.draw();
         // groundProbe.draw();
     }
