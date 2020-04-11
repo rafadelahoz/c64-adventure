@@ -43,7 +43,16 @@ class MapExit extends Entity
         }
         else   
         {
+            // Cleared exits are grayscale only
             flag.color = 0xFF808080;
+            hueIndex = 1;
+            colorIndex = FlxG.random.int(0, 7);
+            colorDirection = (FlxG.random.bool(50) ? -1 : 1);
+
+            colorTimer = new FlxTimer();
+            onColorTimer(colorTimer);
+
+            // And the flag is a bit lowered
             flag.y += 2;
         }
     }
@@ -59,15 +68,18 @@ class MapExit extends Entity
             if (colorIndex < 0) colorIndex = 0;
             else colorIndex = hue.length-1;
 
-            hueIndex += hueDirection;
-            if (hueIndex < 2 || hueIndex >= Palette.colors.length)
+            if (!GameStatus.isExitClear(name))
             {
-                hueDirection *= -1;
-                if (hueIndex < 2) hueIndex = 2;
-                else hueIndex = Palette.colors.length-1;
-            }
+                hueIndex += hueDirection;
+                if (hueIndex < 2 || hueIndex >= Palette.colors.length)
+                {
+                    hueDirection *= -1;
+                    if (hueIndex < 2) hueIndex = 2;
+                    else hueIndex = Palette.colors.length-1;
+                }
 
-            hue = Palette.colors[hueIndex];
+                hue = Palette.colors[hueIndex];
+            }
         }
 
         flag.color = hue[colorIndex];
