@@ -747,18 +747,18 @@ class Player extends Actor
         vspeed = 0;
     }
 
-    public function onCollisionWithHazard(hazard : Hazard)
+    public function onCollisionWithDanger(danger : IDangerous)
     {
         // die?
         if (state != State.Hurt && state != State.Dying && !invulnerable)
         {
-            var damage : Int = hazard.damages(this);
+            var damage : Int = danger.damages(this);
             if (damage > -1)
             {
                 if (LRAM.hp - damage < 0)
-                    handleDeath(hazard);
+                    handleDeath(cast(danger, FlxBasic));
                 else
-                    onHit(damage, hazard);
+                    onHit(damage, cast(danger, Entity));
             }
                 
         }
@@ -809,6 +809,8 @@ class Player extends Actor
         {
             killer.visible = true;
             world.add(killer);
+            if (Std.is(killer, Enemy))
+                cast(killer, Enemy).onPlayerKilled();
         }
 
         // Now wait for a tad

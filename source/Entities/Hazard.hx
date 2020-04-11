@@ -1,6 +1,6 @@
 package;
 
-class Hazard extends Actor
+class Hazard extends Actor implements IDangerous
 {
     public static var TypeSpikes (default, never) : String = "spikes";
     public static var TypeStar(default, never) : String = "pointy";

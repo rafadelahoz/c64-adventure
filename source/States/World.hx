@@ -1,11 +1,7 @@
 package;
 
-import flixel.addons.plugin.FlxScrollingText.ScrollingTextData;
-import Teleport.TeleportData;
 import flixel.util.FlxTimer;
 import flixel.util.FlxSpriteUtil;
-import Inventory.ItemData;
-import MapReader.ActorData;
 import flixel.FlxBasic;
 import flixel.text.FlxBitmapText;
 import flixel.FlxObject;
@@ -15,6 +11,10 @@ import flixel.FlxState;
 import flixel.FlxCamera;
 import flixel.group.FlxGroup;
 import flixel.tile.FlxTilemap;
+
+import Teleport.TeleportData;
+import Inventory.ItemData;
+import MapReader.ActorData;
 
 import MapReader.RoomData;
 import MapReader.MapData;
@@ -44,6 +44,7 @@ class World extends FlxState
     public var hazards : FlxGroup;
     public var teleports : FlxGroup;
     public var exits : FlxGroup;
+    public var enemies : FlxGroup;
 
     var triggers : FlxGroup;
     public var items : FlxGroup;
@@ -115,6 +116,9 @@ class World extends FlxState
 
         exits = new FlxGroup();
         add(exits);
+
+        enemies = new FlxGroup();
+        add(enemies);
 
         triggers = new FlxGroup();
         add(triggers);
@@ -268,9 +272,16 @@ class World extends FlxState
             player.preupdate();
 
             /* Handle overlaps */
+
+            // Player vs Enemies
+            FlxG.overlap(player, enemies, function(p : Player, e : Enemy) {
+                e.onCollisionWithPlayer(p);
+                p.onCollisionWithDanger(e);
+            });
+
             // Player vs hazards
             FlxG.overlap(player, hazards, function(p : Player, hazard : Hazard) {
-                p.onCollisionWithHazard(hazard);
+                p.onCollisionWithDanger(hazard);
             });
 
             // Items vs hazards
@@ -495,6 +506,7 @@ class World extends FlxState
             hazards.visible = false;
             teleports.visible = false;
             exits.visible = false;
+            enemies.visible = false;
             triggers.visible = false;
             items.visible = false;
         }
@@ -571,35 +583,38 @@ class World extends FlxState
 
         if (FlxG.mouse.justPressed)
         {
+            var sx : Int = Std.int(x / 7)*7;
+            var sy : Int = Std.int(y / 14)*14;
+
             if (FlxG.keys.pressed.SHIFT)
             {
-                var s = new FallingSolid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14, this);
+                var s = new FallingSolid(sx, sy, 7, 14, this);
                 solids.add(s);
             }
             else if (FlxG.keys.pressed.ALT)
             {
-                var s = new Solid(Std.int(x / 7)*7, Std.int(y / 14)*14, 14, 28, this);
+                var s = new Solid(sx, sy, 14, 28, this);
                 s.visible = true;
                 solids.add(s);
             }
             else
             {
-                var s = new LockSolid(Std.int(x / 7)*7, Std.int(y / 14)*14, 7, 14*4, this);
-                s.init("whatever");
-                solids.add(s);
+                var e : EnemyPlant = new EnemyPlant(sx, sy, this);
+                enemies.add(e);
             }
         }
 
-        label.text = "p: " + player.x + ", " + player.y + "\n" +
+        label.text = "";
+                    /*"p: " + player.x + ", " + player.y + "\n" +
                      "(" + player.state + ")" + "\n" +
                     // "c: " + cursorX + ", " + cursorY + "\n" +
                     // "s: " + screencam.x + ", " + screencam.y + "\n" +
                     "s: " + screencam.scroll + "\n" +
                     "g: " + gamepadString() + "\n" +
-                    /*"h: " + (""+player.hspeed).substr(0, 4) + "\n" +
-                    "   " + (""+player.haccel).substr(0, 4) + "\n" +
-                    "   " + (""+player.xRemainder).substr(0, 4) + "\n" + */
-                    "";
+                        / *"h: " + (""+player.hspeed).substr(0, 4) + "\n" +
+                        "   " + (""+player.haccel).substr(0, 4) + "\n" +
+                        "   " + (""+player.xRemainder).substr(0, 4) + "\n" + * /
+                    "";¿*/
 
         if (FlxG.keys.justPressed.ESCAPE)
         {
