@@ -568,8 +568,6 @@ class Player extends Actor
 
         super.onUpdate(elapsed);
 
-        shadow.x = x;
-        shadow.y = y;
         shadow.update(elapsed);
 
         handleAfterMovement();
@@ -581,6 +579,9 @@ class Player extends Actor
     {
         groundProbe.x = x;
         groundProbe.y = y + height;
+
+        shadow.x = x;
+        shadow.y = y;
 
         // Reposition carried item
         repositionCarriedItem();
