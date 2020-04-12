@@ -869,13 +869,6 @@ class Player extends Actor
             state : state,
             hspeed : hspeed,
             vspeed : vspeed,
-            leftPressed: Gamepad.left(),
-            rightPressed: Gamepad.right(),
-            upPressed: Gamepad.up(),
-            downPressed: Gamepad.down(),
-            // Only allow jump buffering when going up
-            jumpPressed: goingUp && Gamepad.pressed(Gamepad.A),
-            actionPressed: Gamepad.pressed(Gamepad.B),
             debug: debug,
             carrying: (carrying == null ? null : carrying.data)
         };
@@ -886,10 +879,6 @@ class Player extends Actor
         return {
             x: x, y: y, facing: facing,
             state: State.Idle, hspeed: 0, vspeed: 0,
-            leftPressed: false, rightPressed: false,
-            upPressed: false, downPressed: false,
-            jumpPressed: false,
-            actionPressed: false,
             debug: debug,
             carrying: null
         };
@@ -903,8 +892,6 @@ class Player extends Actor
             facing : FlxObject.RIGHT,
             hspeed: 0,
             vspeed: 0,
-            leftPressed: false, rightPressed: false, upPressed: false, downPressed: false, 
-            jumpPressed: false, actionPressed: false,
             debug: false,
             carrying: null
         };

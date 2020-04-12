@@ -221,11 +221,6 @@ class World extends FlxState
             useItem(playerData.carrying, false);
         }
 
-        // Force an input event given previous state
-        Gamepad.handleBufferedState(playerData.leftPressed, playerData.rightPressed, 
-                                    playerData.upPressed, playerData.downPressed,
-                                    playerData.jumpPressed, playerData.actionPressed);
-
         /*if (mapReader.color(roomData.colors[1]) == 0xFF000000)
             player.color = mapReader.color(roomData.colors[1]);*/
     }
@@ -263,6 +258,83 @@ class World extends FlxState
         element.scrollFactor.set(0, 0);
         element.cameras = [hudcam];
         hudGroup.add(element);
+    }
+
+    function transitionTo()
+    {
+        roomData = mapReader.getRoom(GameStatus.room);
+
+        background.makeGraphic(210, 156, mapReader.color(roomData.colors[0]));
+
+        tilemapBG.loadMapFromArray(roomData.tiles.bg, roomData.columns, roomData.rows, "assets/images/tileset.png", 7, 14);
+        tilemapBG.color = mapReader.color(roomData.colors[1]);
+
+        tilemapFG.loadMapFromArray(roomData.tiles.fg, roomData.columns, roomData.rows, "assets/images/tileset.png", 7, 14);
+        tilemapFG.color = mapReader.color(roomData.colors[2]);
+
+        // TODO: Destroy/kill all members
+        solids.clear();
+
+        // TODO: Destroy/kill all members
+        oneways.clear();
+
+        // TODO: Destroy/kill all members
+        ladders.clear();
+
+        // TODO: Destroy/kill all members
+        hazards.clear();
+
+        // TODO: Destroy/kill all members
+        teleports.clear();
+
+        // TODO: Destroy/kill all members
+        exits.clear();
+
+        // TODO: Destroy/kill all members
+        enemies.clear();
+
+        // TODO: Destroy/kill all members
+        triggers.clear();
+
+        // TODO: Destroy/kill all members
+        items.clear();
+
+        platforms.clear();
+        platforms.add(solids);
+        platforms.add(oneways);
+
+        mapReader.buildSolids(roomData, this, solids, oneways, ladders);
+
+        mapReader.buildEntities(roomData, this);
+
+        restoreRoomStatus();
+
+        // TODO: Better player management
+        //   - don't destroy instance
+        //   - reposition and set the appropriate variables
+        player.destroy();
+        spawnPlayer();       
+
+        screencam.setScrollBoundsRect(0-210/2/2, 0, Math.max(roomData.columns*7*2+210/2/2-54-54-54+6-2, 210), Math.max(roomData.rows*14-2, 156), true);
+
+        hud.onRoomChange();
+
+        screencam.follow(player, flixel.FlxCamera.FlxCameraFollowStyle.PLATFORMER);
+
+        paused = false;
+
+        if (transitionData.teleporting)
+        {
+            player.findGround();
+            
+            var fader : Fader = new Fader(this);
+            // pause();
+            fader.fade(true, function() {
+                trace("FADED IN");
+                remove(fader);
+                fader.destroy();
+            });
+        }
     }
 
     override public function update(elapsed : Float) : Void
@@ -416,14 +488,16 @@ class World extends FlxState
                         playerData: player.getPlayerData(dy < 0)
                     };
 
-                    FlxG.switchState(new World(transitionData));
+                    // FlxG.switchState(new World(transitionData));
+                    this.transitionData = transitionData;
+                    transitionTo();
                 }
             }
             
             if (!canMove)
             {
-                player.x -= (tx-cursorX) * 7;
-                player.y -= (ty-cursorY) * 14;
+                player.moveX(-7*(tx-cursorX));
+                player.moveY(-14*(ty-cursorY));
             }
         }
     }
@@ -661,12 +735,6 @@ typedef PlayerData = {
     var state : Player.State;
     var hspeed : Float;
     var vspeed : Float;
-    var leftPressed : Bool;
-    var rightPressed : Bool;
-    var upPressed : Bool;
-    var downPressed : Bool;
-    var jumpPressed : Bool;
-    var actionPressed : Bool;
     var debug : Bool;
     var carrying : ItemData;
 }

@@ -11,6 +11,7 @@ class Hud extends FlxSpriteGroup
     var bgImage : FlxSprite;
     var cursor : FlxSprite;
     var inventoryLabels : Array<FlxBitmapText>;
+    var roomNameLabel : FlxBitmapText;
 
     public var playerDead : Bool;
 
@@ -30,12 +31,17 @@ class Hud extends FlxSpriteGroup
 
         renderInventory();
         
-        var roomNameLabel : FlxBitmapText = text.PixelText.New(0, 0, world.roomData.name);
+        roomNameLabel = text.PixelText.New(0, 0, world.roomData.name);
         roomNameLabel.x = 194 - roomNameLabel.width/2;
         roomNameLabel.y = 174;
         add(roomNameLabel);
 
         playerDead = false;
+    }
+
+    public function onRoomChange()
+    {
+        roomNameLabel.text = world.roomData.name;
     }
 
     override public function update(elapsed : Float) : Void

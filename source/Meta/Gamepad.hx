@@ -150,24 +150,4 @@ class Gamepad
 
         return justReleased;
     }
-
-    public static function handleBufferedState(left : Bool, right : Bool, up : Bool, down : Bool, a : Bool, b : Bool)
-    {
-        // TODO: Generalize this (gamepad, etc)
-        // TODO: Maybe this only works for windows??
-        #if (desktop || web)
-        if (left)
-            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 37));
-        if (right)
-            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 39));
-        if (up)
-            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 38));
-        if (down)
-            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 40));
-        if (a)
-            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 65));
-        if (b)
-            FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 83));
-        #end
-    }
 }
