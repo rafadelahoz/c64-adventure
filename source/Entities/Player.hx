@@ -99,6 +99,10 @@ class Player extends Actor
         actingTimer = new FlxTimer();
         invulnerableTimer = new FlxTimer();
 
+        carrying = null;
+
+        invulnerable = false;
+
         state = PlayerData.state;
         if (state == State.Climb)
         {
@@ -114,15 +118,21 @@ class Player extends Actor
 
             ladder = findClosestLadder(ladders);
         }
+        else if (state == State.Hurt)
+        {
+            actingTimer.start(PlayerData.actingTimerRemaining, onHurtTimer);
+            if (PlayerData.invulnerableTimerRemaining > 0)
+            {         
+                invulnerable = true;
+                invulnerableTimer.start(PlayerData.invulnerableTimerRemaining, function(_) {
+                    invulnerable = false;
+                });
+            }
+        }
         else
         {
             ladder = null;
         }
-
-        // TODO: Read from PlayerData
-        carrying = null;
-
-        invulnerable = false;
 
         groundProbe = new FlxSprite(0, 0);
         groundProbe.makeGraphic(Std.int(width), 1, 0xFFFFFFFF);
@@ -867,13 +877,15 @@ class Player extends Actor
         }
     }
 
-    public function getPlayerData(goingUp : Bool) : PlayerData
+    public function getPlayerData() : PlayerData
     {
         return {
             x: x,
             y: y,
             facing : facing,
             state : state,
+            actingTimerRemaining: actingTimer.timeLeft,
+            invulnerableTimerRemaining: invulnerableTimer.timeLeft,
             hspeed : hspeed,
             vspeed : vspeed,
             debug: debug,
@@ -886,6 +898,8 @@ class Player extends Actor
         return {
             x: x, y: y, facing: facing,
             state: State.Idle, hspeed: 0, vspeed: 0,
+            actingTimerRemaining: 0,
+            invulnerableTimerRemaining: 0,
             debug: debug,
             carrying: null
         };
@@ -899,6 +913,8 @@ class Player extends Actor
             facing : FlxObject.RIGHT,
             hspeed: 0,
             vspeed: 0,
+            actingTimerRemaining: 0,
+            invulnerableTimerRemaining: 0,
             debug: false,
             carrying: null
         };

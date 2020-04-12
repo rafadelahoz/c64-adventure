@@ -485,7 +485,7 @@ class World extends FlxState
                         dy: dy,
                         screenOffsetX: (dx != 0 ? 0 : roomData.gridX - newRoom.gridX),
                         screenOffsetY: (dy != 0 ? 0 : roomData.gridY - newRoom.gridY),
-                        playerData: player.getPlayerData(dy < 0)
+                        playerData: player.getPlayerData()
                     };
 
                     // FlxG.switchState(new World(transitionData));
@@ -505,7 +505,6 @@ class World extends FlxState
     public function teleportTo(data : TeleportData)
     {
         var newRoomId : Int = data.target;
-        var newRoom : RoomData = mapReader.getRoom(newRoomId);
         GameStatus.room = newRoomId;
 
         storeRoomStatus();
@@ -674,7 +673,7 @@ class World extends FlxState
             }
             else
             {
-                var e : EnemyPlant = new EnemyPlant(sx, sy, this);
+                var e : Enemy = new EnemySkeleton(sx, sy, this);
                 enemies.add(e);
             }
         }
@@ -733,6 +732,8 @@ typedef PlayerData = {
     var y : Float;
     var facing : Int;
     var state : Player.State;
+    var actingTimerRemaining : Float;
+    var invulnerableTimerRemaining : Float;
     var hspeed : Float;
     var vspeed : Float;
     var debug : Bool;
