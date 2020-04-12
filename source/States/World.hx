@@ -417,7 +417,7 @@ class World extends FlxState
             // TODO: Check item type and act accordingly
             // if (item.type == "BANANAS")
             var itemActor : Item = spawnItemAt(player.x, player.y, item);
-            if (player.onUseItem(itemActor)) 
+            if (player.onUseItem(itemActor, current)) 
             {
                 items.add(itemActor);
                 // Remove the item from the inventory only if it's the current one

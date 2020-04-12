@@ -280,7 +280,8 @@ class Player extends Actor
                 }
 
                 // TODO: Can pickup while carrying?
-                if (!onAir && Gamepad.justPressed(Gamepad.Down))
+                world.hud.pickableItemLabel = "";
+                if (!onAir && Inventory.GetCurrent() == null)
                 {
                     var items : Array<Item> = [];
                     FlxG.overlap(this, world.items, function(self : Player, item : Item) {
@@ -289,9 +290,13 @@ class Player extends Actor
                     });
 
                     var item : Item = findClosestItem(items);
-                    if (item != null && Inventory.Add(item.data))
+                    if (item != null)
                     {
-                        item.onPickup();
+                        world.hud.pickableItemLabel = item.data.label;
+                        if (Gamepad.justPressed(Gamepad.B) && Inventory.Put(item.data))
+                        {
+                            item.onPickup();
+                        }
                     }
                 }
 
@@ -639,14 +644,15 @@ class Player extends Actor
         switchState(Idle);
     }
 
-    public function onUseItem(item : Item) : Bool
+    public function onUseItem(item : Item, ?current : Bool = true) : Bool
     {
         if (canUseItem())
         {
             carrying = item;
             item.onCarry();
             repositionCarriedItem();
-            switchState(Acting);
+            if (current)
+                switchState(Acting);
 
             return true;
         }

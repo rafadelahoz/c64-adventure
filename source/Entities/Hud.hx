@@ -1,5 +1,7 @@
 package;
 
+import Inventory.ItemData;
+import flixel.effects.FlxFlicker;
 import text.PixelText;
 import flixel.text.FlxBitmapText;
 import flixel.group.FlxSpriteGroup;
@@ -15,12 +17,15 @@ class Hud extends FlxSpriteGroup
 
     public var playerDead : Bool;
 
+    public var pickableItemLabel : String;
+
     public function new(World : World)
     {
         super(0, 0);
 
         world = World;
         inventoryLabels = [];
+        pickableItemLabel = "";
 
         bgImage = new FlxSprite(0, 0, "assets/images/temp-hud.png");
         add(bgImage);
@@ -29,6 +34,7 @@ class Hud extends FlxSpriteGroup
         cursor.makeGraphic(72, 12, 0xFFffe947);
         add(cursor);
 
+        prepareItemLabels();
         renderInventory();
         
         roomNameLabel = text.PixelText.New(0, 0, world.roomData.name);
@@ -68,34 +74,44 @@ class Hud extends FlxSpriteGroup
         super.update(elapsed);
     }
 
+    function prepareItemLabels()
+    {
+        var ly : Int = 38;
+        var label : FlxBitmapText;
+
+        for (i in 0...Inventory.MaxItems)
+        {
+            label = PixelText.New(12, ly, "");
+            add(label);
+            inventoryLabels.push(label);
+            
+            ly += 12;
+        }
+    }
+
     function renderInventory()
     {
         var ly : Int = 38;
         var i : Int = 0;
         var label : FlxBitmapText;
+        var item : ItemData;
 
-        for (item in Inventory.items)
+        for (i in 0...inventoryLabels.length)
         {
-            if (i < inventoryLabels.length && inventoryLabels[i] != null)
+            item = Inventory.items[i];
+            label = inventoryLabels[i];
+            label.text = (item == null ? "" : item.label);
+            
+            if (pickableItemLabel.length > 0 && i == Inventory.cursor && Inventory.GetCurrent() == null)
             {
-                label = inventoryLabels[i];
-                label.text = item.label;
-            }
-            else 
-            {
-                label = PixelText.New(12, ly, item.label);
-                add(label);
-                inventoryLabels.push(label);
-            }
+                trace("PICKABLE: " + pickableItemLabel);
+                inventoryLabels[i].text = pickableItemLabel;
+                FlxFlicker.flicker(inventoryLabels[i], 0, true, false);
+            } 
+            else
+                FlxFlicker.stopFlickering(inventoryLabels[i]);
 
             ly += 12;
-            i++;
-        }
-
-        while (i < inventoryLabels.length)
-        {
-            inventoryLabels[i].text = "";
-            i++;
         }
     }
 }

@@ -1,7 +1,6 @@
 package;
 
 import flixel.input.gamepad.FlxGamepad;
-import openfl.events.KeyboardEvent;
 import flixel.input.keyboard.FlxKey;
 import flixel.input.FlxInput.FlxInputState;
 import flixel.FlxG;

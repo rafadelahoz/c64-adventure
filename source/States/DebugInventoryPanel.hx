@@ -83,7 +83,20 @@ class DebugInventoryPanel extends FlxSpriteGroup
                     properties: item.properties
                 };
 
-                Inventory.Add(data);
+                // Try to add it to the current slot,
+                // otherwise, find the first empty one
+                if (Inventory.GetCurrent == null)
+                    Inventory.Put(data);
+                else {
+                    for (i in 0...Inventory.MaxItems)
+                    {
+                        if (Inventory.items[i] == null)
+                        { 
+                            Inventory.items[i] = data;
+                            break;
+                        }
+                    }
+                }
 
                 timedText(Std.int((labels[current].x - x)/ 6), Std.int((labels[current].y - y) / 6), "ADDED!", 0.35);
             }

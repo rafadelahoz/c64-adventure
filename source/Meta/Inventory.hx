@@ -11,16 +11,16 @@ class Inventory
     public static function Init()
     {
         items = [];
-        cursor = -1;
+        cursor = 0;
     }
 
-    public static function Add(item : ItemData) : Bool
+    public static function Put(item : ItemData) : Bool
     {
-        if (items.length < MaxItems)
+        if (cursor < 0)
+            cursor = 0;
+        if (GetCurrent() == null)
         {
-            items.push(item);
-            if (cursor < 0)
-                cursor = 0;
+            items[cursor] = item;
             return true;
         }
         else
@@ -34,13 +34,13 @@ class Inventory
             if (cursor < 0)
                 cursor = 0;
             else
-                cursor = (cursor+1)%items.length;
+                cursor = (cursor+1)%MaxItems;
         }
     }
 
     public static function GetCurrent()
     {
-        if (cursor >= 0 && cursor < items.length)
+        if (cursor >= 0 && cursor < MaxItems)
         {
             return items[cursor];
         }
@@ -50,11 +50,9 @@ class Inventory
 
     public static function RemoveCurrent()
     {
-        if (cursor >= 0 && cursor < items.length)
+        if (cursor >= 0 && cursor < MaxItems)
         {
-            items.splice(cursor, 1);
-            if (cursor >= items.length)
-                cursor = items.length-1;
+            items[cursor] = null;
         }
     }
 
