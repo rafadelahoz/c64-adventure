@@ -33,6 +33,7 @@ class Grid extends FlxSprite
 
     override public function update(elapsed : Float)
     {
+        #if (desktop || web)
         var camx : Float = FlxG.mouse.screenX+2;
         var camy : Float = FlxG.mouse.screenY-7;
 
@@ -44,6 +45,7 @@ class Grid extends FlxSprite
 
         cursor.x = cx*tw;
         cursor.y = cy*th;
+        #end
 
         super.update(elapsed);
 

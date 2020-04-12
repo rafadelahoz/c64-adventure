@@ -8,7 +8,9 @@ class GameController
     public static function Init()
     {
         FlxG.scaleMode = new PixelPerfectScaleMode();
+        #if (desktop || web)
         FlxG.mouse.useSystemCursor = true;
+        #end
         
         GameStatus.Init();
     }

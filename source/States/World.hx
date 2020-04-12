@@ -567,6 +567,7 @@ class World extends FlxState
     /* FUNNY DEBUG AREA */
     function handleDebugRoutines()
     {
+        #if (desktop || web)
         if (FlxG.keys.justPressed.F9)
             openSubState(new DebugSubstate(this));
 
@@ -620,6 +621,7 @@ class World extends FlxState
         {
             player.triggerDeath();
         }
+        #end
     }
 
     function updateCursor()

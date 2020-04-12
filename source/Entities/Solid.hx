@@ -45,8 +45,10 @@ class Solid extends Entity
 
     override public function onUpdate(elapsed : Float)
     {
+        #if (desktop || web)
         if (FlxG.keys.justPressed.O)
             visible = !visible;
+        #end
         if (ladderSprite != null)
             visible = true;
 
@@ -60,6 +62,7 @@ class Solid extends Entity
         {
             var h : Float = 0;
             var v : Float = 0;
+            #if (desktop || web)
             if (FlxG.keys.pressed.L)
                 h = 1;
             else if (FlxG.keys.pressed.J)
@@ -68,6 +71,7 @@ class Solid extends Entity
                 v = -1;
             else if (FlxG.keys.pressed.K)
                 v = 1;
+            #end
             
             if (h != 0 || v != 0)
                 move(h, v);

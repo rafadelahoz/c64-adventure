@@ -554,8 +554,10 @@ class Player extends Actor
             FlxFlicker.stopFlickering(this);
         
         // Debug zone
+        #if (desktop || web)
         if (FlxG.keys.justPressed.G)
             debug = !debug;
+        #end
 
         solid = (!debug);
 

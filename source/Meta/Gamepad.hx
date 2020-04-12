@@ -43,6 +43,7 @@ class Gamepad
 
         var gamepad : FlxGamepad = FlxG.gamepads.lastActive;
 
+        #if (desktop || web)
         switch (button) {
             case Gamepad.A:
                 pressed = FlxG.keys.checkStatus(FlxKey.A, FlxInputState.PRESSED);
@@ -69,6 +70,7 @@ class Gamepad
                 pressed =  FlxG.keys.pressed.SPACE;
                 pressed = pressed || (gamepad != null && (gamepad.pressed.GUIDE || gamepad.pressed.Y));
         }
+        #end
 
         return pressed;
     }
@@ -79,6 +81,7 @@ class Gamepad
 
         var gamepad : FlxGamepad = FlxG.gamepads.lastActive;
 
+        #if (desktop || web)
         switch (button) {
             case Gamepad.A:
                 justPressed = FlxG.keys.justPressed.A;
@@ -105,6 +108,7 @@ class Gamepad
                 justPressed = FlxG.keys.justPressed.SPACE;
                 justPressed = justPressed || (gamepad != null && (gamepad.justPressed.GUIDE || gamepad.justPressed.Y));
         }
+        #end
 
         return justPressed;
     }
@@ -115,6 +119,7 @@ class Gamepad
 
         var gamepad : FlxGamepad = FlxG.gamepads.lastActive;
 
+        #if (desktop || web)
         switch (button) {
             case Gamepad.A:
                 justReleased = FlxG.keys.justReleased.A;
@@ -141,6 +146,7 @@ class Gamepad
                 justReleased = FlxG.keys.justReleased.SPACE;
                 justReleased = justReleased || (gamepad != null && (gamepad.justReleased.GUIDE || gamepad.justReleased.Y));
         }
+        #end
 
         return justReleased;
     }
@@ -149,6 +155,7 @@ class Gamepad
     {
         // TODO: Generalize this (gamepad, etc)
         // TODO: Maybe this only works for windows??
+        #if (desktop || web)
         if (left)
             FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 37));
         if (right)
@@ -161,5 +168,6 @@ class Gamepad
             FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 65));
         if (b)
             FlxG.stage.dispatchEvent(new KeyboardEvent(KeyboardEvent.KEY_DOWN, true, true, 0, 83));
+        #end
     }
 }
