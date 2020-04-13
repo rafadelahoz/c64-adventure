@@ -55,7 +55,6 @@ class DebugPlayerPanel extends FlxSpriteGroup
     public function focus()
     {
         focused = true;
-        trace("FOCUS PLAYER PANEL");
         FlxFlicker.flicker(this, 0.25);
     }
 
@@ -82,7 +81,6 @@ class DebugPlayerPanel extends FlxSpriteGroup
 
             if (Gamepad.justPressed(Gamepad.A))
             {
-                trace("Setting color to: " + labels[current].text);
                 GameStatus.playerColor = Std.parseInt(labels[current].text);
                 substate.world.player.refreshColor();
 

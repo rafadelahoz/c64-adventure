@@ -158,7 +158,6 @@ class World extends FlxState
             var fader : Fader = new Fader(this);
             // pause();
             fader.fade(true, function() {
-                trace("FADED IN");
                 remove(fader);
                 fader.destroy();
             });
@@ -330,7 +329,6 @@ class World extends FlxState
             var fader : Fader = new Fader(this);
             // pause();
             fader.fade(true, function() {
-                trace("FADED IN");
                 remove(fader);
                 fader.destroy();
             });
@@ -468,7 +466,6 @@ class World extends FlxState
                 if (newRoomId != null && newRoomId != GameStatus.room) 
                 {
                     canMove = true;
-                    trace("Moving to " + newRoomId);
 
                     // Store room status in LRAM, WRAM
                     storeRoomStatus();
@@ -525,13 +522,12 @@ class World extends FlxState
     {
         var itemsData : Array<LRAM.StoredItemData> = [];
         var itemActor : Item;
-        trace("Storing items of room " + roomData.id);
+        
         for (item in items)
         {
             if (item != null && item.alive && player.carrying != item)
             {
                 itemActor = cast(item, Item);
-                trace("Storing " + itemActor);
                 itemsData.push({
                     x: itemActor.x,
                     y: itemActor.y,

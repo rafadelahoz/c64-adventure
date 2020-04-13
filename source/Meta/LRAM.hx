@@ -22,7 +22,6 @@ class LRAM
     public static function StoreRoom(roomId : String, items : Array<StoredItemData>)
     {
         roomItems.set(roomId, items);
-        trace(roomItems);
     }
 
     public static function GetRoom(roomId : String) : Array<StoredItemData>

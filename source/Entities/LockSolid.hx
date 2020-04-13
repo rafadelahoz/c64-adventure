@@ -96,7 +96,6 @@ class LockSolid extends Solid
                         // Wait a tad
                         new FlxTimer().start(0.45, function(t : FlxTimer) {
                             // Key Puff Effect
-                            trace("KEY PUFF");
                             world.add(new FxPuff(item.x + item.width/2, item.y + item.height/2, world));
 
                             // Tiles Puff Effect

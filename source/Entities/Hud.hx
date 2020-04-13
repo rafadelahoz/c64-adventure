@@ -104,7 +104,6 @@ class Hud extends FlxSpriteGroup
             
             if (pickableItemLabel.length > 0 && i == Inventory.cursor && Inventory.GetCurrent() == null)
             {
-                trace("PICKABLE: " + pickableItemLabel);
                 inventoryLabels[i].text = pickableItemLabel;
                 FlxFlicker.flicker(inventoryLabels[i], 0, true, false);
             } 
