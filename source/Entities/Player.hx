@@ -1,5 +1,6 @@
 package;
 
+import flixel.tweens.FlxTween;
 import flixel.effects.FlxFlicker;
 import flixel.group.FlxGroup.FlxTypedGroupIterator;
 import flixel.util.FlxTimer;
@@ -58,6 +59,8 @@ class Player extends Actor
 
     // Testing area
     var shadow : FlxSprite;
+    var pickCursor : FlxSprite;
+    var pickCursorTimer : FlxTimer;
 
     public var debug (default, null) : Bool = false;
 
@@ -138,6 +141,13 @@ class Player extends Actor
         groundProbe.makeGraphic(Std.int(width), 1, 0xFFFFFFFF);
         groundProbe.visible = false;
         world.add(groundProbe);
+
+        pickCursor = new FlxSprite(-1000, -1000);
+        pickCursor.loadGraphic("assets/images/fx-pick-cursor.png", true, 7, 14);
+        pickCursor.animation.add("idle", [2, 3], 1);
+        pickCursor.animation.play("idle");
+        pickCursor.visible = false;
+        pickCursor.solid = false;
     }
 
     public function refreshColor()
@@ -291,7 +301,8 @@ class Player extends Actor
 
                 // TODO: Can pickup while carrying?
                 world.hud.pickableItemLabel = "";
-                if (!onAir && Inventory.GetCurrent() == null)
+                if (!onAir && Inventory.GetCurrent() == null 
+                    && carrying == null) // TODO: Show pickable things when carrying?
                 {
                     var items : Array<Item> = [];
                     FlxG.overlap(this, world.items, function(self : Player, item : Item) {
@@ -302,12 +313,20 @@ class Player extends Actor
                     var item : Item = findClosestItem(items);
                     if (item != null)
                     {
+                        pickCursor.x = item.x + item.width / 2 - pickCursor.width / 2;
+                        pickCursor.y = item.y - (pickCursor.height + 1);
+                        pickCursor.visible = true;
+
                         world.hud.pickableItemLabel = item.data.label;
                         if (Gamepad.justPressed(Gamepad.B) && Inventory.Put(item.data))
                         {
                             item.onPickup();
+                            item = null;
+                            pickCursor.visible = false;
                         }
                     }
+                    else
+                        pickCursor.visible = false;
                 }
 
                 // Entering things
@@ -579,6 +598,7 @@ class Player extends Actor
         super.onUpdate(elapsed);
 
         shadow.update(elapsed);
+        pickCursor.update(elapsed);
 
         handleAfterMovement();
 
@@ -620,9 +640,14 @@ class Player extends Actor
 
     override public function draw()
     {
-        shadow.draw();
+        if (state != Dying)
+            shadow.draw();
+        
         super.draw();
         // groundProbe.draw();
+
+        if (state != Dying && pickCursor.visible)
+            pickCursor.draw();
     }
 
     // TODO: This to be configured by... item used?
@@ -810,6 +835,7 @@ class Player extends Actor
     function handleDeath(?killer : FlxBasic = null)
     {
         switchState(Dying);
+        
         // Hide everything, change bg color
         world.onPlayerDead();
 
@@ -901,7 +927,7 @@ class Player extends Actor
             actingTimerRemaining: 0,
             invulnerableTimerRemaining: 0,
             debug: debug,
-            carrying: null
+            carrying: (carrying == null ? null : carrying.data)
         };
     }
 

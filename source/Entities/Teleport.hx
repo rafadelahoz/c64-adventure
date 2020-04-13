@@ -30,6 +30,8 @@ class Teleport extends Entity
         var fader : Fader = new Fader(world);
         fader.fade(false, function() {
             world.teleportTo(data);
+            world.remove(fader);
+            fader.destroy();
         });
     }
 }

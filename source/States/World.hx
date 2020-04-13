@@ -485,7 +485,6 @@ class World extends FlxState
                         playerData: player.getPlayerData()
                     };
 
-                    // FlxG.switchState(new World(transitionData));
                     this.transitionData = transitionData;
                     transitionTo();
                 }
@@ -515,7 +514,8 @@ class World extends FlxState
         transitionData.playerData.x = data.tileX * Constants.TileWidth;
         transitionData.playerData.y = data.tileY * Constants.TileHeight;
 
-        FlxG.switchState(new World(transitionData));
+        this.transitionData = transitionData;
+        transitionTo();
     }
 
     function storeRoomStatus()
