@@ -31,6 +31,7 @@
 	<classpath name="source" />
 	<classpath name="source/States" />
 	<classpath name="source/Entities" />
+	<classpath name="source/Entities/Enemies" />
 	<classpath name="source/Meta" />
 	<classpath name="source/Text" />
 	<assets path="assets" />
@@ -67,7 +68,7 @@
 	<!--<haxedef name="FLX_NO_GAMEPAD" />-->
 
 	<!--Disable the Flixel core sound tray-->
-	<!--<haxedef name="FLX_NO_SOUND_TRAY" />-->
+	<haxedef name="FLX_NO_SOUND_TRAY" />
 
 	<!--Disable the Flixel sound management code-->
 	<!--<haxedef name="FLX_NO_SOUND_SYSTEM" />-->
