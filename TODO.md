@@ -2,7 +2,7 @@
 
 ## Backlog
 
-- ERR: Going down a ladder into a new screen makes carried item lost
+- [DONE] ERR: Going down a ladder into a new screen makes carried item lost
 
 - [DONE] Teleports between rooms
 - [DONE] Moving platforms
@@ -35,9 +35,9 @@
     - [DONE] Basic: Damage player / kill directly
 
 - Enemies
-    - Damage player
+    - [DONE] Damage player
     - Have behaviours
-        - Walk around
+        - [DONE] Walk around
         - Jump around
 
 - Player using inventory
@@ -48,7 +48,7 @@
             - Items with special effects:
                 - Mallet: used by player as weapon (method call on player)
             - Items that will act on world
-                - i.e. key on door
+                - [DONE] i.e. key on door
                 - Seed: placed by player on ground
                     When on contact with soil, it will get planted
                     A vine will grow then
@@ -62,21 +62,6 @@
                     - Graphic to be extracted given type?
                         - Item database
 
-- Pause effect for when things are happening
-    - Makes things look jankier
-    - Stop movement and all (not animations?) for 0.5s
-    - Play some fx for things dissapearing (i.e. cloud puff)
-        - Cloud puff to not be affected by pause
-
-- ? Alternate inventory
-    - Use Select to select the inventory slot (even if empty)
-    - B to interact with items
-        - When nothing is selected: pick up
-        - When something is selected: use it
-    - Hold B to hold whatever you are using
-        - Release to (pick if picking, drop if dropping)
-        - OR Release to store again + Down to drop -> Can't climb
-        - [THIS?] OR release quick to store, hold and release to carry and drop
 
 - Level RAM, world RAM
     - Enemies status to be kept
@@ -91,20 +76,6 @@
         - check lram for instances in the current room and create them
         - check wram for instances in the current room and create them
 
-- Interaction between key and door
-    - [DONE] Key is an item in the room
-    - [DONE] Down to pick key
-    - [DONE] Door is a block which can be opened
-        - [DONE] It can be climbed an all, it's also a solid
-    - [DONE] Key is an item in player inventory
-    - [DONE] Player selects key using Select
-    - [DONE] Press B to produce key
-    - [DONE] Hold and move to carry it
-        - [DONE] Player can walk (DONE), jump (DONE), climb (DONE), switch screens (DONE) while carrying
-        - [DONE] On hit, stop carrying => !!may lead to lost key items!!
-            - [!!!] Mechanism to summon key items for a price?
-            - [!!!] Items can be lost all the same if the player drops them where they shouldn't
-    - [DONE] Release to drop key
 
 - NPCs
     - Actors with
@@ -135,9 +106,6 @@
         - Or other color ==> all entities are white and get tinted in engine
     - [DONE] Map name (display on top/bottom)
     - [DONE] Room name
-    
-- Gameplay loop
-    - [DONE] Player can get killed, restart the map, get kicked to world map
 
 - Game start:
     - Customize player (name, sprite, color)
@@ -175,6 +143,41 @@
         - [DONE] Exits are uniquely identified (mapid+exitid?)
         - [DONE] When used, they are "cleared"
             - [DONE] Array of exits and state (cleared, not) in GameStatus
+
+- [DONE] Interaction between key and door
+    - [DONE] Key is an item in the room
+    - [DONE] Down to pick key
+    - [DONE] Door is a block which can be opened
+        - [DONE] It can be climbed an all, it's also a solid
+    - [DONE] Key is an item in player inventory
+    - [DONE] Player selects key using Select
+    - [DONE] Press B to produce key
+    - [DONE] Hold and move to carry it
+        - [DONE] Player can walk (DONE), jump (DONE), climb (DONE), switch screens (DONE) while carrying
+        - [DONE] On hit, stop carrying => !!may lead to lost key items!!
+            - [!!!] Mechanism to summon key items for a price?
+            - [!!!] Items can be lost all the same if the player drops them where they shouldn't
+    - [DONE] Release to drop key
+
+- Gameplay loop
+    - [DONE] Player can get killed, restart the map, get kicked to world map
+
+
+- [DONE] Pause effect for when things are happening
+    - [DONE] Makes things look jankier
+    - [DONE] Stop movement and all (not animations?) for 0.5s
+    - [DONE] Play some fx for things dissapearing (i.e. cloud puff)
+        - [DONE] Cloud puff to not be affected by pause
+
+- [DONE] Alternate inventory
+    - [DONE] Use Select to select the inventory slot (even if empty)
+    - [DONE] B to interact with items
+        - [DONE] When nothing is selected: pick up
+        - [DONE] When something is selected: use it
+    - [DONE] Hold B to WHEN USING hold whatever you are using
+        - [DONE] Release to drop
+        - [nope] OR Release to store again + Down to drop -> Can't climb
+        - [nope] OR release quick to store, hold and release to carry and drop
 
 ## Descoped
 
