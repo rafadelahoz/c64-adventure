@@ -9,7 +9,7 @@ class EnemySkeleton extends Enemy
     var vspeed : Float = 0.5;
     var direction : Float;
 
-    public function new(X : Float, Y : Float, World : World)
+    public function new(X : Float, Y : Float, World : World, ?red : Bool = false)
     {
         super(X, Y, World);
 
@@ -17,7 +17,6 @@ class EnemySkeleton extends Enemy
         animation.add("walk", [0, 1], 3);
         animation.play("walk");
 
-        red = FlxG.random.bool();
         if (red)
         {
             color = Palette.red[5];
