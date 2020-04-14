@@ -97,12 +97,15 @@ class Inventory
 
     static function clone(item : ItemData) : ItemData
     {
-        return {
-            type: item.type,
-            label: item.label,
-            id: item.id,
-            properties: item.properties
-        };
+        if (item == null)
+            return null;
+        else 
+            return {
+                type: item.type,
+                label: item.label,
+                id: item.id,
+                properties: item.properties
+            };
     }
 }
 
