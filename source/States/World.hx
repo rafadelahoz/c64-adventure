@@ -408,18 +408,18 @@ class World extends FlxState
         handleDebugRoutines();
     }
 
-    function useItem(item : ItemData, ?current : Bool = true)
+    function useItem(item : ItemData, ?willingly : Bool = true)
     {
         if (item != null)
         {
             // TODO: Check item type and act accordingly
             // if (item.type == "BANANAS")
             var itemActor : Item = spawnItemAt(player.x, player.y, item);
-            if (player.onUseItem(itemActor, current)) 
+            if (player.onUseItem(itemActor, willingly)) 
             {
                 items.add(itemActor);
                 // Remove the item from the inventory only if it's the current one
-                if (current)
+                if (willingly)
                     Inventory.RemoveCurrent();
             }
             else

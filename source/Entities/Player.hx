@@ -680,14 +680,14 @@ class Player extends Actor
         switchState(Idle);
     }
 
-    public function onUseItem(item : Item, ?current : Bool = true) : Bool
+    public function onUseItem(item : Item, ?willingly : Bool = true) : Bool
     {
-        if (canUseItem())
+        if (canUseItem(willingly))
         {
             carrying = item;
             item.onCarry();
             repositionCarriedItem();
-            if (current)
+            if (willingly)
                 switchState(Acting);
 
             return true;
@@ -696,9 +696,10 @@ class Player extends Actor
         return false;
     }
 
-    function canUseItem()
+    function canUseItem(?willingly : Bool = true)
     {
-        return (state == State.Idle) &&
+        // If not willingly, Player will always use the item
+        return !willingly || willingly && state == State.Idle &&
                 carrying == null;
     }
 
