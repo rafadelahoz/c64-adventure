@@ -87,7 +87,7 @@ class Item extends Actor
         switch (state)
         {
             case ItemState.Carried:
-                if (data.type == "KEY")
+                if (data.type == "KEY" || data.type == "SHRIMP")
                     flipX = (world.player.facing == Player.Left);
             case ItemState.Idle:
                 if (checkOnAir())
@@ -145,11 +145,27 @@ class Item extends Actor
         state = ItemState.Carried;
         if (animation.getByName("carry") != null)
             animation.play("carry");
+
+        switch (data.type)
+        {
+            case "KEY":
+                setSize(7, 6);
+                centerOffsets();
+        }
     }
 
     public function onRelease()
     {
         state = ItemState.Idle;
+
+        switch (data.type)
+        {
+            case "KEY":
+                trace("RELEASE");
+                setSize(7, 14);
+                offset.set(0, 0);
+                y -= 4;
+        }
     }
 
     public function onPickup()

@@ -112,6 +112,7 @@ class LockSolid extends Solid
                         world.pause(0.5, function() {
                             closed = false;
                             item.destroy();
+                            world.player.carrying = null;
                         });
                     }
                 }
