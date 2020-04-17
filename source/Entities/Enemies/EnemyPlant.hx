@@ -15,6 +15,10 @@ class EnemyPlant extends Enemy
 
         animation.play("idle");
 
+        setSize(5, 10);
+        centerOffsets();
+        offset.y += 4;
+
         color = Palette.orange[3];
     }
 
