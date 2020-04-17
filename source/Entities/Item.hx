@@ -161,10 +161,9 @@ class Item extends Actor
         switch (data.type)
         {
             case "KEY":
-                trace("RELEASE");
                 setSize(7, 14);
                 offset.set(0, 0);
-                y -= 4;
+                y -= 5;
         }
     }
 
