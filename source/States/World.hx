@@ -89,12 +89,12 @@ class World extends FlxState
         background.scrollFactor.set(0, 0);
         add(background);
 
-        tilemapBG = new FlxTilemap();
+        tilemapBG = new Tilemap();
         tilemapBG.loadMapFromArray(roomData.tiles.bg, roomData.columns, roomData.rows, "assets/images/tileset.png", 7, 14);
         tilemapBG.color = mapReader.color(roomData.colors[1]);
         add(tilemapBG);
 
-        tilemapFG = new FlxTilemap();
+        tilemapFG = new Tilemap();
         tilemapFG.loadMapFromArray(roomData.tiles.fg, roomData.columns, roomData.rows, "assets/images/tileset.png", 7, 14);
         tilemapFG.color = mapReader.color(roomData.colors[2]);
         add(tilemapFG);

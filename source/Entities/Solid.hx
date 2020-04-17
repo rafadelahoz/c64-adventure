@@ -198,4 +198,9 @@ class Solid extends Entity
         if (cast(actor, Actor).isRiding(this))
             ridingActors.push(cast(actor, Actor));
     }
+
+    override public function drawDebugOnCamera(camera : flixel.FlxCamera) : Void
+    {
+        // NOP!
+    }
 }
