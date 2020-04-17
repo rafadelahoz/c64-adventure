@@ -17,6 +17,10 @@ class EnemySkeleton extends Enemy
         animation.add("walk", [0, 1], 3);
         animation.play("walk");
 
+        setSize(5, 12);
+        centerOffsets();
+        offset.y = 2;
+
         if (properties == null)
         {
             red = false;
