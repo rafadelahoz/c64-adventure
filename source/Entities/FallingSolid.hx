@@ -8,7 +8,7 @@ class FallingSolid extends Solid
     static final StatusWarn : Int = 1;
     static final StatusFall : Int = 2;
 
-    var WarnTime : Float = 1.235;
+    var WarnTime : Float = 0.64646;
     var Gravity : Float = 0.2; // 0.175; // 0.35;
     var MaxVspeed : Float = 8;
     var vspeed : Float;
@@ -56,6 +56,7 @@ class FallingSolid extends Solid
 
                 if (y > world.bottom)
                 {
+                    world.solids.remove(this);
                     destroy();
                     return;
                 }
