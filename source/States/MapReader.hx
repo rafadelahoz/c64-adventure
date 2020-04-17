@@ -146,7 +146,7 @@ class MapReader
                         var plant : EnemyPlant = new EnemyPlant(x, y, world);
                         world.enemies.add(plant);
                     case "enemy-skeleton": 
-                        var skeleton : EnemySkeleton = new EnemySkeleton(x, y, world, properties.get("type") == "RED");
+                        var skeleton : EnemySkeleton = new EnemySkeleton(x, y, world, properties);
                         world.enemies.add(skeleton);
                     case "item":
                         if (actor.properties != null)

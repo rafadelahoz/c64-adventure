@@ -9,13 +9,29 @@ class EnemySkeleton extends Enemy
     var vspeed : Float = 0.5;
     var direction : Float;
 
-    public function new(X : Float, Y : Float, World : World, ?red : Bool = false)
+    public function new(X : Float, Y : Float, World : World, ?properties : haxe.DynamicAccess<Dynamic> = null)
     {
         super(X, Y, World);
 
         loadGraphic("assets/images/enemy-skeleton.png", true, 7, 14);
         animation.add("walk", [0, 1], 3);
         animation.play("walk");
+
+        if (properties == null)
+        {
+            red = false;
+            direction = FlxG.random.bool() ? -1 : 1;
+        }
+        else
+        {
+            var type : String = properties.get("type"); 
+            red = (type != null && type == "RED");
+            var facing : String = properties.get("facing");
+            if (facing == null)
+                direction = FlxG.random.bool() ? -1 : 1;
+            else
+                direction = (facing == "left" ? -1 : 1);
+        }
 
         if (red)
         {
@@ -28,8 +44,6 @@ class EnemySkeleton extends Enemy
             color = Palette.white[7];
             hspeed = 0.05;
         }
-
-        direction = FlxG.random.bool() ? -1 : 1; // right
     }
 
     override public function onUpdate(elapsed : Float)
@@ -39,14 +53,15 @@ class EnemySkeleton extends Enemy
             animation.pause();
             moveY(vspeed);
         }
-        else
+        else if (hspeed != 0)
         {
             animation.resume();
             if (x + hspeed * direction < 0 || (x + width) + hspeed * direction >= world.right ||
                 overlapsAt(x + hspeed * direction, y, world.hazards) ||  
-                red && !overlapsAt(x + hspeed * direction + width * direction, y + 1, world.platforms))
+                !overlapsAt(x + hspeed * direction + width * direction, y + 1, world.platforms))
             {
-                direction *= -1;
+                x -= direction;
+                changeDirection();
             }
 
             var switched : Bool = false;
@@ -55,8 +70,8 @@ class EnemySkeleton extends Enemy
             FlxG.overlap(this, world.enemies, function(me : EnemySkeleton, other : Enemy) {
                 if (!switched && other != me)
                 {
-                    direction *= -1;
-                    xx += direction;
+                    xx -= direction;
+                    changeDirection();
                     switched = true;
                 }
             });
@@ -64,14 +79,29 @@ class EnemySkeleton extends Enemy
             
             moveX(hspeed * direction, function() {
                 // Flip when hitting walls
-                x += direction;
-                direction *= -1;
+                x -= direction;
+                changeDirection();
             });
-
-            flipX = (direction < 0);
         }
 
+        flipX = (direction < 0);
+
         super.onUpdate(elapsed);
+    }
+
+    function changeDirection()
+    {
+        animation.pause();
+        animation.frameIndex = 0;
+        var tmp : Float = hspeed;
+        hspeed = 0;
+        wait(0.25, function() {
+            direction *= -1;
+            wait(0.25, function() {
+                hspeed = tmp;
+                animation.resume();
+            });
+        });
     }
 
     override public function onPlayerKilled()
