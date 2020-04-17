@@ -546,17 +546,6 @@
 					"properties": {
 						"flavour": "NONE"
 					}
-				},
-				{
-					"id": "7.1586877391752",
-					"x": 8,
-					"y": 8,
-					"type": "enemy-plant",
-					"w": 1,
-					"h": 1,
-					"properties": {
-						"color": "#7869c4"
-					}
 				}
 			],
 			"gridX": 0,
@@ -2851,7 +2840,7 @@
 			"name": "Someone's house",
 			"colors": [
 				"#2b2b2b",
-				"#eab489",
+				"#87d6dd",
 				"#a057a3",
 				"#ffffff"
 			],
@@ -3400,7 +3389,7 @@
 			"name": "Someone's backyard",
 			"colors": [
 				"#2b2b2b",
-				"#ca9469",
+				"#67b6bd",
 				"#6b1f76",
 				"#ffffff"
 			],
@@ -3488,9 +3477,9 @@
 					0,
 					0,
 					0,
-					0,
-					0,
 					43,
+					0,
+					0,
 					0,
 					0,
 					0,
@@ -3972,24 +3961,13 @@
 				},
 				{
 					"id": "7.1586877427247",
-					"x": 6,
-					"y": 5,
+					"x": "7",
+					"y": "5",
 					"type": "enemy-plant",
-					"w": 1,
-					"h": 1,
-					"properties": {
-						"color": "#7869c4"
-					}
-				},
-				{
-					"id": "7.1586877431247",
-					"x": "10",
-					"y": "9",
-					"type": "enemy-skeleton",
 					"w": "1",
 					"h": "1",
 					"properties": {
-						"type": "RED"
+						"color": "#7869c4"
 					}
 				},
 				{
@@ -4000,7 +3978,20 @@
 					"w": "1",
 					"h": "1",
 					"properties": {
-						"type": "RED"
+						"type": "RED",
+						"facing": "right"
+					}
+				},
+				{
+					"id": "8.1587118673457",
+					"x": "10",
+					"y": "9",
+					"type": "enemy-skeleton",
+					"w": "1",
+					"h": "1",
+					"properties": {
+						"type": "RED",
+						"facing": "left"
 					}
 				}
 			],
@@ -5081,6 +5072,18 @@
 					"type": "enemy-frog",
 					"w": "1",
 					"h": "1"
+				},
+				{
+					"id": "8.1587118734261",
+					"x": 1,
+					"y": 5,
+					"type": "enemy-frog",
+					"w": 1,
+					"h": 1,
+					"properties": {
+						"type": "NORMAL",
+						"facing": "right"
+					}
 				}
 			],
 			"gridX": 1,
