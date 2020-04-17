@@ -187,15 +187,15 @@ class Solid extends Entity
         if (world.player.isRiding(this))
             ridingActors.push(world.player);
 
-        // Items
-        world.items.forEach(function(item : FlxBasic) {
-            if (cast(item, Actor).isRiding(this))
-                ridingActors.push(cast(item, Actor));
-        });
+        world.items.forEach(handleRiding);
+        world.enemies.forEach(handleRiding);
 
-        // TODO: Add the rest
-        
-        // Enemies
+        // TODO: Add the rest        
         // No more ?    
+    }
+
+    function handleRiding(actor : FlxBasic) {
+        if (cast(actor, Actor).isRiding(this))
+            ridingActors.push(cast(actor, Actor));
     }
 }
