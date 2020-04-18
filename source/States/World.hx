@@ -259,6 +259,19 @@ class World extends FlxState
         hudGroup.add(element);
     }
 
+    function addHudGroup(group : FlxGroup)
+    {
+        group.forEach(function (elem : FlxBasic) {
+            if (Std.is(elem, FlxObject))
+            {
+                var object : FlxObject = cast(elem, FlxObject);
+                object.scrollFactor.set(0, 0);
+                object.cameras = [hudcam];
+            }
+        });
+        hudGroup.add(group);
+    }
+
     function transitionTo()
     {
         roomData = mapReader.getRoom(GameStatus.room);
@@ -693,6 +706,24 @@ class World extends FlxState
         {
             player.triggerDeath();
         }
+
+        if (FlxG.keys.justPressed.T)
+        {
+            pause();
+            var settings : MessageBox.MessageSettings =
+            {
+                x : 84, y : 112, w: 236, h: 68, border: 14,
+                bgOffsetX : 0, bgOffsetY: 0, bgGraphic: "assets/images/textbox-bg.png",
+                color: Palette.white[7], animatedBackground: true
+            };
+
+            var messageBox : MessageBox = new MessageBox();
+            messageBox.show("Lorem ipsum dolor sit amet, consectetur adipiscing elit. #Aliquam eget turpis eu orci porttitor scelerisque. Nam gravida dui vel ligula tristique, quis dapibus ipsum faucibus. #Maecenas quis leo iaculis, pellentesque erat id, pulvinar tellus.\nDuis quam massa, lobortis accumsan risus eget, facilisis dignissim mauris.\nNam luctus congue luctus. Maecenas tincidunt commodo felis, et vulputate purus egestas nec. Etiam quis velit mollis, tincidunt ipsum sit amet, ultricies nulla.", settings, function() {
+                                unpause();
+                            });
+            addHudGroup(messageBox);
+        }
+
         #end
     }
 
