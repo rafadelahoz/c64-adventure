@@ -1,7 +1,5 @@
 package;
 
-import flixel.effects.FlxFlicker;
-
 class FallingSolid extends Solid
 {
     static final StatusIdle : Int = 0;
