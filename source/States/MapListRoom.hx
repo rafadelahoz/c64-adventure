@@ -11,7 +11,7 @@ import text.PixelText;
 class MapListRoom extends FlxState
 {
     #if sys
-    public static var mapsDirectory : String = "/c64/assets/maps/";
+    public static var mapsDirectory : String = "/var/c64/assets/maps/";
     #else
     public static var mapsDirectory : String = "assets/maps/";
     #end
