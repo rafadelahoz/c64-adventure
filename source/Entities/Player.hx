@@ -317,9 +317,9 @@ class Player extends Actor
                     if (npc != null)
                     {
                         npc.setInteractable(true);
-                        nearNPC = true;
+                        // nearNPC = true;
 
-                        if (Gamepad.justPressed(Gamepad.B))
+                        if (Gamepad.justPressed(Gamepad.Up))
                         {
                             npc.onInteract();
                         }
