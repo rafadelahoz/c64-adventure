@@ -47,6 +47,7 @@ class World extends FlxState
     public var enemies : FlxGroup;
 
     var triggers : FlxGroup;
+    public var npcs : FlxGroup;
     public var items : FlxGroup;
 
     var tilemapBG : FlxTilemap;
@@ -122,6 +123,9 @@ class World extends FlxState
 
         triggers = new FlxGroup();
         add(triggers);
+
+        npcs = new FlxGroup();
+        add(npcs);
 
         items = new FlxGroup();
         add(items);
@@ -309,6 +313,9 @@ class World extends FlxState
         triggers.clear();
 
         // TODO: Destroy/kill all members
+        npcs.clear();
+
+        // TODO: Destroy/kill all members
         items.clear();
 
         platforms.clear();
@@ -400,12 +407,6 @@ class World extends FlxState
             {
                 Inventory.MoveCursor();
             }
-
-            if (Gamepad.justPressed(Gamepad.B))
-            {
-                var item : ItemData = Inventory.GetCurrent();
-                useItem(item);
-            }
         }
         
         super.update(elapsed);
@@ -421,7 +422,7 @@ class World extends FlxState
         handleDebugRoutines();
     }
 
-    function useItem(item : ItemData, ?willingly : Bool = true)
+    public function useItem(item : ItemData, ?willingly : Bool = true)
     {
         if (item != null)
         {
@@ -590,6 +591,7 @@ class World extends FlxState
             exits.visible = false;
             enemies.visible = false;
             triggers.visible = false;
+            npcs.visible = false;
             items.visible = false;
         }
         else
@@ -709,29 +711,44 @@ class World extends FlxState
 
         if (FlxG.keys.justPressed.T)
         {
-            pause();
-            var settings : MessageBox.MessageSettings =
-            {
-                x : 84, y : 112, w: 236+2, h: 68+2, border: 14,
-                bgOffsetX : 0, bgOffsetY: 0, bgGraphic: "assets/images/textbox-bg.png",
-                color: Palette.white[7], animatedBackground: true
-            };
-
-            var messageBox : MessageBox = new MessageBox();
-            messageBox.show("*: Lorem ipsum dolor sit amet, consectetur adipiscing elit. #Aliquam eget turpis eu orci porttitor scelerisque. Nam gravida dui vel ligula tristique, quis dapibus ipsum faucibus. #Maecenas quis leo iaculis, pellentesque erat id, pulvinar tellus.\nDuis quam massa, lobortis accumsan risus eget, facilisis dignissim mauris.\nNam luctus congue luctus. Maecenas tincidunt commodo felis, et vulputate purus egestas nec. Etiam quis velit mollis, tincidunt ipsum sit amet, ultricies nulla.", settings, function() {
-                            /*"1.................................1\n"+
-                            "2\n" +
-                            "3\n" +
-                            "4.................................4\n" +
-                            "5\n" +
-                            "6\n" +
-                            "7.................................7", settings, function() {*/
-                                unpause();
-                            });
-            addHudGroup(messageBox);
+            showMessage("*: Lorem ipsum dolor sit amet, consectetur adipiscing elit. #Aliquam eget turpis eu orci porttitor scelerisque. Nam gravida dui vel ligula tristique, quis dapibus ipsum faucibus. #Maecenas quis leo iaculis, pellentesque erat id, pulvinar tellus.\nDuis quam massa, lobortis accumsan risus eget, facilisis dignissim mauris.\nNam luctus congue luctus. Maecenas tincidunt commodo felis, et vulputate purus egestas nec. Etiam quis velit mollis, tincidunt ipsum sit amet, ultricies nulla.");
+                        /*"1.................................1\n"+
+                        "2\n" +
+                        "3\n" +
+                        "4.................................4\n" +
+                        "5\n" +
+                        "6\n" +
+                        "7.................................7")*/
         }
 
         #end
+    }
+
+    public function showMessage(message : String, ?callback : Void -> Void = null)
+    {
+        pause();
+
+        var top : Bool = (player.y > screencam.scroll.y+screencam.height/2);
+
+        var settings : MessageBox.MessageSettings =
+        {
+            x : 84, y : (top ? 0 : 112), w: 236+2, h: 68+2, border: 14,
+            bgOffsetX : 0, bgOffsetY: 0, bgGraphic: "assets/images/textbox-bg.png",
+            color: Palette.white[7], animatedBackground: true
+        };
+
+        var messageBox : MessageBox = new MessageBox();
+        messageBox.show(message, settings, function() {
+                            unpause();
+                            if (callback != null)
+                                callback();
+                        });
+        addHudGroup(messageBox);
+    }
+
+    public function showMessages(messages : Array<String>, ?callback : Void -> Void = null)
+    {
+        showMessage(messages.join('#'), callback);
     }
 
     function updateCursor()

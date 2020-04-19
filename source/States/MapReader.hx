@@ -222,6 +222,9 @@ class MapReader
                             world.oneways.add(falling);
                         else
                             world.solids.add(falling);
+                    case "NPC":
+                        var npc : NPC = new NPC(x, y, world, properties);
+                        world.npcs.add(npc);
                     default:
                         // nop
                 }

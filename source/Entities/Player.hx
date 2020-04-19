@@ -1,6 +1,6 @@
 package;
 
-import flixel.tweens.FlxTween;
+import Inventory.ItemData;
 import flixel.effects.FlxFlicker;
 import flixel.group.FlxGroup.FlxTypedGroupIterator;
 import flixel.util.FlxTimer;
@@ -61,6 +61,8 @@ class Player extends Actor
     var shadow : FlxSprite;
     var pickCursor : FlxSprite;
     var pickCursorTimer : FlxTimer;
+    var nearNPC : Bool = false;
+    var justPickedSomething : Bool = false;
 
     public var debug (default, null) : Bool = false;
 
@@ -299,34 +301,66 @@ class Player extends Actor
                     }
                 }
 
-                // TODO: Can pickup while carrying?
-                world.hud.pickableItemLabel = "";
-                if (!onAir && Inventory.GetCurrent() == null 
-                    && carrying == null) // TODO: Show pickable things when carrying?
+                // Check for NPCs
+                nearNPC = false;
+                if (!onAir && carrying == null)
                 {
-                    var items : Array<Item> = [];
-                    FlxG.overlap(this, world.items, function(self : Player, item : Item) {
-                        if (item != carrying)
-                            items.push(item);
+                    var npcs : Array<Entity> = [];
+                    FlxG.overlap(this, world.npcs, function(self : Player, npc : NPC) {
+                        npc.setInteractable(false);
+                        if (facing == Left && (npc.getMidpoint().x < getMidpoint().x) ||
+                            facing == Right && (npc.getMidpoint().x > getMidpoint().x))
+                            npcs.push(npc);
                     });
 
-                    var item : Item = findClosestItem(items);
-                    if (item != null)
+                    var npc : NPC = cast(findClosestEntity(npcs), NPC);
+                    if (npc != null)
                     {
-                        pickCursor.x = item.x + item.width / 2 - pickCursor.width / 2;
-                        pickCursor.y = item.y - (pickCursor.height + 1);
-                        pickCursor.visible = true;
+                        npc.setInteractable(true);
+                        nearNPC = true;
 
-                        world.hud.pickableItemLabel = item.data.label;
-                        if (Gamepad.justPressed(Gamepad.B) && Inventory.Put(item.data))
+                        if (Gamepad.justPressed(Gamepad.B))
                         {
-                            item.onPickup();
-                            item = null;
-                            pickCursor.visible = false;
+                            npc.onInteract();
                         }
                     }
-                    else
-                        pickCursor.visible = false;
+                }
+
+                // Can pick things if there's no NPC
+                // TODO: Assess if this works
+                pickCursor.visible = false;
+                justPickedSomething = false;
+                if (!nearNPC)
+                {
+                    world.hud.pickableItemLabel = "";
+                    if (!onAir && Inventory.GetCurrent() == null 
+                        && carrying == null) // TODO: Show pickable things when carrying?
+                    {
+                        var items : Array<Item> = [];
+                        FlxG.overlap(this, world.items, function(self : Player, item : Item) {
+                            if (item != carrying)
+                                items.push(item);
+                        });
+
+                        var item : Item = findClosestItem(items);
+                        if (item != null)
+                        {
+                            pickCursor.x = item.x + item.width / 2 - pickCursor.width / 2;
+                            pickCursor.y = item.y - (pickCursor.height + 1);
+                            pickCursor.visible = true;
+
+                            world.hud.pickableItemLabel = item.data.label;
+                            if (Gamepad.justPressed(Gamepad.B) && Inventory.Put(item.data))
+                            {
+                                item.onPickup();
+                                item = null;
+                                pickCursor.visible = false;
+                                justPickedSomething = true;
+                            }
+                        }
+                        else
+                            pickCursor.visible = false;
+                    }
                 }
 
                 // Entering things
@@ -495,6 +529,14 @@ class Player extends Actor
 
                 if (!onAir)
                     haccel = 0;
+        }
+
+        // Things that may happen on any state (??)
+        // Maybe think a bit more about this one
+        if (!nearNPC && !justPickedSomething && Gamepad.justPressed(Gamepad.B))
+        {
+            var item : ItemData = Inventory.GetCurrent();
+            world.useItem(item);
         }
         
         hspeed += haccel;
