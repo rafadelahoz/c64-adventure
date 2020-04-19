@@ -1032,6 +1032,18 @@
 					}
 				},
 				{
+					"id": "NPC-0001",
+					"x": "9",
+					"y": "7",
+					"type": "NPC",
+					"w": "1",
+					"h": "1",
+					"properties": {
+						"flavour": "NONE",
+						"messages": ["I love watching the cacti grow!"]
+					}
+				},
+				{
 					"id": "0.1580320420691",
 					"x": "14",
 					"y": "7",
@@ -1616,7 +1628,21 @@
 				0,
 				0
 			],
-			"actors": [],
+			"actors": [
+				{
+					"id": "NPC-0002",
+					"x": "8",
+					"y": "7",
+					"type": "NPC",
+					"w": "1",
+					"h": "1",
+					"properties": {
+						"flavour": "NONE",
+						"color": "#43ad33",
+						"messages": ["I am on a quest to become a cactus."]
+					}
+				}
+			],
 			"gridX": 2,
 			"gridY": 0
 		},
@@ -3156,6 +3182,19 @@
 					"type": "spikes",
 					"w": 1,
 					"h": 1
+				},
+				{
+					"id": "NPC-0003",
+					"x": "23",
+					"y": "4",
+					"type": "NPC",
+					"w": "1",
+					"h": "1",
+					"properties": {
+						"flavour": "NONE",
+						"messages": ["I wanted to go see the buried temple, but I won't be able to get through this pit",
+									 "If only I had a SHRIMP..."]
+					}
 				},
 				{
 					"id": "2.1558465440179",
