@@ -404,7 +404,7 @@ class TypeWriter extends FlxBitmapText
 
         if (finished)
 		{
-			if (Gamepad.justPressed(Gamepad.A))
+			if (Gamepad.justPressed(Gamepad.A) || Gamepad.justPressed(Gamepad.B))
 			{
 				finished = false;
 				// If there is more text, we have not finished
@@ -429,7 +429,7 @@ class TypeWriter extends FlxBitmapText
 		}
 
 		// If the skip key was pressed, complete the animation.
-		if (Gamepad.justPressed(Gamepad.A) && _typing && !skipping)
+		if ((Gamepad.justPressed(Gamepad.A) || Gamepad.justPressed(Gamepad.B)) && _typing && !skipping)
 		{
 			skipping = true;
 		}
