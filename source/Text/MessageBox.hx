@@ -2,7 +2,6 @@ package;
 
 import flixel.FlxG;
 import flixel.FlxSprite;
-import flixel.util.FlxTimer;
 import flixel.group.FlxGroup;
 import flixel.tweens.FlxTween;
 import flixel.tweens.FlxEase;
