@@ -256,7 +256,8 @@ class TypeWriter extends FlxBitmapText
 			while (tokens.length > 0)
 			{
 				var token : String = StringTools.trim(tokens.shift());
-				if (pline.length + token.length + 1 <= lineWidth)
+				// TODO: Restore pline.length + token.length + 1?
+				if (pline.length + token.length <= lineWidth)
 				{
 					pline += (pline.length > 0 ? " " : "") + token;
 					if (pline.length == lineWidth)
@@ -562,7 +563,7 @@ class TypeWriter extends FlxBitmapText
 						var nextWordChunk : String = remainerWords[0];
 
 						// Consider that the last chunk may have a "\n"!!
-						if (nextWordChunk.indexOf("\n") > 0)
+						if (nextWordChunk.indexOf("\n") >= 0)
 						{
 							var splittedChunk : Array<String> = nextWordChunk.split("\n");
 							nextWordChunk = splittedChunk.shift();

@@ -69,6 +69,7 @@ class MessageBox extends FlxGroup
         background.scale.y = 0;
         add(background);
 
+        // W: 210, H: 42 -> 35x7 chars
         textBox = new text.TypeWriter(x+border, y+border, Std.int(width-2*border), Std.int(height-2*border), "", textColor);
         textBox.startNewBoxCallback = MessageStartCallback;
         textBox.boxFilledCallback = MessageEndCallback;

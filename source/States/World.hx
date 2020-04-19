@@ -712,13 +712,20 @@ class World extends FlxState
             pause();
             var settings : MessageBox.MessageSettings =
             {
-                x : 84, y : 112, w: 236, h: 68, border: 14,
+                x : 84, y : 112, w: 236+2, h: 68+2, border: 14,
                 bgOffsetX : 0, bgOffsetY: 0, bgGraphic: "assets/images/textbox-bg.png",
                 color: Palette.white[7], animatedBackground: true
             };
 
             var messageBox : MessageBox = new MessageBox();
-            messageBox.show("Lorem ipsum dolor sit amet, consectetur adipiscing elit. #Aliquam eget turpis eu orci porttitor scelerisque. Nam gravida dui vel ligula tristique, quis dapibus ipsum faucibus. #Maecenas quis leo iaculis, pellentesque erat id, pulvinar tellus.\nDuis quam massa, lobortis accumsan risus eget, facilisis dignissim mauris.\nNam luctus congue luctus. Maecenas tincidunt commodo felis, et vulputate purus egestas nec. Etiam quis velit mollis, tincidunt ipsum sit amet, ultricies nulla.", settings, function() {
+            messageBox.show("*: Lorem ipsum dolor sit amet, consectetur adipiscing elit. #Aliquam eget turpis eu orci porttitor scelerisque. Nam gravida dui vel ligula tristique, quis dapibus ipsum faucibus. #Maecenas quis leo iaculis, pellentesque erat id, pulvinar tellus.\nDuis quam massa, lobortis accumsan risus eget, facilisis dignissim mauris.\nNam luctus congue luctus. Maecenas tincidunt commodo felis, et vulputate purus egestas nec. Etiam quis velit mollis, tincidunt ipsum sit amet, ultricies nulla.", settings, function() {
+                            /*"1.................................1\n"+
+                            "2\n" +
+                            "3\n" +
+                            "4.................................4\n" +
+                            "5\n" +
+                            "6\n" +
+                            "7.................................7", settings, function() {*/
                                 unpause();
                             });
             addHudGroup(messageBox);
