@@ -78,6 +78,9 @@ class Item extends Actor
 
     override public function destroy()
     {
+        world.remove(groundProbe);
+        groundProbe.destroy();
+        
         world.items.remove(this);
         super.destroy();
     }
