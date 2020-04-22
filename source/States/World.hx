@@ -685,9 +685,7 @@ class World extends FlxState
             else
             {
                 var properties : haxe.DynamicAccess<Dynamic> = {};
-                if (FlxG.random.bool())
-                    properties.set("type", "RED");
-                var e : Enemy = new EnemySkeleton(sx, sy, this, properties);
+                var e : Enemy = new EnemyFrog(sx, sy, this, properties);
                 enemies.add(e);
             }
         }
