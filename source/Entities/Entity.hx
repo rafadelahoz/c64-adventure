@@ -29,6 +29,11 @@ class Entity extends FlxSprite
         super.update(elapsed);
     }
 
+    public function onHit(by : Entity, ?damage : Int = 0)
+    {
+        // Generic collision, override me
+    }
+
     override public function update(elapsed : Float) : Void
     {
         if (!world.paused)

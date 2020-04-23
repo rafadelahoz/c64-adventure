@@ -379,6 +379,12 @@ class World extends FlxState
                 i.onCollisionWithHazard(hazard);
             });
 
+            // Enemies vs hazards
+            FlxG.overlap(enemies, hazards, function(e : Enemy, hazard : Hazard) {
+                e.onHit(hazard);
+                hazard.onHit(e);
+            });
+
             // Player vs triggers
             triggers.forEachExists(function(t:FlxBasic) {
                 cast(t, Solid).color = 0xFFFFFFFF;
@@ -671,7 +677,13 @@ class World extends FlxState
             var sx : Int = Std.int(x / 7)*7;
             var sy : Int = Std.int(y / 14)*14;
 
-            if (FlxG.keys.pressed.SHIFT)
+            
+            if (FlxG.keys.pressed.CONTROL)
+            {
+                var h : FallingHazard = new FallingHazard(sx, sy, this, null);
+                hazards.add(h);
+            }
+            else if (FlxG.keys.pressed.SHIFT)
             {
                 var s = new FallingSolid(sx, sy, 7, 14, this);
                 solids.add(s);

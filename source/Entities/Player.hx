@@ -55,7 +55,7 @@ class Player extends Actor
     var invulnerableTimer : FlxTimer;
 
     var InvulnerableDuration : Float = 2;
-    var invulnerable : Bool;
+    public var invulnerable : Bool;
 
     // Testing area
     var shadow : FlxSprite;
@@ -63,6 +63,8 @@ class Player extends Actor
     var pickCursorTimer : FlxTimer;
     var nearNPC : Bool = false;
     var justPickedSomething : Bool = false;
+
+    public var center : FlxPoint;
 
     public var debug (default, null) : Bool = false;
 
@@ -108,6 +110,8 @@ class Player extends Actor
 
         invulnerable = false;
 
+        center = FlxPoint.get();
+
         state = PlayerData.state;
         if (state == State.Climb)
         {
@@ -150,6 +154,16 @@ class Player extends Actor
         pickCursor.animation.play("idle");
         pickCursor.visible = false;
         pickCursor.solid = false;
+    }
+
+    override public function destroy()
+    {
+        world.remove(groundProbe);
+        groundProbe.destroy();
+
+        center.put();
+
+        super.destroy();
     }
 
     public function refreshColor()
@@ -655,6 +669,8 @@ class Player extends Actor
         shadow.x = x;
         shadow.y = y;
 
+        getMidpoint(center);
+
         // Reposition carried item
         repositionCarriedItem();
     }
@@ -845,14 +861,14 @@ class Player extends Actor
                 if (LRAM.hp - damage < 0)
                     handleDeath(cast(danger, FlxBasic));
                 else
-                    onHit(damage, cast(danger, Entity));
+                    onHit(cast(danger, Entity), damage);
             }
                 
         }
     }
 
     var HurtDuration : Float = 0.5;
-    public function onHit(damage : Int, by : Entity)
+    override public function onHit(by : Entity, ?damage : Int = 0)
     {
         if (!invulnerable)
         {
@@ -905,7 +921,7 @@ class Player extends Actor
         new FlxTimer().start(1, function(t:FlxTimer) {
 
             // Puff!
-            world.add(new FxPuff(x + width/2, y + height/2, world));
+            world.add(new FxPuff(x + width/2, y + height/2, world, true));
 
             // Then die
             destroy();
