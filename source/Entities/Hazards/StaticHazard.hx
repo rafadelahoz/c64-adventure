@@ -1,16 +1,13 @@
 package;
 
-class Hazard extends Actor implements IDangerous
+class StaticHazard extends Hazard implements IDangerous
 {
     public static var TypeSpikes (default, never) : String = "spikes";
     public static var TypeStar(default, never) : String = "pointy";
     
-    public var type : String;
-    public var power : Int;
-
     public function new(X : Float, Y : Float, World : World, Type : String, ?Properties : Dynamic = null)
     {
-        super(X, Y, World);
+        super(X, Y, World, Properties);
 
         type = Type;
 
@@ -49,7 +46,7 @@ class Hazard extends Actor implements IDangerous
             color = 0xFFFFFFFF;
     }
 
-    public function damages(player : Player) : Int
+    override public function damages(player : Player) : Int
     {
         var damage : Int  = power;
 
