@@ -4,6 +4,9 @@ class Constants
 {
     public static final SlowdownFactor : Float = 0.10;
 
+    public static final GameWidth : Int = 320;
+    public static final GameHeight : Int = 180;
+
     public static final ScreenWidth : Int = 210;
     public static final ScreenHeight : Int = 156;
 

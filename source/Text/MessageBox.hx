@@ -49,7 +49,7 @@ class MessageBox extends FlxGroup
         else
         {
             x = 0;
-            y = Constants.ScreenHeight/2 - 24;
+            y = Constants.GameHeight/2 - 24;
             width = Constants.ScreenWidth;
             height = 48;
             border = 8;
@@ -65,7 +65,7 @@ class MessageBox extends FlxGroup
             var bgOffsetY : Int = Settings.bgOffsetY;
             background = new FlxSprite(x - bgOffsetX, y - bgOffsetY, bgGraphic);
         }
-        background.scale.y = 0;
+        // background.scale.y = 0;
         add(background);
 
         // W: 210, H: 42 -> 35x7 chars
@@ -84,7 +84,9 @@ class MessageBox extends FlxGroup
         });
         add(touchArea);*/
 
-        FlxTween.tween(background.scale, {y: 1}, OpenTime, {ease : FlxEase.circInOut, onComplete: function(_) {
+        var targetY : Float = background.y;
+        background.y = (background.y < Constants.GameHeight / 2 ? -height + 14 : Constants.GameHeight-14);
+        FlxTween.tween(background, {y: targetY}, OpenTime, {ease : FlxEase.linear, onComplete: function(_) {
             doMessage();
             // if (animatedBackground)
                 // doBackgroundAnimation();
@@ -123,7 +125,8 @@ class MessageBox extends FlxGroup
             remove(textBox);
             textBox.destroy();
 
-            FlxTween.tween(background.scale, {y: 0}, OpenTime, {ease : FlxEase.circInOut, onComplete: function(_) {
+            var targetY : Float = (background.y < Constants.GameHeight / 2 ? -height+14 : Constants.GameHeight-14);
+            FlxTween.tween(background, {y: targetY}, OpenTime, {ease : FlxEase.linear, onComplete: function(_) {
                 remove(background);
                 background.destroy();
 
