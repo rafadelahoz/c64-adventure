@@ -18,6 +18,8 @@ class MessageBox extends FlxGroup
 
     var background : FlxSprite;
 
+    var name : String;
+
     var messages : Array<String>;
     var textBox : text.TypeWriter;
     var callback : Void -> Void;
@@ -45,6 +47,7 @@ class MessageBox extends FlxGroup
             textColor = Settings.color;
             bgGraphic = Settings.bgGraphic;
             animatedBackground = Settings.animatedBackground;
+            name = Settings.name;
         }
         else
         {
@@ -53,6 +56,7 @@ class MessageBox extends FlxGroup
             width = Constants.ScreenWidth;
             height = 48;
             border = 8;
+            name = "*";
         }
 
         if (!animatedBackground)
@@ -109,7 +113,7 @@ class MessageBox extends FlxGroup
     {
         if (messages.length > 0)
         {
-            textBox.resetText(messages.shift());
+            textBox.resetText(name + ": " + messages.shift());
             textBox.start(0.025, doMessage);
         }
         else if (messages != null)
@@ -149,4 +153,5 @@ typedef MessageSettings = {
     var bgOffsetY : Int;
     var color : Int;
     var animatedBackground : Bool;
+    var name : String;
 };

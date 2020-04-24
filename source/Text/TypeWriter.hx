@@ -550,11 +550,13 @@ class TypeWriter extends FlxBitmapText
 	            // Check for dramatic wrapping in the last line
 				var alreadyFull : Bool = false;
 
-	            textLines = _lines;
+				textLines = _lines;
+				//trace("textLines is now:");
+				//trace(textLines);
 
 				if (textLines.length >= targetLines-1)
 				{
-	                var lineText = textLines[textLines.length-1];
+	                var lineText = textLines[Std.int(Math.min(textLines.length-1, targetLines-1))];
 
 					if (lineText != null)
 					{
@@ -740,7 +742,15 @@ class TypeWriter extends FlxBitmapText
 		for (i in 0...numLines)
 		{
 			_lines[i] = StringTools.rtrim(_lines[i]);
+			if (_lines[i].length <= 0)
+				_lines.splice(i, 1);
 		}
+
+		/*if (_lines.length > targetLines)
+		{
+			trace("NOT COOL After quick update");
+			trace(_lines);
+		}*/
 	}
 
     /**
