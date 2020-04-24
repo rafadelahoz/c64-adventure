@@ -379,6 +379,12 @@ class World extends FlxState
                 i.onCollisionWithHazard(hazard);
             });
 
+            // Enemies vs hazards
+            FlxG.overlap(enemies, hazards, function(e : Enemy, hazard : Hazard) {
+                e.onHit(hazard);
+                hazard.onHit(e);
+            });
+
             // Player vs triggers
             triggers.forEachExists(function(t:FlxBasic) {
                 cast(t, Solid).color = 0xFFFFFFFF;
@@ -671,7 +677,13 @@ class World extends FlxState
             var sx : Int = Std.int(x / 7)*7;
             var sy : Int = Std.int(y / 14)*14;
 
-            if (FlxG.keys.pressed.SHIFT)
+            
+            if (FlxG.keys.pressed.CONTROL)
+            {
+                var h : FallingHazard = new FallingHazard(sx, sy, this, null);
+                hazards.add(h);
+            }
+            else if (FlxG.keys.pressed.SHIFT)
             {
                 var s = new FallingSolid(sx, sy, 7, 14, this);
                 solids.add(s);
@@ -685,9 +697,7 @@ class World extends FlxState
             else
             {
                 var properties : haxe.DynamicAccess<Dynamic> = {};
-                if (FlxG.random.bool())
-                    properties.set("type", "RED");
-                var e : Enemy = new EnemySkeleton(sx, sy, this, properties);
+                var e : Enemy = new EnemyFrog(sx, sy, this, properties);
                 enemies.add(e);
             }
         }
@@ -711,7 +721,7 @@ class World extends FlxState
 
         if (FlxG.keys.justPressed.T)
         {
-            showMessage("*: Lorem ipsum dolor sit amet, consectetur adipiscing elit. #Aliquam eget turpis eu orci porttitor scelerisque. Nam gravida dui vel ligula tristique, quis dapibus ipsum faucibus. #Maecenas quis leo iaculis, pellentesque erat id, pulvinar tellus.\nDuis quam massa, lobortis accumsan risus eget, facilisis dignissim mauris.\nNam luctus congue luctus. Maecenas tincidunt commodo felis, et vulputate purus egestas nec. Etiam quis velit mollis, tincidunt ipsum sit amet, ultricies nulla.");
+            showMessage("Lorem ipsum dolor sit amet, consectetur adipiscing elit. #Aliquam eget turpis eu orci porttitor scelerisque. Nam gravida dui vel ligula tristique, quis dapibus ipsum faucibus. #Maecenas quis leo iaculis, pellentesque erat id, pulvinar tellus.\nDuis quam massa, lobortis accumsan risus eget, facilisis dignissim mauris.\nNam luctus congue luctus. Maecenas tincidunt commodo felis, et vulputate purus egestas nec. Etiam quis velit mollis, tincidunt ipsum sit amet, ultricies nulla.");
                         /*"1.................................1\n"+
                         "2\n" +
                         "3\n" +
@@ -724,17 +734,21 @@ class World extends FlxState
         #end
     }
 
-    public function showMessage(message : String, ?callback : Void -> Void = null)
+    public function showMessage(message : String, ?name : String = null, ?callback : Void -> Void = null)
     {
         pause();
 
         var top : Bool = (player.y > screencam.scroll.y+screencam.height/2);
 
+        if (name == null)
+            name = "*";
+
         var settings : MessageBox.MessageSettings =
         {
             x : 84, y : (top ? 0 : 112), w: 236+2, h: 68+2, border: 14,
             bgOffsetX : 0, bgOffsetY: 0, bgGraphic: "assets/images/textbox-bg.png",
-            color: Palette.white[7], animatedBackground: true
+            color: Palette.white[7], animatedBackground: true,
+            name: name
         };
 
         var messageBox : MessageBox = new MessageBox();

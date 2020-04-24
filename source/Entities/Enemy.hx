@@ -12,14 +12,22 @@ class Enemy extends Actor implements IDangerous
         // Override me
     }
 
-    public function onHit(by : Entity) : Void
+    override public function onHit(by : Entity, ?damage : Int = 0) : Void
     {
         // Override me
+        if (Std.is(by, Hazard))
+        {
+            onDeath();
+        }
     }
 
     public function onDeath() : Void
     {
         // Override me
+        kill();
+        world.remove(this);
+
+        world.add(new FxPuff(x + width / 2, y + height / 2, world));
     }
 
     public function onPlayerKilled() : Void

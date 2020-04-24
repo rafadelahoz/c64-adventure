@@ -137,10 +137,10 @@ class MapReader
                         var exit : MapExit = new MapExit(x, y, Constants.TileWidth, Constants.TileHeight, properties.get("name"), world);
                         world.exits.add(exit);
                     case "spikes":
-                        var spikes : Hazard = new Hazard(x, y, world, actor.type, actor.properties);
+                        var spikes : Hazard = new StaticHazard(x, y, world, actor.type, actor.properties);
                         world.hazards.add(spikes);
                     case "pointy":
-                        var pointy : Hazard = new Hazard(x, y, world, actor.type, actor.properties);
+                        var pointy : Hazard = new StaticHazard(x, y, world, actor.type, actor.properties);
                         world.hazards.add(pointy);
                     case "enemy-plant":
                         var plant : EnemyPlant = new EnemyPlant(x, y, world);
