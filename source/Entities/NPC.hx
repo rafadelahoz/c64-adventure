@@ -1,6 +1,5 @@
 package;
 
-import flixel.FlxG;
 import flixel.FlxSprite;
 
 class NPC extends Actor
@@ -26,7 +25,11 @@ class NPC extends Actor
 
         if (properties != null)
         {
-            messages = properties.get("messages");
+            var tmpMessages : Dynamic = properties.get("messages");
+            if (Std.is(tmpMessages, Array))
+                messages = properties.get("messages");
+            else if (Std.is(tmpMessages, String))
+                messages = [properties.get("messages")];
             if (properties.get("color") != null)
                 color = new MapReader().color(properties.get("color"));
         }
