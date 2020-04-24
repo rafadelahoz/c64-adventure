@@ -142,12 +142,18 @@ class MapReader
                     case "pointy":
                         var pointy : Hazard = new StaticHazard(x, y, world, actor.type, actor.properties);
                         world.hazards.add(pointy);
+                    case "falling-hazard":
+                        var coconut : FallingHazard = new FallingHazard(x, y, world, actor.properties);
+                        world.hazards.add(coconut);
                     case "enemy-plant":
                         var plant : EnemyPlant = new EnemyPlant(x, y, world);
                         world.enemies.add(plant);
                     case "enemy-skeleton": 
                         var skeleton : EnemySkeleton = new EnemySkeleton(x, y, world, properties);
                         world.enemies.add(skeleton);
+                    case "enemy-frog":
+                        var frog : EnemyFrog = new EnemyFrog(x, y, world, properties);
+                        world.enemies.add(frog);
                     case "item":
                         if (actor.properties != null)
                         {
