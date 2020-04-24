@@ -15,9 +15,9 @@ class Entity extends FlxSprite
         moves = false;
     }
 
-    public function onPause() {}
+    /*public function onPause() {}
 
-    public function onUnpause() {}
+    public function onUnpause() {}*/
 
     public function onUpdate(elapsed : Float)
     {

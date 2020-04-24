@@ -33,8 +33,8 @@ class EnemyFrog extends Enemy
     {
         super(X, Y, World);
 
-        // loadGraphic("assets/images/enemy-frog.png", true, 7, 14);
-        loadGraphic("assets/images/enemy-skeleton.png", true, 7, 14);
+        loadGraphic("assets/images/enemy-frog.png", true, 11, 14);
+        // loadGraphic("assets/images/enemy-skeleton.png", true, 7, 14);
         animation.add("idle", [0]);
         animation.add("crouch", [1]);
         animation.add("jump", [2]);
@@ -42,7 +42,7 @@ class EnemyFrog extends Enemy
         animation.play("idle");
 
         setSize(5, 12);
-        centerOffsets();
+        centerOffsets(true);
         offset.y = 2;
 
         direction = FlxG.random.bool() ? -1 : 1;
@@ -75,6 +75,7 @@ class EnemyFrog extends Enemy
     {
         if (timer != null)
         {
+            timer.active = true;
             switch (state)
             {
                 case StateIdle:
@@ -107,6 +108,9 @@ class EnemyFrog extends Enemy
                 case StateJump:
                     vspeed += Gravity;
                     animation.play("jump");
+                    // Flip instead of leaving the screen
+                    if (x + (hspeed * direction) < 0 || x + (hspeed * direction) > world.right)
+                        direction *= -1;
             }
 
             moveX(hspeed * direction, function() {
@@ -124,13 +128,19 @@ class EnemyFrog extends Enemy
         }
         else
         {
-            animation.play("idle");
+            //animation.play("jump");
         }
 
         super.onUpdate(elapsed);
 
         groundProbe.x = x;
         groundProbe.y = y + height;
+    }
+
+    override function onPausedUpdate(elapsed:Float) {
+        if (timer != null)
+            timer.active = false;
+        super.onPausedUpdate(elapsed);
     }
 
     function switchState(toState : Int)
@@ -189,7 +199,8 @@ class EnemyFrog extends Enemy
         timer.cancel();
         timer.destroy();
         timer = null;
-        state = StateIdle;
+        state = -1;
+        //animation.play("jump");
     }
 
     override public function damages(player : Player) : Int
