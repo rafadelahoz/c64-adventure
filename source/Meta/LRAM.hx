@@ -14,7 +14,7 @@ class LRAM
     public static function Init()
     {
         roomItems = new Map<String, Array<StoredItemData>>();
-        hp = 3;
+        hp = GameStatus.maxHP;
         OpenedLockSolids = new Map<String, Bool>();
         SpawnedItems = new Array<String>();
     }

@@ -14,6 +14,10 @@ class Hud extends FlxSpriteGroup
     var cursor : FlxSprite;
     var inventoryLabels : Array<FlxBitmapText>;
     var roomNameLabel : FlxBitmapText;
+    var roomNameBG : FlxSprite;
+
+    var hpBG : FlxSprite;
+    var hpDisplay : Array<FlxSprite>;
 
     public var playerDead : Bool;
 
@@ -27,8 +31,10 @@ class Hud extends FlxSpriteGroup
         inventoryLabels = [];
         pickableItemLabel = "";
 
-        bgImage = new FlxSprite(0, 0, "assets/images/temp-hud.png");
+        bgImage = new FlxSprite(0, 0, "assets/ui/hud-" + GameStatus.hudStyle + ".png");
         add(bgImage);
+
+        prepareHpDisplay();
 
         cursor = new FlxSprite(12, 0);
         cursor.makeGraphic(72, 12, 0xFFffe947);
@@ -38,8 +44,11 @@ class Hud extends FlxSpriteGroup
         renderInventory();
         
         roomNameLabel = text.PixelText.New(0, 0, world.roomData.name);
-        roomNameLabel.x = 194 - roomNameLabel.width/2;
-        roomNameLabel.y = 174;
+        roomNameLabel.x = 200 - roomNameLabel.width/2;
+        roomNameLabel.y = 171;
+        roomNameBG = new FlxSprite(roomNameLabel.x, roomNameLabel.y).makeGraphic(Std.int(roomNameLabel.width), Std.int(roomNameLabel.height), 0xFF000000);
+
+        add(roomNameBG);
         add(roomNameLabel);
 
         playerDead = false;
@@ -48,6 +57,9 @@ class Hud extends FlxSpriteGroup
     public function onRoomChange()
     {
         roomNameLabel.text = world.roomData.name;
+        roomNameLabel.x = 200 - roomNameLabel.width/2;
+        roomNameBG.x = roomNameLabel.x;
+        roomNameBG.makeGraphic(Std.int(roomNameLabel.width), Std.int(roomNameLabel.height), 0xFF000000);
     }
 
     override public function update(elapsed : Float) : Void
@@ -58,7 +70,7 @@ class Hud extends FlxSpriteGroup
                 cursor.y = -200;
             else
             {
-                cursor.y = 35 + 12*Inventory.cursor;
+                cursor.y = 35 + 12 + 12*Inventory.cursor;
                 for (i in 0...inventoryLabels.length)
                 {
                     if (i == Inventory.cursor)
@@ -69,17 +81,43 @@ class Hud extends FlxSpriteGroup
             }
         }
 
+        renderHP();
         renderInventory();
 
         super.update(elapsed);
     }
 
+    function prepareHpDisplay()
+    {
+        hpBG = new FlxSprite(0, 0).makeGraphic(14*GameStatus.maxHP, 12, 0xFF000000);
+        add(hpBG);
+
+        hpDisplay = [];
+        for (i in 0...GameStatus.maxHP)
+        {
+            hpDisplay.push(new FlxSprite(0+i*14, 0, "assets/ui/hud-heart.png"));
+            add(hpDisplay[i]);
+        }
+    }
+
+    function renderHP()
+    {
+        var baseX : Int = Std.int(180-14*Std.int((GameStatus.maxHP-3)/2));
+        for (i in 0...GameStatus.maxHP)
+        {
+            hpDisplay[i].x = baseX + i*14;
+            hpDisplay[i].visible = i < LRAM.hp;
+        }
+        
+        hpBG.x = baseX;
+    }
+
     function prepareItemLabels()
     {
-        var ly : Int = 38;
+        var ly : Int = 38+12;
         var label : FlxBitmapText;
 
-        for (i in 0...Inventory.MaxItems)
+        for (_ in 0...Inventory.MaxItems)
         {
             label = PixelText.New(12, ly, "");
             add(label);
@@ -91,8 +129,6 @@ class Hud extends FlxSpriteGroup
 
     function renderInventory()
     {
-        var ly : Int = 38;
-        var i : Int = 0;
         var label : FlxBitmapText;
         var item : ItemData;
 
@@ -109,8 +145,6 @@ class Hud extends FlxSpriteGroup
             } 
             else
                 FlxFlicker.stopFlickering(inventoryLabels[i]);
-
-            ly += 12;
         }
     }
 }

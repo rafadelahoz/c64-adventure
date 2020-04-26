@@ -4,7 +4,7 @@ import flixel.FlxG;
 
 class Inventory 
 {
-    public static var MaxItems : Int = 11;
+    public static var MaxItems : Int = 10;
     public static var items : Array<ItemData>;
     public static var cursor : Int;
 

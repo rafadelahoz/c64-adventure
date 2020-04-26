@@ -858,7 +858,7 @@ class Player extends Actor
             var damage : Int = danger.damages(this);
             if (damage > -1)
             {
-                if (LRAM.hp - damage < 0)
+                if (LRAM.hp - damage <= 0)
                     handleDeath(cast(danger, FlxBasic));
                 else
                     onHit(cast(danger, Entity), damage);
@@ -893,6 +893,8 @@ class Player extends Actor
 
     function handleDeath(?killer : FlxBasic = null)
     {
+        LRAM.hp = 0;
+
         switchState(Dying);
         
         // Hide everything, change bg color
