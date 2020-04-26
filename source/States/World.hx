@@ -677,8 +677,6 @@ class World extends FlxState
         if (FlxG.keys.justPressed.PLUS)
             LRAM.hp++;
 
-        trace("hp: " + LRAM.hp);
-
         if (FlxG.mouse.justPressed)
         {
             var sx : Int = Std.int(x / 7)*7;
