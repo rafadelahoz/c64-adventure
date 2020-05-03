@@ -395,17 +395,26 @@ class World extends FlxState
 
             // Player vs Exits
             FlxG.overlap(player, exits, function(p : Player, e : MapExit) {
-                pause();
-                wait(1, function() {
-                    var fader = new Fader(this);
-                    fader.fade(false, function() {
-                        wait(1, function() {
-                            GameController.ClearMap(e.name);
-                            var clearThing : CourseClearThing = new CourseClearThing(this);
-                            addHudElement(clearThing);
+                if (!paused)
+                {
+                    pause();
+                    wait(1, function() {
+                        var fader = new Fader(this);
+                        fader.fade(false, function() {
+                            // Make sure to keep the currently carried item!
+                            if (player.carrying != null)
+                            {
+                                Inventory.Put(player.carrying.data);
+                            }
+
+                            wait(1, function() {
+                                GameController.ClearMap(e.name);
+                                var clearThing : CourseClearThing = new CourseClearThing(this);
+                                addHudElement(clearThing);
+                            });
                         });
                     });
-                });
+                }
             });
 
             // Inventory management
