@@ -1,5 +1,6 @@
 package;
 
+import text.PixelNumbers;
 import Inventory.ItemData;
 import flixel.effects.FlxFlicker;
 import text.PixelText;
@@ -18,6 +19,14 @@ class Hud extends FlxSpriteGroup
 
     var hpBG : FlxSprite;
     var hpDisplay : Array<FlxSprite>;
+
+    var starsLabel : FlxBitmapText;
+    var clearsLabel : FlxBitmapText;
+
+    var redOrb : FlxSprite;
+    var blueOrb : FlxSprite;
+    var greenOrb : FlxSprite;
+    var yellowOrb : FlxSprite;
 
     public var playerDead : Bool;
 
@@ -51,7 +60,41 @@ class Hud extends FlxSpriteGroup
         add(roomNameBG);
         add(roomNameLabel);
 
+        starsLabel = text.PixelNumbers.New(61, 9, "000");
+        add(starsLabel);
+        clearsLabel = text.PixelNumbers.New(61, 26, "000");
+        add(clearsLabel);
+
+        prepareOrbs();
+
         playerDead = false;
+    }
+
+    function prepareOrbs()
+    {
+        redOrb = new FlxSprite(11-3, 10-2);
+        redOrb.loadGraphic("assets/ui/hud-orbs.png", true, 14, 12);
+        redOrb.animation.add("orb", [0]);
+        redOrb.animation.play("orb");
+        add(redOrb);
+
+        blueOrb = new FlxSprite(29-3, 26-2);
+        blueOrb.loadGraphic("assets/ui/hud-orbs.png", true, 14, 12);
+        blueOrb.animation.add("orb", [3]);
+        blueOrb.animation.play("orb");
+        add(blueOrb);
+
+        greenOrb = new FlxSprite(11-3, 26-2);
+        greenOrb.loadGraphic("assets/ui/hud-orbs.png", true, 14, 12);
+        greenOrb.animation.add("orb", [2]);
+        greenOrb.animation.play("orb");
+        add(greenOrb);
+
+        yellowOrb = new FlxSprite(29-3, 10-2);
+        yellowOrb.loadGraphic("assets/ui/hud-orbs.png", true, 14, 12);
+        yellowOrb.animation.add("orb", [1]);
+        yellowOrb.animation.play("orb");
+        add(yellowOrb);
     }
 
     public function onRoomChange()
@@ -83,6 +126,8 @@ class Hud extends FlxSpriteGroup
 
         renderHP();
         renderInventory();
+        renderCounters();
+        renderOrbs();
 
         super.update(elapsed);
     }
@@ -146,5 +191,19 @@ class Hud extends FlxSpriteGroup
             else
                 FlxFlicker.stopFlickering(inventoryLabels[i]);
         }
+    }
+
+    function renderCounters()
+    {
+        starsLabel.text = "" + GameStatus.stars;
+        clearsLabel.text = "" + GameStatus.getClearedExits();
+    }
+
+    function renderOrbs()
+    {
+        redOrb.visible = GameStatus.redOrb;
+        blueOrb.visible = GameStatus.blueOrb;
+        greenOrb.visible = GameStatus.greenOrb;
+        yellowOrb.visible = GameStatus.yellowOrb;
     }
 }

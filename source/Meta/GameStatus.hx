@@ -15,6 +15,11 @@ class GameStatus
     static var switches : Map<String, Bool>;
 
     public static var maxHP : Int;
+    public static var stars : Int;
+    public static var redOrb : Bool;
+    public static var blueOrb : Bool;
+    public static var greenOrb : Bool;
+    public static var yellowOrb : Bool;
 
     public static function Init()
     {
@@ -26,6 +31,10 @@ class GameStatus
         room = 1;
 
         maxHP = 5;
+
+        stars = FlxG.random.int(0, 999);
+
+        redOrb = blueOrb = greenOrb = yellowOrb = false;
 
         exits = new Map<String, Bool>();
         switches = new Map<String, Bool>();
@@ -42,6 +51,19 @@ class GameStatus
     public static function setExitClear(exitName : String)
     {
         exits.set(exitName, true);
+    }
+
+    public static function getClearedExits() : Int
+    {
+        var counter : Int = 0;
+
+        for (value in exits.iterator())
+        {
+            if (value)
+                counter++;
+        }
+
+        return counter;
     }
 
     public static function getSwitch(name : String) : Bool
