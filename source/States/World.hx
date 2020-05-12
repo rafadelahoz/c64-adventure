@@ -693,12 +693,11 @@ class World extends FlxState
         if (FlxG.keys.justPressed.PLUS)
             LRAM.hp++;
 
+        var sx : Int = Std.int(x / 7)*7;
+        var sy : Int = Std.int(y / 14)*14;
+        
         if (FlxG.mouse.justPressed)
         {
-            var sx : Int = Std.int(x / 7)*7;
-            var sy : Int = Std.int(y / 14)*14;
-
-            
             if (FlxG.keys.pressed.CONTROL)
             {
                 var h : FallingHazard = new FallingHazard(sx, sy, this, null);
@@ -714,6 +713,9 @@ class World extends FlxState
                 var s = new Solid(sx, sy, 14, 28, this);
                 s.visible = true;
                 solids.add(s);
+
+                var switcher : EntitySwitcher = new EntitySwitcher(s);
+                add(switcher);
             }
             else
             {
@@ -721,6 +723,17 @@ class World extends FlxState
                 var l : Lever = new Lever(sx, sy, this);
                 npcs.add(l);
             }
+        }
+
+        if (FlxG.keys.justPressed.ONE)
+        {
+            var skeleton : EnemySkeleton = new EnemySkeleton(sx, sy, this);
+            enemies.add(skeleton);
+        } 
+        else if (FlxG.keys.justPressed.TWO)
+        {
+            var frog : EnemyFrog = new EnemyFrog(sx, sy, this);
+            enemies.add(frog);
         }
 
         label.text = "";
