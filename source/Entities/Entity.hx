@@ -34,6 +34,11 @@ class Entity extends FlxSprite
         // Generic collision, override me
     }
 
+    public function onStateSwitchChange(on : Bool)
+    {
+        // Override me
+    }
+
     override public function update(elapsed : Float) : Void
     {
         if (!world.paused)

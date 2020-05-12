@@ -663,6 +663,13 @@ class World extends FlxState
         });
     }
 
+    public function handleStateSwitchChange(on : Bool)
+    {
+        forEachOfType(Entity, function(entity : Entity) {
+            entity.onStateSwitchChange(on);
+        });
+    }
+
     /* FUNNY DEBUG AREA */
     function handleDebugRoutines()
     {
@@ -711,8 +718,8 @@ class World extends FlxState
             else
             {
                 var properties : haxe.DynamicAccess<Dynamic> = {};
-                var e : Enemy = new EnemyFrog(sx, sy, this, properties);
-                enemies.add(e);
+                var l : Lever = new Lever(sx, sy, this);
+                npcs.add(l);
             }
         }
 

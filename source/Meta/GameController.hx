@@ -38,8 +38,10 @@ class GameController
 
         LRAM.Init();
         LRAM.inventoryOnEnter = Inventory.Backup();
-
-        FlxG.switchState(new World());
+        
+        var world : World = new World();
+        LRAM.SetWorld(world);
+        FlxG.switchState(world);
     }
 
     public static function ClearMap(exitName : String)

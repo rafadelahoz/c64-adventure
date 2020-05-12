@@ -2,24 +2,32 @@ package;
 
 import flixel.FlxSprite;
 
-class NPC extends Actor
+class NPC extends Interactable
 {
     var messages : Array<String>;
-    var talkIcon : FlxSprite;
+    
 
     public function new(X : Float, Y : Float, World : World, ?properties : haxe.DynamicAccess<Dynamic> = null)
     {
         super(X, Y, World);
 
+        init(properties);
+    }
+
+    override function prepareAffordance()
+    {
+        affordance = new FlxSprite(x + width/2 - Constants.TileWidth/2, y - Constants.TileHeight, "assets/images/fx-talk.png");
+        affordance.visible = false;
+    }
+
+    function init(properties : haxe.DynamicAccess<Dynamic>)
+    {
         loadGraphic("assets/images/char.png", true, 7, 14);   
         animation.add("idle", [0], 1);
         animation.play("idle");
 
         setSize(width*2, height);
         centerOffsets(true);
-
-        talkIcon = new FlxSprite(x + width/2 - Constants.TileWidth/2, y - Constants.TileHeight, "assets/images/fx-talk.png");
-        talkIcon.visible = false;
 
         color = getRandomColor();
 
@@ -46,29 +54,17 @@ class NPC extends Actor
     {
         flipX = (world.player.getMidpoint().x < getMidpoint().x);
 
-        if (!overlaps(world.player)) 
-        {
-            talkIcon.visible = false;
-        }
-
         super.onUpdate(elapsed);
     }
 
-    public function setInteractable(interactable : Bool)
+    override public function canInteractWithPlayer()
     {
-        talkIcon.visible = interactable;
+        return (world.player.facing == Player.Left && (getMidpoint().x < world.player.getMidpoint().x) ||
+            world.player.facing == Player.Right && (getMidpoint().x > world.player.getMidpoint().x));
     }
 
-    public function onInteract()
+    override public function onInteract()
     {
         world.showMessages(messages);
-    }
-
-    override public function draw()
-    {
-        if (talkIcon.visible)
-            talkIcon.draw();
-
-        super.draw();
     }
 }

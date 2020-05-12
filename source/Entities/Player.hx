@@ -61,7 +61,7 @@ class Player extends Actor
     var shadow : FlxSprite;
     var pickCursor : FlxSprite;
     var pickCursorTimer : FlxTimer;
-    var nearNPC : Bool = false;
+    var nearInteractable : Bool = false;
     var justPickedSomething : Bool = false;
 
     public var center : FlxPoint;
@@ -315,27 +315,26 @@ class Player extends Actor
                     }
                 }
 
-                // Check for NPCs
-                nearNPC = false;
+                // Check for Interactables
+                nearInteractable = false;
                 if (!onAir && carrying == null)
                 {
-                    var npcs : Array<Entity> = [];
-                    FlxG.overlap(this, world.npcs, function(self : Player, npc : NPC) {
-                        npc.setInteractable(false);
-                        if (facing == Left && (npc.getMidpoint().x < getMidpoint().x) ||
-                            facing == Right && (npc.getMidpoint().x > getMidpoint().x))
-                            npcs.push(npc);
+                    var interactables : Array<Entity> = [];
+                    FlxG.overlap(this, world.npcs, function(self : Player, interactable : Interactable) {
+                        interactable.setInteractable(false);
+                        if (interactable.canInteractWithPlayer())
+                            interactables.push(interactable);
                     });
 
-                    var npc : NPC = cast(findClosestEntity(npcs), NPC);
-                    if (npc != null)
+                    var interactable : Interactable = cast(findClosestEntity(interactables), Interactable);
+                    if (interactable != null)
                     {
-                        npc.setInteractable(true);
-                        // nearNPC = true;
+                        interactable.setInteractable(true);
+                        // nearInteractable = true;
 
                         if (Gamepad.justPressed(Gamepad.Up))
                         {
-                            npc.onInteract();
+                            interactable.onInteract();
                         }
                     }
                 }
@@ -344,7 +343,7 @@ class Player extends Actor
                 // TODO: Assess if this works
                 pickCursor.visible = false;
                 justPickedSomething = false;
-                if (!nearNPC)
+                if (!nearInteractable)
                 {
                     world.hud.pickableItemLabel = "";
                     if (!onAir && Inventory.GetCurrent() == null 
@@ -547,7 +546,7 @@ class Player extends Actor
 
         // Things that may happen on any state (??)
         // Maybe think a bit more about this one
-        if (!nearNPC && !justPickedSomething && Gamepad.justPressed(Gamepad.B))
+        if (!nearInteractable && !justPickedSomething && Gamepad.justPressed(Gamepad.B))
         {
             var item : ItemData = Inventory.GetCurrent();
             world.useItem(item);

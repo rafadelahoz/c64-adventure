@@ -8,8 +8,12 @@ class LRAM
     public static var hp : Int;
     public static var inventoryOnEnter : Array<ItemData>;
 
+    static var StateSwitch : Bool;
+
     static var OpenedLockSolids : Map<String, Bool>;
     static var SpawnedItems : Array<String>;
+    
+    static var World : World;
 
     public static function Init()
     {
@@ -17,6 +21,12 @@ class LRAM
         hp = GameStatus.maxHP;
         OpenedLockSolids = new Map<String, Bool>();
         SpawnedItems = new Array<String>();
+        StateSwitch = false;
+    }
+
+    public static function SetWorld(world : World)
+    {
+        World = world;
     }
 
     public static function StoreRoom(roomId : String, items : Array<StoredItemData>)
@@ -47,6 +57,28 @@ class LRAM
     public static function HandleItemSpawn(id : String)
     {
         SpawnedItems.push(id);
+    }
+
+    public static function SwitchState()
+    {
+        StateSwitch = !StateSwitch;
+        if (World != null)
+            World.handleStateSwitchChange(StateSwitch);
+    }
+
+    public static function SetStateSwitch(on : Bool)
+    {
+        if (StateSwitch != on)
+        {
+            StateSwitch = on;
+            if (World != null)
+                World.handleStateSwitchChange(StateSwitch);
+        }
+    }
+
+    public static function GetStateSwitch() : Bool
+    {
+        return StateSwitch;
     }
 }
 

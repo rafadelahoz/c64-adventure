@@ -34,6 +34,7 @@
 	<classpath name="source/Entities" />
 	<classpath name="source/Entities/Enemies" />
 	<classpath name="source/Entities/Hazards" />
+	<classpath name="source/Entities/Puzzle" />
 	<classpath name="source/Meta" />
 	<classpath name="source/Text" />
 	<assets path="assets" />
