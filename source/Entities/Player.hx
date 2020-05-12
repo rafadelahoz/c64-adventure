@@ -46,7 +46,7 @@ class Player extends Actor
     public var haccel : Float;
 
     // Used for ground collision checks
-    var groundProbe : FlxSprite;
+    var groundProbe : Actor;
 
     // Reference to the ladder currently being climbed
     var ladder : Solid;
@@ -143,7 +143,7 @@ class Player extends Actor
             ladder = null;
         }
 
-        groundProbe = new FlxSprite(0, 0);
+        groundProbe = new Actor(0, 0, world);
         groundProbe.makeGraphic(Std.int(width), 1, 0xFFFFFFFF);
         groundProbe.visible = false;
         world.add(groundProbe);
