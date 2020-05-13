@@ -741,6 +741,11 @@ class World extends FlxState
             var switcher : EntitySwitcher = new EntitySwitcher(frog);
             add(switcher);
         }
+        else if (FlxG.keys.justPressed.THREE)
+        {
+            var btn : Button = new Button(sx, sy, this);
+            solids.add(btn);
+        }
 
         label.text = "";
                     /*"p: " + player.x + ", " + player.y + "\n" +
