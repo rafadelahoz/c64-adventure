@@ -729,11 +729,17 @@ class World extends FlxState
         {
             var skeleton : EnemySkeleton = new EnemySkeleton(sx, sy, this);
             enemies.add(skeleton);
+
+            var switcher : EntitySwitcher = new EntitySwitcher(skeleton);
+            add(switcher);
         } 
         else if (FlxG.keys.justPressed.TWO)
         {
             var frog : EnemyFrog = new EnemyFrog(sx, sy, this);
             enemies.add(frog);
+
+            var switcher : EntitySwitcher = new EntitySwitcher(frog);
+            add(switcher);
         }
 
         label.text = "";
