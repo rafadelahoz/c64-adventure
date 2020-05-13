@@ -731,7 +731,7 @@ class World extends FlxState
             enemies.add(skeleton);
 
             var switcher : EntitySwitcher = new EntitySwitcher(skeleton);
-            add(switcher);
+            //add(switcher);
         } 
         else if (FlxG.keys.justPressed.TWO)
         {
@@ -739,7 +739,7 @@ class World extends FlxState
             enemies.add(frog);
 
             var switcher : EntitySwitcher = new EntitySwitcher(frog);
-            add(switcher);
+            //add(switcher);
         }
         else if (FlxG.keys.justPressed.THREE)
         {
