@@ -88,6 +88,10 @@ class MapListRoom extends FlxState
 
         if (current >= labels.length)
             current = 0;
+
+        camera.follow(cursor);
+        camera.followLerp = 0.25;
+        camera.setScrollBounds(0, Constants.GameWidth, 0, null);
     }
 
     override public function update(elapsed : Float)
