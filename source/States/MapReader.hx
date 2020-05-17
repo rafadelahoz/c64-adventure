@@ -242,7 +242,7 @@ class MapReader
     {
         for (room in mapData.rooms) 
         {
-            if (findActor(room, "spawn") != null)
+            if (room != null && findActor(room, "spawn") != null)
                 return room.id;
         }
 
