@@ -250,10 +250,10 @@ class World extends FlxState
     {
         // Some magic numbers happening here
         // They are adjusted to match the screen camera offset and the weird artifacts caused by the double width
-        screencam.minScrollX = -52.5;
-        screencam.maxScrollX = Math.max((roomData.columns+7)*Constants.TileWidth + 3.5, 156);
+        screencam.minScrollX = -52.25;
+        screencam.maxScrollX = Math.max((roomData.columns+7)*Constants.TileWidth + 3, 156);
         screencam.minScrollY = 0;
-        screencam.maxScrollY = Math.max(roomData.rows*Constants.TileHeight + (roomData.rows == 11 ? 1 : 1.5), 156);
+        screencam.maxScrollY = Math.max(roomData.rows*Constants.TileHeight + (roomData.rows == 11 ? 1 : 2), 156);
         // Should this be done?
         // FlxG.worldBounds.set(-52.5, 0, screencam.maxScrollX, screencam.maxScrollY);
     }
