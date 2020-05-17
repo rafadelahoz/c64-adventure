@@ -233,9 +233,9 @@ class World extends FlxState
         screencam = new FlxCamera(96, 12, 210, 156, 1);
         screencam.bgColor = 0xFFFFFF00;
         screencam.setScale(2, 1);
-        screencam.setScrollBoundsRect(0-210/2/2, 0, Math.max(roomData.columns*7*2+210/2/2-54-54-54+6-2, 210), Math.max(roomData.rows*14-2, 156), true);
         screencam.pixelPerfectRender = true;
-        // trace(screencam.minScrollX, screencam.maxScrollX, screencam.minScrollY, screencam.maxScrollY);
+        
+        computeScreenCamLimits();
 
         hudcam = new flixel.FlxCamera(0, 0, 320, 200, 1);
         hudcam.bgColor = 0x00000000;
@@ -244,6 +244,18 @@ class World extends FlxState
 
         FlxG.cameras.add(screencam);
         FlxG.cameras.add(hudcam);
+    }
+
+    function computeScreenCamLimits()
+    {
+        // Some magic numbers happening here
+        // They are adjusted to match the screen camera offset and the weird artifacts caused by the double width
+        screencam.minScrollX = -52.5;
+        screencam.maxScrollX = Math.max((roomData.columns+7)*Constants.TileWidth + 3.5, 156);
+        screencam.minScrollY = 0;
+        screencam.maxScrollY = Math.max(roomData.rows*Constants.TileHeight + (roomData.rows == 11 ? 1 : 1.5), 156);
+        // Should this be done?
+        // FlxG.worldBounds.set(-52.5, 0, screencam.maxScrollX, screencam.maxScrollY);
     }
 
     function setupHUD()
@@ -334,7 +346,9 @@ class World extends FlxState
         player.destroy();
         spawnPlayer();       
 
-        screencam.setScrollBoundsRect(0-210/2/2, 0, Math.max(roomData.columns*7*2+210/2/2-54-54-54+6-2, 210), Math.max(roomData.rows*14-2, 156), true);
+        computeScreenCamLimits();
+        // TODO: Should this be done?
+        // FlxG.worldBounds.set(-52.5, 0, screencam.maxScrollX-screencam.minScrollX, screencam.maxScrollY);
 
         hud.onRoomChange();
 
