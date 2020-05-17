@@ -13,10 +13,14 @@ class EntitySwitcher extends Entity
         state = false;
 
         target = Target;
+
+        if (target != null)
+            onStateSwitchChange(LRAM.GetStateSwitch());
     }
 
     override function onStateSwitchChange(on : Bool) 
     {
-        target.exists = on;
+        if (target != null)
+            target.exists = on;
     }
 }
