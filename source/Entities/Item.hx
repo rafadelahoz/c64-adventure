@@ -1,5 +1,6 @@
 package;
 
+import openfl.display.Preloader.DefaultPreloader;
 import flixel.FlxSprite;
 import Inventory.ItemData;
 
@@ -154,6 +155,9 @@ class Item extends Actor
             case "KEY":
                 setSize(7, 6);
                 centerOffsets();
+            default:
+                // setSize(5, 12);
+                // centerOffsets(true);
         }
     }
 
@@ -167,6 +171,10 @@ class Item extends Actor
                 setSize(7, 14);
                 offset.set(0, 0);
                 y -= 5;
+            default:
+                // setSize(7, 14);
+                // centerOffsets(true);
+                // y -= 1;
         }
     }
 

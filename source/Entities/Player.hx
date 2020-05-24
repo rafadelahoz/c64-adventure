@@ -257,9 +257,13 @@ class Player extends Actor
                     // Drop carried thing when B is released
                     if (!Gamepad.pressed(Gamepad.B))
                     {
+                        // repositionCarriedItem();
                         carrying.onRelease();
+                        
                         // Reposition from center
-                        carrying.y -= 1;
+                        // carrying.y -= 1;
+                        // carrying.moveY(-3;
+                        // carrying.moveY(3);
 
                         var deltaX : Float = 0;
                         var solidAtLeft : Bool = overlapsAt(x-7, y, world.solids);
@@ -310,7 +314,6 @@ class Player extends Actor
                             carrying.x = x - offset.x;
                         }
                         carrying.moveX(deltaX);
-                        carrying.moveY(3);
 
                         carrying = null;
                     }
@@ -677,17 +680,69 @@ class Player extends Actor
 
     function repositionCarriedItem()
     {
+        repositionCarriedItemCustom();
+        return;
+
         if (carrying != null)
         {
             if (facing == Left)
+            {
                 //carrying.moveX(x - carrying.width - carrying.x);
-                carrying.x = x - carrying.width;
+                // carrying.x = x - carrying.width;
+                carrying.x = x;
+                var delta = -carrying.width;
+                carrying.moveX(delta);
+            }
             else
+            {
                 // carrying.moveX(x + width - carrying.x);
-                carrying.x = x + width;
+                // carrying.x = x + width;
+                carrying.x = x;
+                var delta = width;
+                carrying.moveX(delta);
+            }
 
-            // carrying.moveY(y + height/2 - carrying.height/2 - 2 - carrying.y);
-            carrying.y = y + height/2 - carrying.height/2 - 2;
+            // carrying.y = y + height/2 - carrying.height/2 - 2;
+            carrying.y = y + height/2 - carrying.height/2;
+            carrying.moveY(-4);
+            carrying.moveY(1);
+        }
+    }
+
+    function repositionCarriedItemCustom()
+    {
+        if (carrying != null)
+        {
+            var fallbackY : Float = carrying.y;
+
+            var originX : Float = x;
+            var targetX : Float = originX + (facing == Left ? -carrying.width : width);
+            var deltaX : Int = (facing == Left ? 1 : -1);
+
+            var originY = y + height/2 - carrying.height/2;
+            var targetY : Float = originY - 3;
+            var deltaY : Int = 1;
+
+            carrying.x = targetX;
+            var done : Bool = false;
+            while (carrying.x != originX && !done)
+            {
+                carrying.y = targetY;
+                while (carrying.y != originY && carrying.overlaps(world.solids))
+                {
+                    carrying.y += deltaY;
+                }
+
+                done = (!carrying.overlaps(world.solids));
+                if (!done)
+                    carrying.x += deltaX;
+            }
+
+            // If we didn't manage to place it properly,
+            // fuck it, just place it at the initial height
+            if (!done)
+                carrying.y = fallbackY;
+
         }
     }
 
