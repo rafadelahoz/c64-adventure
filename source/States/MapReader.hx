@@ -122,6 +122,9 @@ class MapReader
     {
         if (room.actors != null)
         {
+            var processedActors : Map<String, Entity> = new Map<String, Entity>(); 
+            var postProcessedActorsData : Array<ActorData> = [];
+
             for (actor in room.actors) {
                 // Check if they have to be created, using LRAM, WRAM
                 var x : Float = actor.x * Constants.TileWidth;
@@ -131,29 +134,38 @@ class MapReader
 
                 var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
 
+                var entity : Entity = null;
+
                 switch (actor.type)
                 {
                     case "exit":
                         var exit : MapExit = new MapExit(x, y, Constants.TileWidth, Constants.TileHeight, properties.get("name"), world);
                         world.exits.add(exit);
+                        entity = exit;
                     case "spikes":
                         var spikes : Hazard = new StaticHazard(x, y, world, actor.type, actor.properties);
                         world.hazards.add(spikes);
+                        entity = spikes;
                     case "pointy":
                         var pointy : Hazard = new StaticHazard(x, y, world, actor.type, actor.properties);
                         world.hazards.add(pointy);
+                        entity = pointy;
                     case "falling-hazard":
                         var coconut : FallingHazard = new FallingHazard(x, y, world, actor.properties);
                         world.hazards.add(coconut);
+                        entity = coconut;
                     case "enemy-plant":
                         var plant : EnemyPlant = new EnemyPlant(x, y, world, actor.properties);
                         world.enemies.add(plant);
+                        entity = plant;
                     case "enemy-skeleton": 
                         var skeleton : EnemySkeleton = new EnemySkeleton(x, y, world, properties);
                         world.enemies.add(skeleton);
+                        entity = skeleton;
                     case "enemy-frog":
                         var frog : EnemyFrog = new EnemyFrog(x, y, world, properties);
                         world.enemies.add(frog);
+                        entity = frog;
                     case "item":
                         if (actor.properties != null)
                         {
@@ -171,6 +183,8 @@ class MapReader
 
                                 world.items.add(item);
                                 LRAM.HandleItemSpawn(actor.id);
+
+                                entity = item;
                             }
                         }
                         else
@@ -195,6 +209,8 @@ class MapReader
                                 var key : Item = new Item(x, y, world, itemData);
                                 world.items.add(key);
                                 LRAM.HandleItemSpawn(actor.id);
+
+                                entity = key;
                             }
                         }
                     case "door":
@@ -205,6 +221,7 @@ class MapReader
                             flavour = properties.get("color");
                         door.init(actor.id, flavour);
                         world.solids.add(door);
+                        entity = door;
                     case "teleport":
                         var visible : String = properties.get("visible");
                         if (visible == null)
@@ -220,6 +237,7 @@ class MapReader
 
                         var teleport : Teleport = new Teleport(x, y, w, h, data, world);
                         world.teleports.add(teleport);
+                        entity = teleport;
                     case "falling": 
                         var color : Int = color(properties.get("color"));
                         var falling : FallingSolid = new FallingSolid(x, y, w, h, world);
@@ -228,11 +246,67 @@ class MapReader
                             world.oneways.add(falling);
                         else
                             world.solids.add(falling);
+                        entity = falling;
                     case "NPC":
                         var npc : NPC = new NPC(x, y, world, properties);
                         world.npcs.add(npc);
+                        entity = npc;
+                    case "solid":
+                        var s : Solid = new Solid(x, y, w, h, world);
+                        var c : String = properties.get("color");
+                        if (c != null && c.length > 0)
+                        {
+                            s.color = color(c);
+                            s.visible = true;
+                        }
+                        // TODO: Solid Graphic
+                        world.solids.add(s);
+                        entity = s;
+                    case "puzzle-lever":
+                        var lever : Lever = new Lever(x, y, world);
+                        // TODO: Puzzle color
+                        world.npcs.add(lever);
+                        entity = lever;
+                    case "puzzle-button":
+                        var button : Button = new Button(x, y, world);
+                        // TODO: Puzzle color
+                        world.solids.add(button);
+                        entity = button;
+                    case "puzzle-switcher":
+                        postProcessedActorsData.push(actor);
                     default:
                         // nop
+                }
+
+                if (entity != null)
+                    processedActors.set(actor.id, entity);
+            }
+
+            for (actor in postProcessedActorsData)
+            {
+                // Check if they have to be created, using LRAM, WRAM
+                var x : Float = actor.x * Constants.TileWidth;
+                var y : Float = actor.y * Constants.TileHeight;
+                var w : Float = actor.w * Constants.TileWidth;
+                var h : Float = actor.h * Constants.TileHeight;
+
+                var properties : haxe.DynamicAccess<Dynamic> = actor.properties;
+
+                switch (actor.type)
+                {
+                    case "puzzle-switcher":
+                        var target : Entity = processedActors.get(properties.get("target"));
+                        if (target != null)
+                        {
+                            var switcher : EntitySwitcher = new EntitySwitcher(target);
+                            world.add(switcher);
+                        }
+                        else
+                        {
+                            trace("Switcher[" + actor.id + "] refers to not found entity with id " + properties.get("target"));
+                        }
+                    default:
+                        // NOP
                 }
             }
         }
