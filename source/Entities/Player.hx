@@ -259,7 +259,7 @@ class Player extends Actor
                     {
                         carrying.onRelease();
                         // Reposition from center
-                        carrying.y += 1;
+                        carrying.y -= 1;
 
                         var deltaX : Float = 0;
                         var solidAtLeft : Bool = overlapsAt(x-7, y, world.solids);
@@ -310,6 +310,7 @@ class Player extends Actor
                             carrying.x = x - offset.x;
                         }
                         carrying.moveX(deltaX);
+                        carrying.moveY(3);
 
                         carrying = null;
                     }
