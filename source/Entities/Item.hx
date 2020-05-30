@@ -1,6 +1,5 @@
 package;
 
-import openfl.display.Preloader.DefaultPreloader;
 import flixel.FlxSprite;
 import Inventory.ItemData;
 
