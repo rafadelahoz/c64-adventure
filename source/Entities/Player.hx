@@ -773,6 +773,8 @@ class Player extends Actor
                 actingTimer.start(ActingDuration, onActingTimer);
             case Hurt:
                 actingTimer.start(HurtDuration, onHurtTimer);
+            case Dying:
+                invulnerable = false;
             default:
                 // nothing
         }
@@ -908,7 +910,7 @@ class Player extends Actor
     public function onCollisionWithDanger(danger : IDangerous)
     {
         // die?
-        if (state != State.Hurt && state != State.Dying && !invulnerable)
+        if (state != State.Dying && (state != State.Hurt && !invulnerable || danger.ignoresInvincibility()))
         {
             var damage : Int = danger.damages(this);
             if (damage > -1)

@@ -35,6 +35,11 @@ class Enemy extends Actor implements IDangerous
         // Override me
     }
 
+    public function ignoresInvincibility() : Bool
+    {
+        return false;
+    }
+
     public function damages(player : Player) : Int
     {
         return -1;

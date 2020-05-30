@@ -16,6 +16,11 @@ class Hazard extends Actor implements IDangerous
         power = 1;
     }
 
+    public function ignoresInvincibility() : Bool
+    {
+        return false;
+    }
+
     public function damages(player : Player) : Int
     {
         return power;

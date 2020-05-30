@@ -46,6 +46,11 @@ class StaticHazard extends Hazard implements IDangerous
             color = 0xFFFFFFFF;
     }
 
+    override public function ignoresInvincibility() : Bool
+    {
+        return (type == TypeSpikes);
+    }
+
     override public function damages(player : Player) : Int
     {
         var damage : Int  = power;
